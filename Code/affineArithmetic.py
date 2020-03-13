@@ -1,12 +1,19 @@
 from intervalArithmetic import Interval
 
 class Affine:
+    """Representation of an affine form"""
     def __init__(self, xi):
         self.xi = xi # liste
         self.xsi = sum([abs(i) for i in xi[1:]])
         self.interval = Interval(xi[0] + self.xsi, xi[0] - self.xsi)
 
+    # Binary operators
     def __add__(self, other):
+        """
+        Operator +
+        :type other: Interval or int or float
+        :rtype: Interval
+        """
         if isinstance(other, self.__class__):
             xi = [self.xi[0] + other.xi[0]]
             xi += self.xi[1:] + other.xi[1:]
@@ -19,6 +26,11 @@ class Affine:
         return None
 
     def __sub__(self, other):
+        """
+        Operator -
+        :type other: Interval or int or float
+        :rtype: Interval
+        """
         if isinstance(other, self.__class__):
             xi = [self.xi[0] - other.xi[0]]
             xi += self.xi[1:] + [-i for i in other.xi[1:]]
@@ -31,6 +43,11 @@ class Affine:
         return None
 
     def __mul__(self, other):
+        """
+        Operator *
+        :type other: Interval
+        :rtype: Interval
+        """
         if isinstance(other, self.__class__):
             xi = []
             for x in self.xi:
@@ -44,7 +61,22 @@ class Affine:
         print("Error : unknown type")
         return None
 
+    def __truediv__(self, other):
+        pass
+
+    def __pow__(self, n):
+        pass
+
+    # Unary operator
+    def __neg__(self):
+        pass
+
+    # String form
     def __str__(self):
+        """
+        Make the string format
+        :rtype: string
+        """
         string = str(self.xi[0])
         compteur = 1
         for i in self.xi[1:]:
@@ -52,28 +84,42 @@ class Affine:
             compteur += 1
         return string
 
-    def __eq__(self, other):
+    # Methods
+    def radius(self):
         """
-        Operator == 
-        : type other: Affine
-        : rtype: bool
+        Return the radius of the interval
+        :rtype: int or float
         """
-        return self.xi==other.xi and self.xsi==other.xsi and self.interval==other.interval
+        return self.interval.radius()
 
-    def __ne__(self, other):
+    def midle(self):
         """
-        Operator ==
-        : type pther: Affine
-        : rtype: bool
+        Return the middle of the interval
+        :rtype: float
         """
-        return self.xi!=other.xi and self.xsi!=other.xsi and self.interval!=other.interval
+        return self.interval.middle()
 
-    def __ge__(self, other):
-        """
-        Operator <=
-        : type other: 
-        """
-        return super().__ge__(value)
+    def abs(self):
+        pass
+
+    def sqrt(self):
+        pass
+
+    def exp(self):
+        pass
+
+    def log(self):
+        pass
+
+    def cos(self):
+        pass
+
+    def sin(self):
+        pass
+
+    def tan(self):
+        pass
+
 
 def intervalToAffine(interval):
     """Convert an interval form to an affine form"""
@@ -94,8 +140,6 @@ if __name__ == "__main__":
     print(x.interval)
     print(y.interval)
     z = x + y
-    z1 = Affine([5, 15, 5])
-    print(z!=z1)
     print(z)
     print(z.interval)
     x1 = Affine([3 / 2, 1 / 2])
@@ -103,4 +147,6 @@ if __name__ == "__main__":
     x3 = x1*x2
     print(x3)
     print(x3.interval)
-    print((x + 3.2).interval)
+    x4 = x1*x1 + x2*x2 - x1*x2
+    print(x4)
+    print(x4.interval)
