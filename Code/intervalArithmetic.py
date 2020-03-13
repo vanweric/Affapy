@@ -75,7 +75,7 @@ class Interval:
         sup = max([a*c, a*d, b*c, b*d])
         return Interval(inf, sup)
 
-    def __truediv__(self, other):
+    def __truediv__(self, other): # TRAITER LES CAS INFINIS ?
         """
         Operator /
         :type other: Interval
@@ -86,7 +86,7 @@ class Interval:
             return self * Interval(1 / d, 1 / c)
         print("Error : division by 0")
 
-    def __pow__(self, n):
+    def __pow__(self, n): # SEULEMENT PUISSANCE 2 POUR L'INSTANT
         """
         Operator **
         :type other: Interval
@@ -168,7 +168,7 @@ class Interval:
         return "[" + str(self.inf) + " ; " + str(self.sup) + "]"
 
     # Methods
-    def rad(self):
+    def radius(self):
         """
         Return the radius of the interval
         :rtype: int or float
@@ -183,16 +183,40 @@ class Interval:
         return (self.inf + self.sup) / 2
 
     def log(self):
-        return Interval(np.log(self.inf), np.log(self.sup))
+        """
+        Return the logarithm of an interval
+        :rtype: Interval
+        """
+        if 0 < self.inf:
+            return Interval(np.log(self.inf), np.log(self.sup))
+        print("Error : inf must be > 0")
+        return None
 
-    def exp(self): 
+    def exp(self):
+        """
+        Return the exponential of an interval
+        :rtype: Interval
+        """
         return Interval(np.exp(self.inf), np.exp(self.sup))
 
     def sqrt(self):
+        """
+        Return the square root of an interval
+        :rtype: Interval
+        """
         if 0 <= self.inf:
             return Interval(np.sqrt(self.inf), np.sqrt(self.sup))
         print("Error : inf must be >= 0")
         return None
+
+    def sin(self):
+        pass
+
+    def cos(self):
+        pass
+
+    def abs(self):
+        pass
 
 
 if __name__ == "__main__":
@@ -222,8 +246,8 @@ if __name__ == "__main__":
     print(x < 2)
     print(x.middle())
     print(z.middle())
-    print(x.rad())
-    print(z.rad())
+    print(x.radius())
+    print(z.radius())
     print(x in Interval(0, 4))
     print(x in Interval(2, 4))
     print(0 in z)
@@ -239,3 +263,5 @@ if __name__ == "__main__":
     print(x2 * (y2 + z2))
     print(x2 * y2 + x2 * z2)
     print(x2 * (y2 + z2) in x2 * y2 + x2 * z2)
+    print(Interval(-2, 0).sqrt())
+    print(Interval(0, 1).log())
