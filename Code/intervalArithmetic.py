@@ -165,7 +165,7 @@ class Interval:
         Make the string format
         :rtype: string
         """
-        return "[" + str(self.inf) + " ; " + str(self.sup) + "]"
+        return "".join(["[", str(self.inf), " ; ", str(self.sup), "]"])
 
     # Methods
     def radius(self):

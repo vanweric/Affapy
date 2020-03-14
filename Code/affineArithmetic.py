@@ -77,12 +77,7 @@ class Affine:
         Make the string format
         :rtype: string
         """
-        string = str(self.xi[0])
-        compteur = 1
-        for i in self.xi[1:]:
-            string += " + " + str(i) + "*eps" + str(compteur)
-            compteur += 1
-        return string
+        return " + ".join([str(self.xi[0])] + ["".join([str(self.xi[i]), "*eps", str(i)]) for i in range(1, len(self.xi))])
 
     # Methods
     def radius(self):
