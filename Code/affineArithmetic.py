@@ -1,3 +1,4 @@
+"""Définir une arithmétique affine"""
 from intervalArithmetic import Interval
 
 
@@ -8,7 +9,6 @@ class Affine:
         self.xi = xi  # liste
         self.xsi = sum([abs(i) for i in xi[1:]])
         self.interval = Interval(xi[0] + self.xsi, xi[0] - self.xsi)
-
 
     # Binary operators
     def __add__(self, other):
@@ -91,7 +91,7 @@ class Affine:
         """
         return self.interval.radius()
 
-    def midle(self):
+    def middle(self):
         """
         Return the middle of the interval
         :rtype: float

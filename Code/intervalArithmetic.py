@@ -1,3 +1,4 @@
+"""définir un interval arithmétique"""
 import numpy as np
 
 

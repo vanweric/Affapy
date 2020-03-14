@@ -1,3 +1,4 @@
+"""définir des test unitaires"""
 from intervalArithmetic import Interval
 from affineArithmetic import Affine
 import unittest
