@@ -1,7 +1,9 @@
 import numpy as np
 
+
 class Interval:
     """Representation of an interval"""
+
     def __init__(self, inf, sup):
         """
         :type inf: float or int
@@ -24,7 +26,7 @@ class Interval:
         if isinstance(other, self.__class__):
             return self.inf <= other.inf and self.sup >= other.sup
         elif isinstance(other, int) or isinstance(other, float):
-            return self.inf <= other and self.sup >= other
+            return self.inf <= other <= self.sup
         print("Error : unknown type")
         return None
 
@@ -71,11 +73,11 @@ class Interval:
         """
         a, b = self.inf, self.sup
         c, d = other.inf, other.sup
-        inf = min([a*c, a*d, b*c, b*d])
-        sup = max([a*c, a*d, b*c, b*d])
+        inf = min([a * c, a * d, b * c, b * d])
+        sup = max([a * c, a * d, b * c, b * d])
         return Interval(inf, sup)
 
-    def __truediv__(self, other): # TRAITER LES CAS INFINIS ?
+    def __truediv__(self, other):  # TRAITER LES CAS INFINIS ?
         """
         Operator /
         :type other: Interval
@@ -86,26 +88,26 @@ class Interval:
             return self * Interval(1 / d, 1 / c)
         print("Error : division by 0")
 
-    def __pow__(self, n): # SEULEMENT PUISSANCE 2 POUR L'INSTANT
+    def __pow__(self, n):  # SEULEMENT PUISSANCE 2 POUR L'INSTANT
         """
         Operator **
-        :type other: Interval
+        :type self: Interval
         :type n: int
         :rtype: Interval
         """
         if n == 2:
             inf, sup = self.inf, self.sup
             if not 0 in self:
-                return Interval(min(inf**n, sup**n), max(inf**n, sup**n))
+                return Interval(min(inf ** n, sup ** n), max(inf ** n, sup ** n))
             else:
-                return Interval(0, max(inf**n, sup**n))
+                return Interval(0, max(inf ** n, sup ** n))
         print("Error : only power 2 accepted for the moment")
 
     # Unary operator
     def __neg__(self):
         """
         Operator - (unary)
-        :type other: Interval
+        :type self: Interval
         :rtype: Interval
         """
         return Interval(-self.sup, -self.inf)
@@ -130,7 +132,7 @@ class Interval:
     def __ge__(self, n):
         """
         Operator >=
-        :type other: int or float
+        :type n: int or float
         :rtype: bool
         """
         return self.inf >= n
@@ -138,7 +140,7 @@ class Interval:
     def __gt__(self, n):
         """
         Operator >
-        :type other: int or float
+        :type n: int or float
         :rtype: bool
         """
         return self.inf > n
@@ -146,7 +148,7 @@ class Interval:
     def __le__(self, n):
         """
         Operator <=
-        :type other: int or float
+        :type n: int or float
         :rtype: bool
         """
         return self.sup <= n
@@ -154,7 +156,7 @@ class Interval:
     def __lt__(self, n):
         """
         Operator <
-        :type other: int or float
+        :type n: int or float
         :rtype: bool
         """
         return self.sup < n
@@ -231,10 +233,10 @@ if __name__ == "__main__":
     print(x / y)
     print(x / z)
     print(z * (x + y))
-    print(y**2)
-    print(z**2)
-    print(x**3)
-    print(x**2 + y**2 - x * y)
+    print(y ** 2)
+    print(z ** 2)
+    print(x ** 3)
+    print(x ** 2 + y ** 2 - x * y)
     print(-x)
     print(x == y)
     print(x != y)
@@ -259,7 +261,7 @@ if __name__ == "__main__":
     y2 = Interval(1, 4)
     z2 = Interval(-2, 1)
     print(x2 * x2)
-    print(x2**2)
+    print(x2 ** 2)
     print(x2 * (y2 + z2))
     print(x2 * y2 + x2 * z2)
     print(x2 * (y2 + z2) in x2 * y2 + x2 * z2)

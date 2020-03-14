@@ -8,7 +8,7 @@ setuptools.setup(
 	version='0.1',  #to complete
 	scripts=['AffA'],  #to complete
 	author=[
-		"Roxue ZENG",
+		"Ruxue ZENG",
 		"Quentin DESCHAMPS",
 		"Florian GUILY",
 		"Tristan MICHEL"
