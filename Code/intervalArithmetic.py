@@ -221,6 +221,12 @@ class Interval:
     def abs(self):
         pass
 
+    def intervalToAffine(self):
+        """Convert an interval form to an affine form"""
+        from affineArithmetic import Affine
+        inf, sup = self.inf, self.sup
+        return Affine([(inf + sup) / 2, (inf - sup) / 2])
+
 
 if __name__ == "__main__":
     x = Interval(1, 2)
@@ -268,3 +274,4 @@ if __name__ == "__main__":
     print(x2 * (y2 + z2) in x2 * y2 + x2 * z2)
     print(Interval(-2, 0).sqrt())
     print(Interval(0, 1).log())
+    print(Interval(-10, 10).intervalToAffine())

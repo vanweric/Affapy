@@ -119,16 +119,9 @@ class Affine:
     def tan(self):
         pass
 
-
-def intervalToAffine(interval):
-    """Convert an interval form to an affine form"""
-    inf, sup = interval.inf, interval.sup
-    return Affine([(inf + sup) / 2, (inf - sup) / 2])
-
-
-def affineToInterval(affine):
-    """Convert an affine form to an interval form"""
-    return affine.interval
+    def affineToInterval(self):
+        """Convert an affine form to an interval form"""
+        return self.interval
 
 
 if __name__ == "__main__":
@@ -136,8 +129,6 @@ if __name__ == "__main__":
     y = Affine([5, 5])
     print(x)
     print(y)
-    print(intervalToAffine(Interval(-10, 10)))
-    print(affineToInterval(Affine([0, 10])))
     print(x.interval)
     print(y.interval)
     z = x + y
@@ -151,3 +142,4 @@ if __name__ == "__main__":
     x4 = x1 * x1 + x2 * x2 - x1 * x2
     print(x4)
     print(x4.interval)
+    print(Affine([0, 10]).affineToInterval())
