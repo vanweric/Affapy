@@ -26,7 +26,7 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.inf <= other.inf and self.sup >= other.sup
-        elif isinstance(other, int) or isinstance(other, float):
+        if isinstance(other, int) or isinstance(other, float):
             return self.inf <= other <= self.sup
         print("Error : unknown type")
         return None
@@ -42,7 +42,7 @@ class Interval:
             inf = self.inf + other.inf
             sup = self.sup + other.sup
             return Interval(inf, sup)
-        elif isinstance(other, int) or isinstance(other, float):
+        if isinstance(other, int) or isinstance(other, float):
             inf = self.inf + other
             sup = self.sup + other
             return Interval(inf, sup)
@@ -59,7 +59,7 @@ class Interval:
             inf = self.inf - other.sup
             sup = self.sup - other.inf
             return Interval(inf, sup)
-        elif isinstance(other, int) or isinstance(other, float):
+        if isinstance(other, int) or isinstance(other, float):
             inf = self.inf - other
             sup = self.sup - other
             return Interval(inf, sup)
@@ -88,6 +88,7 @@ class Interval:
         if 0 not in other:
             return self * Interval(1 / d, 1 / c)
         print("Error : division by 0")
+        return None
 
     def __pow__(self, n):  # SEULEMENT PUISSANCE 2 POUR L'INSTANT
         """
@@ -101,9 +102,9 @@ class Interval:
             if 0 not in self:
                 return Interval(min(inf ** n, sup ** n),
                                 max(inf ** n, sup ** n))
-            else:
-                return Interval(0, max(inf ** n, sup ** n))
+            return Interval(0, max(inf ** n, sup ** n))
         print("Error : only power 2 accepted for the moment")
+        return None
 
     # Unary operator
     def __neg__(self):
@@ -190,7 +191,7 @@ class Interval:
         Return the logarithm of an interval
         :rtype: Interval
         """
-        if 0 < self.inf:
+        if self.inf > 0:
             return Interval(np.log(self.inf), np.log(self.sup))
         print("Error : inf must be > 0")
         return None
@@ -207,18 +208,30 @@ class Interval:
         Return the square root of an interval
         :rtype: Interval
         """
-        if 0 <= self.inf:
+        if self.inf >= 0:
             return Interval(np.sqrt(self.inf), np.sqrt(self.sup))
         print("Error : inf must be >= 0")
         return None
 
     def sin(self):
+        """
+        Return the sinus of an interval
+        :rtype: Interval
+        """
         pass
 
     def cos(self):
+        """
+        Return the cosinus of an interval
+        :rtype: Interval
+        """
         pass
 
     def abs(self):
+        """
+        Return the absolute value of an interval
+        :rtype: Interval
+        """
         pass
 
     def intervalToAffine(self):
