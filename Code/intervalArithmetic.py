@@ -85,7 +85,7 @@ class Interval:
         :rtype: Interval
         """
         c, d = other.inf, other.sup
-        if not 0 in other:
+        if 0 not in other:
             return self * Interval(1 / d, 1 / c)
         print("Error : division by 0")
 
@@ -98,8 +98,9 @@ class Interval:
         """
         if n == 2:
             inf, sup = self.inf, self.sup
-            if not 0 in self:
-                return Interval(min(inf ** n, sup ** n), max(inf ** n, sup ** n))
+            if 0 not in self:
+                return Interval(min(inf ** n, sup ** n),
+                                max(inf ** n, sup ** n))
             else:
                 return Interval(0, max(inf ** n, sup ** n))
         print("Error : only power 2 accepted for the moment")
@@ -162,7 +163,6 @@ class Interval:
         """
         return self.sup < n
 
-    # String form  
     def __str__(self):
         """
         Make the string format

@@ -80,8 +80,9 @@ class Affine:
         Make the string format
         :rtype: string
         """
-        return " + ".join(
-            [str(self.xi[0])] + ["".join([str(self.xi[i]), "*eps", str(i)]) for i in range(1, len(self.xi))])
+        return " + ".join([str(self.xi[0])] +
+                          ["".join([str(self.xi[i]), "*eps", str(i)])
+                          for i in range(1, len(self.xi))])
 
     # Methods
     def radius(self):
