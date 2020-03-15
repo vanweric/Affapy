@@ -1,4 +1,4 @@
-"""définir un interval arithmétique"""
+"""Use of Interval Arithmetic"""
 import numpy as np
 
 

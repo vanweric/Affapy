@@ -1,4 +1,4 @@
-"""Définir une arithmétique affine"""
+"""Use of Affine Arithmetic"""
 from intervalArithmetic import Interval
 
 
@@ -21,7 +21,7 @@ class Affine:
             xi = [self.xi[0] + other.xi[0]]
             xi += self.xi[1:] + other.xi[1:]
             return Affine(xi)
-        elif isinstance(other, int) or isinstance(other, float):
+        if isinstance(other, int) or isinstance(other, float):
             xi = [self.xi[0] + other]
             xi += self.xi[1:]
             return Affine(xi)
@@ -38,7 +38,7 @@ class Affine:
             xi = [self.xi[0] - other.xi[0]]
             xi += self.xi[1:] + [-i for i in other.xi[1:]]
             return Affine(xi)
-        elif isinstance(other, int) or isinstance(other, float):
+        if isinstance(other, int) or isinstance(other, float):
             xi = [other - self.xi[0]]
             xi += self.xi[1:]
             return Affine(xi)
@@ -57,7 +57,7 @@ class Affine:
                 for y in other.xi:
                     xi.append(x * y)
             return Affine(xi)
-        elif isinstance(other, int) or isinstance(other, float):
+        if isinstance(other, int) or isinstance(other, float):
             xi = [other * self.xi[0]]
             xi += [other * i for i in self.xi[1:]]
             return Affine(xi)
@@ -65,13 +65,27 @@ class Affine:
         return None
 
     def __truediv__(self, other):
+        """
+        Operator /
+        :type other: Interval
+        :rtype: Interval
+        """
         pass
 
     def __pow__(self, n):
+        """
+        Operator **
+        :type other: int or float
+        :rtype: Interval
+        """
         pass
 
     # Unary operator
     def __neg__(self):
+        """
+        Operator - (unary)
+        :rtype: Interval
+        """
         pass
 
     # String form
@@ -82,7 +96,7 @@ class Affine:
         """
         return " + ".join([str(self.xi[0])] +
                           ["".join([str(self.xi[i]), "*eps", str(i)])
-                          for i in range(1, len(self.xi))])
+                           for i in range(1, len(self.xi))])
 
     # Methods
     def radius(self):
@@ -100,24 +114,52 @@ class Affine:
         return self.interval.middle()
 
     def abs(self):
+        """
+        Return the absolute value of an affine form
+        :rtype: Affine
+        """
         pass
 
     def sqrt(self):
+        """
+        Return the square root of an affine form
+        :rtype: Affine
+        """
         pass
 
     def exp(self):
+        """
+        Return the exponential of an affine form
+        :rtype: Affine
+        """
         pass
 
     def log(self):
+        """
+        Return the logarithm of an affine form
+        :rtype: Affine
+        """
         pass
 
     def cos(self):
+        """
+        Return the cosinus of an affine form
+        :rtype: Affine
+        """
         pass
 
     def sin(self):
+        """
+        Return the sinus of an affine form
+        :rtype: Affine
+        """
         pass
 
     def tan(self):
+        """
+        Return the tangent of an affine form
+        :rtype: Affine
+        """
         pass
 
     def affineToInterval(self):
