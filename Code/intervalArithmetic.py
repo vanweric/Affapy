@@ -11,11 +11,21 @@ class Interval:
         :type sup: float or int
         """
         if inf < sup:
-            self.inf = inf
-            self.sup = sup
+            self._inf = inf
+            self._sup = sup
         else:
-            self.inf = sup
-            self.sup = inf
+            self._inf = sup
+            self._sup = inf
+
+    @property
+    def inf(self):
+        "Returns the inf"
+        return self._inf
+
+    @property
+    def sup(self):
+        "blablabla"
+        return self._sup
 
     # Inclusion
     def __contains__(self, other):
@@ -25,9 +35,9 @@ class Interval:
         :rtype: bool
         """
         if isinstance(other, self.__class__):
-            return self.inf <= other.inf and self.sup >= other.sup
+            return self._inf <= other._inf and self._sup >= other._sup
         if isinstance(other, int) or isinstance(other, float):
-            return self.inf <= other <= self.sup
+            return self._inf <= other <= self._sup
         print("Error : unknown type")
         return None
 
@@ -39,12 +49,12 @@ class Interval:
         :rtype: Interval
         """
         if isinstance(other, self.__class__):
-            inf = self.inf + other.inf
-            sup = self.sup + other.sup
+            inf = self._inf + other._inf
+            sup = self._sup + other._sup
             return Interval(inf, sup)
         if isinstance(other, int) or isinstance(other, float):
-            inf = self.inf + other
-            sup = self.sup + other
+            inf = self._inf + other
+            sup = self._sup + other
             return Interval(inf, sup)
         print("Error : unknown type")
         return None
@@ -56,12 +66,12 @@ class Interval:
         :rtype: Interval
         """
         if isinstance(other, self.__class__):
-            inf = self.inf - other.sup
-            sup = self.sup - other.inf
+            inf = self._inf - other._sup
+            sup = self._sup - other._inf
             return Interval(inf, sup)
         if isinstance(other, int) or isinstance(other, float):
-            inf = self.inf - other
-            sup = self.sup - other
+            inf = self._inf - other
+            sup = self._sup - other
             return Interval(inf, sup)
         print("Error : unknown type")
         return None
@@ -72,8 +82,8 @@ class Interval:
         :type other: Interval
         :rtype: Interval
         """
-        a, b = self.inf, self.sup
-        c, d = other.inf, other.sup
+        a, b = self._inf, self._sup
+        c, d = other._inf, other._sup
         inf = min([a * c, a * d, b * c, b * d])
         sup = max([a * c, a * d, b * c, b * d])
         return Interval(inf, sup)
@@ -84,7 +94,7 @@ class Interval:
         :type other: Interval
         :rtype: Interval
         """
-        c, d = other.inf, other.sup
+        c, d = other._inf, other._sup
         if 0 not in other:
             return self * Interval(1 / d, 1 / c)
         print("Error : division by 0")
@@ -98,7 +108,7 @@ class Interval:
         :rtype: Interval
         """
         if n == 2:
-            inf, sup = self.inf, self.sup
+            inf, sup = self._inf, self._sup
             if 0 not in self:
                 return Interval(min(inf ** n, sup ** n),
                                 max(inf ** n, sup ** n))
@@ -113,7 +123,7 @@ class Interval:
         :type self: Interval
         :rtype: Interval
         """
-        return Interval(-self.sup, -self.inf)
+        return Interval(-self._sup, -self._inf)
 
     # Comparison operators
     def __eq__(self, other):
@@ -122,7 +132,7 @@ class Interval:
         :type other: Interval
         :rtype: bool
         """
-        return self.inf == other.inf and self.sup == other.sup
+        return self._inf == other._inf and self._sup == other._sup
 
     def __ne__(self, other):
         """
@@ -130,7 +140,7 @@ class Interval:
         :type other: Interval
         :rtype: bool
         """
-        return self.inf != other.inf or self.sup != other.sup
+        return self._inf != other._inf or self._sup != other._sup
 
     def __ge__(self, n):
         """
@@ -138,7 +148,7 @@ class Interval:
         :type n: int or float
         :rtype: bool
         """
-        return self.inf >= n
+        return self._inf >= n
 
     def __gt__(self, n):
         """
@@ -146,7 +156,7 @@ class Interval:
         :type n: int or float
         :rtype: bool
         """
-        return self.inf > n
+        return self._inf > n
 
     def __le__(self, n):
         """
@@ -154,7 +164,7 @@ class Interval:
         :type n: int or float
         :rtype: bool
         """
-        return self.sup <= n
+        return self._sup <= n
 
     def __lt__(self, n):
         """
@@ -162,14 +172,14 @@ class Interval:
         :type n: int or float
         :rtype: bool
         """
-        return self.sup < n
+        return self._sup < n
 
     def __str__(self):
         """
         Make the string format
         :rtype: string
         """
-        return "".join(["[", str(self.inf), " ; ", str(self.sup), "]"])
+        return "".join(["[", str(self._inf), " ; ", str(self._sup), "]"])
 
     # Methods
     def radius(self):
@@ -177,22 +187,22 @@ class Interval:
         Return the radius of the interval
         :rtype: int or float
         """
-        return self.sup - self.inf
+        return self._sup - self._inf
 
     def middle(self):
         """
         Return the middle of the interval
         :rtype: float
         """
-        return (self.inf + self.sup) / 2
+        return (self._inf + self._sup) / 2
 
     def log(self):
         """
         Return the logarithm of an interval
         :rtype: Interval
         """
-        if self.inf > 0:
-            return Interval(np.log(self.inf), np.log(self.sup))
+        if self._inf > 0:
+            return Interval(np.log(self._inf), np.log(self._sup))
         print("Error : inf must be > 0")
         return None
 
@@ -201,15 +211,15 @@ class Interval:
         Return the exponential of an interval
         :rtype: Interval
         """
-        return Interval(np.exp(self.inf), np.exp(self.sup))
+        return Interval(np.exp(self._inf), np.exp(self._sup))
 
     def sqrt(self):
         """
         Return the square root of an interval
         :rtype: Interval
         """
-        if self.inf >= 0:
-            return Interval(np.sqrt(self.inf), np.sqrt(self.sup))
+        if self._inf >= 0:
+            return Interval(np.sqrt(self._inf), np.sqrt(self._sup))
         print("Error : inf must be >= 0")
         return None
 
@@ -237,7 +247,7 @@ class Interval:
     def intervalToAffine(self):
         """Convert an interval form to an affine form"""
         from affineArithmetic import Affine
-        inf, sup = self.inf, self.sup
+        inf, sup = self._inf, self._sup
         return Affine([(inf + sup) / 2, (inf - sup) / 2])
 
 
