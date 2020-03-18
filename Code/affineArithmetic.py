@@ -26,7 +26,7 @@ class Affine:
             xi = [self.xi[0] + other]
             xi += self.xi[1:]
             return Affine(xi)
-        print("Error : unknown type")
+        raise AffApyError("type error")
         return None
 
     def __sub__(self, other):
@@ -43,7 +43,7 @@ class Affine:
             xi = [other - self.xi[0]]
             xi += self.xi[1:]
             return Affine(xi)
-        print("Error : unknown type")
+        raise AffApyError("type error")
         return None
 
     def __mul__(self, other):
@@ -62,7 +62,7 @@ class Affine:
             xi = [other * self.xi[0]]
             xi += [other * i for i in self.xi[1:]]
             return Affine(xi)
-        print("Error : unknown type")
+        raise AffApyError("type error")
         return None
 
     def __truediv__(self, other):
