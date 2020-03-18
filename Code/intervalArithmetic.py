@@ -1,5 +1,5 @@
 """Use of Interval Arithmetic"""
-import numpy as np
+from math import sqrt, log, exp
 from affapyError import AffApyError
 
 
@@ -203,7 +203,7 @@ class Interval:
         :rtype: Interval
         """
         if self._inf > 0:
-            return Interval(np.log(self._inf), np.log(self._sup))
+            return Interval(log(self._inf), log(self._sup))
         raise AffApyError("inf must be > 0")
         return None
 
@@ -212,7 +212,7 @@ class Interval:
         Return the exponential of an interval
         :rtype: Interval
         """
-        return Interval(np.exp(self._inf), np.exp(self._sup))
+        return Interval(exp(self._inf), exp(self._sup))
 
     def sqrt(self):
         """
@@ -220,7 +220,7 @@ class Interval:
         :rtype: Interval
         """
         if self._inf >= 0:
-            return Interval(np.sqrt(self._inf), np.sqrt(self._sup))
+            return Interval(sqrt(self._inf), sqrt(self._sup))
         raise AffApyError("inf must be >= 0")
         return None
 
