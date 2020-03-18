@@ -162,7 +162,7 @@ class Affine:
         """
         pass
 
-    def affineToInterval(self):
+    def toInterval(self):
         """Convert an affine form to an interval form"""
         return self.interval
 
@@ -185,4 +185,4 @@ if __name__ == "__main__":
     x4 = x1 * x1 + x2 * x2 - x1 * x2
     print(x4)
     print(x4.interval)
-    print(Affine([0, 10]).affineToInterval())
+    print(Affine([0, 10]).toInterval())
