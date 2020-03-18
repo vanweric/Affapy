@@ -1,4 +1,4 @@
-"""Use of Interval Arithmetic"""
+"""Interval Arithmetic module"""
 from math import sqrt, log, exp
 from affapyError import AffApyError
 
@@ -188,7 +188,7 @@ class Interval:
         Make the repr format
         :rtype: string
         """
-        return "Interval([{0} ; {1}])".format(self._inf, self._sup,)
+        return "Interval([{0} ; {1}])".format(self._inf, self._sup)
 
     # Methods
     def radius(self):

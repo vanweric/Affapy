@@ -1,3 +1,6 @@
+"""Error module"""
+
+
 class AffApyError(Exception):
-    """Manage execption errors"""
+    """Manage exception errors"""
     pass

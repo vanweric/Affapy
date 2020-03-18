@@ -1,4 +1,4 @@
-"""Use of Affine Arithmetic"""
+"""Affine Arithmetic module"""
 from intervalArithmetic import Interval
 from affapyError import AffApyError
 
