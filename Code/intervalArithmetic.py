@@ -175,12 +175,20 @@ class Interval:
         """
         return self._sup < n
 
+    # Formats
     def __str__(self):
         """
         Make the string format
         :rtype: string
         """
         return "".join(["[", str(self._inf), " ; ", str(self._sup), "]"])
+
+    def __repr__(self):
+        """
+        Make the repr format
+        :rtype: string
+        """
+        return "Interval([{0} ; {1}])".format(self._inf, self._sup,)
 
     # Methods
     def radius(self):
@@ -299,3 +307,4 @@ if __name__ == "__main__":
     # print(Interval(-2, 0).sqrt())
     # print(Interval(0, 1).log())
     print(Interval(-10, 10).toAffine())
+    print(x.__repr__())

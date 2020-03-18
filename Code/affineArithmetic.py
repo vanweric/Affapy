@@ -89,7 +89,7 @@ class Affine:
         """
         pass
 
-    # String form
+    # Formats
     def __str__(self):
         """
         Make the string format
@@ -98,6 +98,13 @@ class Affine:
         return " + ".join([str(self.xi[0])] +
                           ["".join([str(self.xi[i]), "*eps", str(i)])
                            for i in range(1, len(self.xi))])
+
+    def __repr__(self):
+        """
+        Make the repr format
+        :rtype: string
+        """
+        return "Affine({})".format(self.xi)
 
     # Methods
     def radius(self):
@@ -187,3 +194,4 @@ if __name__ == "__main__":
     print(x4)
     print(x4.interval)
     print(Affine([0, 10]).toInterval())
+    print(x.__repr__())
