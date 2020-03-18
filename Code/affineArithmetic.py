@@ -1,5 +1,6 @@
 """Use of Affine Arithmetic"""
 from intervalArithmetic import Interval
+from affapyError import AffApyError
 
 
 class Affine:

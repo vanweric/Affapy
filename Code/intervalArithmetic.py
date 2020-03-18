@@ -1,5 +1,6 @@
 """Use of Interval Arithmetic"""
 import numpy as np
+from affapyError import AffApyError
 
 
 class Interval:
@@ -19,12 +20,12 @@ class Interval:
 
     @property
     def inf(self):
-        "Returns the inf"
+        """Returns the inf"""
         return self._inf
 
     @property
     def sup(self):
-        "blablabla"
+        """Returns the sup"""
         return self._sup
 
     # Inclusion
@@ -38,7 +39,7 @@ class Interval:
             return self._inf <= other._inf and self._sup >= other._sup
         if isinstance(other, int) or isinstance(other, float):
             return self._inf <= other <= self._sup
-        print("Error : unknown type")
+        raise AffApyError("type error")
         return None
 
     # Binary operators
@@ -56,7 +57,7 @@ class Interval:
             inf = self._inf + other
             sup = self._sup + other
             return Interval(inf, sup)
-        print("Error : unknown type")
+        raise AffApyError("type error")
         return None
 
     def __sub__(self, other):
@@ -73,7 +74,7 @@ class Interval:
             inf = self._inf - other
             sup = self._sup - other
             return Interval(inf, sup)
-        print("Error : unknown type")
+        raise AffApyError("type error")
         return None
 
     def __mul__(self, other):
@@ -97,7 +98,7 @@ class Interval:
         c, d = other._inf, other._sup
         if 0 not in other:
             return self * Interval(1 / d, 1 / c)
-        print("Error : division by 0")
+        raise AffApyError("division by 0")
         return None
 
     def __pow__(self, n):  # SEULEMENT PUISSANCE 2 POUR L'INSTANT
@@ -113,7 +114,7 @@ class Interval:
                 return Interval(min(inf ** n, sup ** n),
                                 max(inf ** n, sup ** n))
             return Interval(0, max(inf ** n, sup ** n))
-        print("Error : only power 2 accepted for the moment")
+        raise AffApyError("only power 2 accepted for the moment")
         return None
 
     # Unary operator
@@ -203,7 +204,7 @@ class Interval:
         """
         if self._inf > 0:
             return Interval(np.log(self._inf), np.log(self._sup))
-        print("Error : inf must be > 0")
+        raise AffApyError("inf must be > 0")
         return None
 
     def exp(self):
@@ -220,7 +221,7 @@ class Interval:
         """
         if self._inf >= 0:
             return Interval(np.sqrt(self._inf), np.sqrt(self._sup))
-        print("Error : inf must be >= 0")
+        raise AffApyError("inf must be >= 0")
         return None
 
     def sin(self):
@@ -261,11 +262,11 @@ if __name__ == "__main__":
     print(x - 2)
     print(x * y)
     print(x / y)
-    print(x / z)
+    # print(x / z)
     print(z * (x + y))
     print(y ** 2)
     print(z ** 2)
-    print(x ** 3)
+    # print(x ** 3)
     print(x ** 2 + y ** 2 - x * y)
     print(-x)
     print(x == y)
@@ -295,6 +296,6 @@ if __name__ == "__main__":
     print(x2 * (y2 + z2))
     print(x2 * y2 + x2 * z2)
     print(x2 * (y2 + z2) in x2 * y2 + x2 * z2)
-    print(Interval(-2, 0).sqrt())
-    print(Interval(0, 1).log())
+    # print(Interval(-2, 0).sqrt())
+    # print(Interval(0, 1).log())
     print(Interval(-10, 10).toAffine())
