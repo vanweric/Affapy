@@ -1,5 +1,5 @@
 """Interval Arithmetic module"""
-from math import sqrt, log, exp, pi, sin
+from math import sqrt, log, exp, pi, sin, cos
 from affapyError import AffApyError
 
 
@@ -259,9 +259,26 @@ class Interval:
     def cos(self):
         """
         Return the cosinus of an interval
+        inf must be in [0, 2pi]
         :rtype: Interval
         """
-        pass
+        inf, sup = self._inf, self._sup
+        if inf <= pi:
+            if sup <= pi:
+                return Interval(cos(sup), cos(inf))
+            if pi < sup <= 2*pi:
+                return Interval(-1, max(cos(inf), cos(sup)))
+            if sup > 2*pi:
+                return Interval(-1, 1)
+        if pi < inf <= 2*pi:
+            if sup <= 2*pi:
+                return Interval(cos(inf), cos(sup))
+            if 2*pi < sup <= 3*pi:
+                return Interval(min(cos(inf), cos(sup)), 1)
+            if sup >= 3*pi:
+                return Interval(-1, 1)
+        raise AffApyError("the interval does not match with cosinus")
+        return None
 
     def abs(self):
         """
@@ -334,3 +351,5 @@ if __name__ == "__main__":
     print(Interval(1, 2).abs())
     print(Interval(-pi/2, pi/2).sin())
     print(Interval(pi/4, pi).sin())
+    print(Interval(-pi, pi/4).cos())
+    print(Interval(0, 3*pi/2).cos())
