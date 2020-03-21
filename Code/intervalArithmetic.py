@@ -1,5 +1,5 @@
 """Interval Arithmetic module"""
-from math import sqrt, log, exp
+from math import sqrt, log, exp, pi, sin
 from affapyError import AffApyError
 
 
@@ -235,9 +235,26 @@ class Interval:
     def sin(self):
         """
         Return the sinus of an interval
+        inf must be in [-pi/2, 3pi/2]
         :rtype: Interval
         """
-        pass
+        inf, sup = self._inf, self._sup
+        if inf <= pi/2:
+            if sup <= pi/2:
+                return Interval(sin(inf), sin(sup))
+            if pi/2 < sup <= 3*pi/2:
+                return Interval(min(sin(inf), sin(sup)), 1)
+            if sup > 3*pi/2:
+                return Interval(-1, 1)
+        if pi/2 < inf <= 3*pi/2:
+            if pi/2 < sup <= 3*pi/2:
+                return Interval(sin(sup), sin(inf))
+            if 3*pi/2 < sup <= 2*pi + pi/2:
+                return Interval(-1, max(sin(inf), sin(sup)))
+            if sup >= pi/2:
+                return Interval(-1, 1)
+        raise AffApyError("the interval does not match with sinus")
+        return None
 
     def cos(self):
         """
@@ -315,3 +332,5 @@ if __name__ == "__main__":
     print(Interval(-5, -2).abs())
     print(Interval(-2, 1).abs())
     print(Interval(1, 2).abs())
+    print(Interval(-pi/2, pi/2).sin())
+    print(Interval(pi/4, pi).sin())
