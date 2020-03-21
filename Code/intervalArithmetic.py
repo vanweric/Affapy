@@ -101,20 +101,24 @@ class Interval:
         raise AffApyError("division by 0")
         return None
 
-    def __pow__(self, n):  # SEULEMENT PUISSANCE 2 POUR L'INSTANT
+    def __pow__(self, n):
         """
         Operator **
         :type self: Interval
         :type n: int
         :rtype: Interval
         """
-        if n == 2:
+        if isinstance(n, int) and n >= 0:
             inf, sup = self._inf, self._sup
-            if 0 not in self:
-                return Interval(min(inf ** n, sup ** n),
-                                max(inf ** n, sup ** n))
-            return Interval(0, max(inf ** n, sup ** n))
-        raise AffApyError("only power 2 accepted for the moment")
+            if n % 2 == 1:
+                return Interval(inf**n, sup**n)
+            if inf >= 0:
+                return Interval(inf**n, sup**n)
+            if sup < 0:
+                return Interval(sup**n, inf**n)
+            else:
+                return Interval(0, max(inf**n, sup**n))
+        raise AffApyError("n does not match with pow")
         return None
 
     # Unary operator
@@ -353,3 +357,5 @@ if __name__ == "__main__":
     print(Interval(pi/4, pi).sin())
     print(Interval(-pi, pi/4).cos())
     print(Interval(0, 3*pi/2).cos())
+    print(Interval(3, 5)**3)
+    print(Interval(-2, 3)**2)
