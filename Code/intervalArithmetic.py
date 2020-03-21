@@ -251,7 +251,11 @@ class Interval:
         Return the absolute value of an interval
         :rtype: Interval
         """
-        pass
+        if self < 0:
+            return Interval(abs(self._sup), abs(self._inf))
+        if 0 in self:
+            return Interval(0, max(abs(self._inf), abs(self._sup)))
+        return self
 
     def toAffine(self):
         """Convert an interval form to an affine form"""
@@ -308,3 +312,6 @@ if __name__ == "__main__":
     # print(Interval(0, 1).log())
     print(Interval(-10, 10).toAffine())
     print(x.__repr__())
+    print(Interval(-5, -2).abs())
+    print(Interval(-2, 1).abs())
+    print(Interval(1, 2).abs())
