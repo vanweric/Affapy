@@ -1,5 +1,5 @@
 """Interval Arithmetic module"""
-from math import sqrt, log, exp, pi, sin, cos
+from math import sqrt, log, exp, pi, sin, cos, floor, ceil, trunc
 from affapyError import AffApyError
 
 
@@ -130,6 +130,17 @@ class Interval:
         """
         return Interval(-self._sup, -self._inf)
 
+    def __abs__(self):
+        """
+        Return the absolute value of an interval
+        :rtype: Interval
+        """
+        if self < 0:
+            return Interval(abs(self._sup), abs(self._inf))
+        if 0 in self:
+            return Interval(0, max(abs(self._inf), abs(self._sup)))
+        return self
+
     # Comparison operators
     def __eq__(self, other):
         """
@@ -193,6 +204,44 @@ class Interval:
         :rtype: string
         """
         return "Interval([{0} ; {1}])".format(self._inf, self._sup)
+
+    # Precision
+    def __round__(self, ndigits):
+        """
+        Return the round form of the interval
+        :type self: Interval
+        :type ndigits: int
+        :rtype: Interval
+        """
+        if isinstance(ndigits, int):
+            return Interval(round(self._inf, ndigits),
+                            round(self._sup, ndigits))
+        raise AffApyError("n must be int")
+        return None
+
+    def __trunc__(self):
+        """
+        Return the truncate of the interval
+        :type self: Interval
+        :rtype: Interval
+        """
+        return Interval(trunc(self._inf), trunc(self._sup))
+
+    def __floor__(self):
+        """
+        Return the floor of the interval
+        :type self: Interval
+        :rtype: Interval
+        """
+        return Interval(floor(self._inf), floor(self._sup))
+
+    def __ceil__(self):
+        """
+        Return the ceiling of the interval
+        :type self: Interval
+        :rtype: Interval
+        """
+        return Interval(ceil(self._inf), ceil(self._sup))
 
     # Methods
     def radius(self):
@@ -284,17 +333,6 @@ class Interval:
         raise AffApyError("the interval does not match with cosinus")
         return None
 
-    def abs(self):
-        """
-        Return the absolute value of an interval
-        :rtype: Interval
-        """
-        if self < 0:
-            return Interval(abs(self._sup), abs(self._inf))
-        if 0 in self:
-            return Interval(0, max(abs(self._inf), abs(self._sup)))
-        return self
-
     def toAffine(self):
         """Convert an interval form to an affine form"""
         from affineArithmetic import Affine
@@ -350,12 +388,16 @@ if __name__ == "__main__":
     # print(Interval(0, 1).log())
     print(Interval(-10, 10).toAffine())
     print(x.__repr__())
-    print(Interval(-5, -2).abs())
-    print(Interval(-2, 1).abs())
-    print(Interval(1, 2).abs())
+    print(abs(Interval(-5, -2)))
+    print(abs(Interval(-2, 1)))
+    print(abs(Interval(1, 2)))
     print(Interval(-pi/2, pi/2).sin())
     print(Interval(pi/4, pi).sin())
     print(Interval(-pi, pi/4).cos())
     print(Interval(0, 3*pi/2).cos())
     print(Interval(3, 5)**3)
     print(Interval(-2, 3)**2)
+    print(round(Interval(-pi, pi), 2))
+    print(trunc(Interval(-pi, pi)))
+    print(floor(Interval(-pi, pi)))
+    print(ceil(Interval(-pi, pi)))
