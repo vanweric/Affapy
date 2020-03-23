@@ -77,17 +77,22 @@ class Interval:
         raise AffApyError("type error")
         return None
 
-    def __mul__(self, other):  #TODO:  Multiplier par un réel
+    def __mul__(self, other):
         """
         Operator *
-        :type other: Interval
+        :type other: Interval or int or float
         :rtype: Interval
         """
-        a, b = self._inf, self._sup
-        c, d = other._inf, other._sup
-        inf = min([a * c, a * d, b * c, b * d])
-        sup = max([a * c, a * d, b * c, b * d])
-        return Interval(inf, sup)
+        if isinstance(other, self.__class__):
+            a, b = self._inf, self._sup
+            c, d = other._inf, other._sup
+            inf = min([a * c, a * d, b * c, b * d])
+            sup = max([a * c, a * d, b * c, b * d])
+            return Interval(inf, sup)
+        if isinstance(other, int) or isinstance(other, float):
+            return Interval(other*self._inf, other*self._sup)
+        raise AffApyError("type error")
+        return None
 
     def __truediv__(self, other):  # TRAITER LES CAS INFINIS ?
         """
@@ -101,7 +106,7 @@ class Interval:
         raise AffApyError("division by 0")
         return None
 
-    def __pow__(self, n):  #TODO: le cas n<0 et n>2
+    def __pow__(self, n):  # TODO: le cas n<0 et n>2
         """
         Operator **
         :type self: Interval
@@ -325,7 +330,7 @@ class Interval:
                 return Interval(sin(sup), sin(inf))
             if 3*pi/2 < sup <= 2*pi + pi/2:
                 return Interval(-1, max(sin(inf), sin(sup)))
-            if sup >= 2*pi+pi/2:    #Ajouter 2*pi
+            if sup >= 2*pi + pi/2:
                 return Interval(-1, 1)
         raise AffApyError("the interval does not match with sinus")
         return None
