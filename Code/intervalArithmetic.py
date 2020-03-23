@@ -77,7 +77,7 @@ class Interval:
         raise AffApyError("type error")
         return None
 
-    def __mul__(self, other):
+    def __mul__(self, other):  #TODO:  Multiplier par un réel
         """
         Operator *
         :type other: Interval
@@ -101,7 +101,7 @@ class Interval:
         raise AffApyError("division by 0")
         return None
 
-    def __pow__(self, n):
+    def __pow__(self, n):  #TODO: le cas n<0 et n>2
         """
         Operator **
         :type self: Interval
@@ -158,7 +158,7 @@ class Interval:
         """
         return self._inf != other._inf or self._sup != other._sup
 
-    def __ge__(self, n):
+    def __ge__(self, n):  #TODO: opérateurs logiques entre deux intervals
         """
         Operator >=
         :type n: int or float
