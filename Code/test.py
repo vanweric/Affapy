@@ -2,7 +2,7 @@
 from intervalArithmetic import Interval
 from affineArithmetic import Affine
 import unittest
-import numpy as np
+from math import sqrt, log, exp, pi, sin, cos, floor, ceil, trunc
 
 
 class MyTest(unittest.TestCase):
@@ -132,31 +132,41 @@ class MyTest(unittest.TestCase):
     def test_log_interval(self):
         """Test le fonctionnement de la fonction 'log' de Interval"""
         x = Interval(3, 4)
-        self.assertTrue((x.log() == Interval(np.log(3), np.log(4))))
+        self.assertTrue((x.log() == Interval(log(3), log(4))))
 
     def test_exp_interval(self):
         """Test le fonctionnement de la fonction 'exp' de Interval"""
         x = Interval(-3, -1)
         y = Interval(-3, 1)
         z = Interval(1, 5)
-        b1 = (x.exp() == Interval(np.exp(-3), np.exp(-1)))
-        b2 = (y.exp() == Interval(np.exp(-3), np.exp(1)))
-        b3 = (z.exp() == Interval(np.exp(1), np.exp(5)))
+        b1 = (x.exp() == Interval(exp(-3), exp(-1)))
+        b2 = (y.exp() == Interval(exp(-3), exp(1)))
+        b3 = (z.exp() == Interval(exp(1), exp(5)))
         self.assertTrue(b1 and b2 and b3)
 
     def test_sqrt_interval(self):
         """Test le fonctionnement de la fonction 'sqrt' de Interval"""
         x = Interval(0, 3)
         y = Interval(1, 10)
-        b1 = (x.sqrt() == Interval(0, np.sqrt(3)))
-        b2 = (y.sqrt() == Interval(np.sqrt(1), np.sqrt(10)))
+        b1 = (x.sqrt() == Interval(0, sqrt(3)))
+        b2 = (y.sqrt() == Interval(sqrt(1), sqrt(10)))
         self.assertTrue((b1 and b2))
 
-
-
-
-
-
+    def test_sin_interval(self):
+        """test le fonctionnement de la fonction 'sin' de Interval"""
+        x = Interval(0, pi/2)
+        y = Interval(pi/3, pi)
+        z = Interval(pi/4, 2*pi)
+        x1 = Interval(pi, pi)
+        y1 = Interval(4*pi/3, 2*pi + pi/3)
+        z1 = Interval(3*pi/2, 2*pi + pi/2)
+        b1 = (x.sin() == Interval(0, 1))
+        b2 = (y.sin() == Interval(sin(pi), 1))
+        b3 = (z.sin() == Interval(-1, 1))
+        b4 = (x1.sin() == Interval(sin(pi), sin(pi)))
+        b5 = (y1.sin() == Interval(-1, sin(2*pi + pi/3)))
+        b6 = (z1.sin() == Interval(-1, 1))
+        self.assertTrue(b1 and b2 and b3 and b4 and b5 and b6)
 
     #def test_add(self):
      #   """Test le fonctionnement de la fonction 'add'."""

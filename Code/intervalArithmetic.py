@@ -316,6 +316,7 @@ class Interval:
             if sup <= pi/2:
                 return Interval(sin(inf), sin(sup))
             if pi/2 < sup <= 3*pi/2:
+                print(inf, sin(inf), sup, sin(sup))
                 return Interval(min(sin(inf), sin(sup)), 1)
             if sup > 3*pi/2:
                 return Interval(-1, 1)
@@ -324,7 +325,7 @@ class Interval:
                 return Interval(sin(sup), sin(inf))
             if 3*pi/2 < sup <= 2*pi + pi/2:
                 return Interval(-1, max(sin(inf), sin(sup)))
-            if sup >= pi/2:
+            if sup >= 2*pi+pi/2:    #Ajouter 2*pi
                 return Interval(-1, 1)
         raise AffApyError("the interval does not match with sinus")
         return None
@@ -421,3 +422,5 @@ if __name__ == "__main__":
     print(trunc(Interval(-pi, pi)))
     print(floor(Interval(-pi, pi)))
     print(ceil(Interval(-pi, pi)))
+    y = Interval(pi/3, pi)
+    print(y.sin())
