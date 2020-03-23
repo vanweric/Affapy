@@ -93,22 +93,26 @@ class MyTest(unittest.TestCase):
     def test_ge_interval(self):
         """Test le fonctionnement de la fonction 'ge' de Interval"""
         x = Interval(-3, -1)
-        self.assertTrue(not(x >= 0) and x >= -3 and not(x >= -2))
+        y = Interval(3, 4)
+        self.assertTrue(not(x >= 0.1) and x >= -3 and not(x >= -2) and y >= x)
 
     def test_gt_interval(self):
         """Test le fonctionnement de la fonction 'gt' de Interval"""
         x = Interval(-3, 1)
-        self.assertTrue(not(x > 0) and not(x > -3) and not (x > -2))
+        y = Interval(1, 4)
+        self.assertTrue(not(x > 0.2) and not(x > -3) and not (x > -2) and not(y > x))
 
     def test_le_interval(self):
         """Test le fonctionnement de la fonction 'le' de Interval"""
         x = Interval(-3, 1)
-        self.assertTrue(x <= 1 and x <= 2 and not(x <= 0) and not(x <= -4))
+        y = Interval(3, 4)
+        self.assertTrue(x <= 1 and x <= 2.3 and not(x <= 0) and not(x <= -4) and x <= y)
 
     def test_lt_interval(self):
         """Test le fonctionnement de la fonction 'lt' de Interval"""
         x = Interval(-3, 1)
-        self.assertTrue(not(x < 1) and x < 2 and not(x < 0) and not(x < -4))
+        y = Interval(1, 4)
+        self.assertTrue(not(x < 1) and x < 2 and not(x < 0) and not(x < -4) and not (x < y))
 
     def test_middle_interval(self):
         """Test le fonctionnement de la fonction 'middle' de Interval"""
