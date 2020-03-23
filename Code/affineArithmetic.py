@@ -145,8 +145,8 @@ class Affine:
         Make the string format
         :rtype: string
         """
-        return " + ".join(["".join([str(self.xi[i]),
-                           "*eps", str(i)]) for i in self.xi])
+        return " + ".join([str(self.xi[0])] + ["".join([str(self.xi[i]),
+                          "*eps", str(i)]) for i in self.keyXi])
 
     def __repr__(self):
         """
