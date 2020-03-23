@@ -61,16 +61,18 @@ class Affine:
         :rtype: Affine
         """
         if isinstance(other, self.__class__):
-            xi = {0: self.xi[0] + other.xi[0]}
+            xi = {0: self.xi[0] - other.xi[0]}
             for i in self.keyXi:
                 if i in other.keyXi:
-                    xi[Affine.count] = other.xi[i] - self.xi[i]
-                    Affine.count += 1
+                    val = other.xi[i] - self.xi[i]
+                    if val != 0:
+                        xi[Affine.count] = val
+                        Affine.count += 1
                 else:
                     xi[i] = self.xi[i]
             for i in other.keyXi:
                 if i not in self.keyXi:
-                    xi[i] = other.xi[i]
+                    xi[i] = -other.xi[i]
             return Affine(xi)
         if isinstance(other, int) or isinstance(other, float):
             xi = dict(self.xi)
@@ -220,3 +222,6 @@ if __name__ == "__main__":
     print(z.__repr__())
     print(x - 1)
     print(x + 1)
+    print(x - x)
+    print(y - y)
+    print(x - y)
