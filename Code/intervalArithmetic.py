@@ -20,12 +20,12 @@ class Interval:
 
     @property
     def inf(self):
-        """Returns the inf"""
+        """Return the inf"""
         return self._inf
 
     @property
     def sup(self):
-        """Returns the sup"""
+        """Return the sup"""
         return self._sup
 
     # Inclusion
@@ -158,37 +158,57 @@ class Interval:
         """
         return self._inf != other._inf or self._sup != other._sup
 
-    def __ge__(self, n):  #TODO: opérateurs logiques entre deux intervals
+    def __ge__(self, other):
         """
         Operator >=
-        :type n: int or float
+        :type other: Interval or int or float
         :rtype: bool
         """
-        return self._inf >= n
+        if isinstance(other, self.__class__):
+            return self._inf >= other._sup
+        if isinstance(other, int) or isinstance(other, float):
+            return self._inf >= other
+        raise AffApyError("type error")
+        return None
 
-    def __gt__(self, n):
+    def __gt__(self, other):
         """
         Operator >
-        :type n: int or float
+        :type other: Interval or int or float
         :rtype: bool
         """
-        return self._inf > n
+        if isinstance(other, self.__class__):
+            return self._inf > other._sup
+        if isinstance(other, int) or isinstance(other, float):
+            return self._inf > other
+        raise AffApyError("type error")
+        return None
 
-    def __le__(self, n):
+    def __le__(self, other):
         """
         Operator <=
-        :type n: int or float
+        :type other: Interval or int or float
         :rtype: bool
         """
-        return self._sup <= n
+        if isinstance(other, self.__class__):
+            return self._sup <= other._inf
+        if isinstance(other, int) or isinstance(other, float):
+            return self._sup <= other
+        raise AffApyError("type error")
+        return None
 
-    def __lt__(self, n):
+    def __lt__(self, other):
         """
         Operator <
-        :type n: int or float
+        :type other: Interval or int or float
         :rtype: bool
         """
-        return self._sup < n
+        if isinstance(other, self.__class__):
+            return self._sup < other._inf
+        if isinstance(other, int) or isinstance(other, float):
+            return self._sup < other
+        raise AffApyError("type error")
+        return None
 
     # Formats
     def __str__(self):
@@ -386,7 +406,7 @@ if __name__ == "__main__":
     print(x2 * (y2 + z2) in x2 * y2 + x2 * z2)
     # print(Interval(-2, 0).sqrt())
     # print(Interval(0, 1).log())
-    print(Interval(-10, 10).toAffine())
+    # print(Interval(-10, 10).toAffine())
     print(x.__repr__())
     print(abs(Interval(-5, -2)))
     print(abs(Interval(-2, 1)))
