@@ -158,7 +158,7 @@ class Interval:
         """
         return self._inf != other._inf or self._sup != other._sup
 
-    def __ge__(self, n):
+    def __ge__(self, n):  #TODO: opérateurs logiques entre deux intervals
         """
         Operator >=
         :type n: int or float

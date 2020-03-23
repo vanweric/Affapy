@@ -79,6 +79,46 @@ class MyTest(unittest.TestCase):
         self.assertTrue(b1 and b2 and b3)
 
     def test_eq_interval(self):
+        """Test le fonctionnement de la fonction 'eq' de Interval"""
+        x = Interval(-3, -1)
+        y = Interval(3, 4)
+        self.assertTrue(x == Interval(-3, -1) and not(x == y))
+
+    def test_neq_interval(self):
+        """Test le fonctionnement de la fonction 'neq' de Interval"""
+        x = Interval(-3, -1)
+        y = Interval(3, 4)
+        self.assertTrue(not(x != Interval(-3, -1)) and x != y and not(x != x))
+
+    def test_ge_interval(self):
+        """Test le fonctionnement de la fonction 'ge' de Interval"""
+        x = Interval(-3, -1)
+        self.assertTrue(not(x >= 0) and x >= -3 and not(x >= -2))
+
+    def test_gt_interval(self):
+        """Test le fonctionnement de la fonction 'gt' de Interval"""
+        x = Interval(-3, 1)
+        self.assertTrue(not(x > 0) and not(x > -3) and not (x > -2))
+
+    def test_le_interval(self):
+        """Test le fonctionnement de la fonction 'le' de Interval"""
+        x = Interval(-3, 1)
+        self.assertTrue(x <= 1 and x <= 2 and not(x <= 0) and not(x <= -4))
+
+    def test_lt_interval(self):
+        """Test le fonctionnement de la fonction 'lt' de Interval"""
+        x = Interval(-3, 1)
+        self.assertTrue(not(x < 1) and x < 2 and not(x < 0) and not(x < -4))
+
+    def test_middle_interval(self):
+        """Test le fonctionnement de la fonction 'middle' de Interval"""
+        x = Interval(-3, 1)
+        y = Interval(3, 4)
+        b1 = (x.middle() == -1)
+        b2 = (y.middle() == 3.5)
+        self.assertTrue(b1 and b2)
+
+
 
     #def test_add(self):
      #   """Test le fonctionnement de la fonction 'add'."""
