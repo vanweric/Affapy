@@ -6,10 +6,11 @@ from affapyError import AffApyError
 class Affine:
     """Representation of an affine form"""
     count = 3
+
     def __init__(self, xi):
-        self.xi = xi # dictionnaire
+        self.xi = xi    # dictionnaire
         self.keyXi = list(xi.keys())
-        self.keyXi.pop(0) # on enleve x0 de la liste des clés, il aura toujours l'id 0
+        self.keyXi.pop(0)   # on enleve x0 de la liste des clés, il aura toujours l'id 0
         self.xsi = sum(abs(i) for i in list(xi.values())[1:])
         self.interval = Interval(xi[0] + self.xsi, xi[0] - self.xsi)
 
@@ -17,20 +18,20 @@ class Affine:
     def __add__(self, other):
         """
         Operator +
-        :type other: Interval or int or float
-        :rtype: Interval
+        :type other: Affine or int or float
+        :rtype: Affine
         """
         if isinstance(other, self.__class__):
             xi = {0: self.xi[0] + other.xi[0]}
             for i in self.keyXi:
                 if i in other.keyXi:
-                    xi[Affine.count] = (other.xi[i] + self.xi[i])
+                    xi[Affine.count] = other.xi[i] + self.xi[i]
                     Affine.count += 1
                 else:
-                    xi[i] = (self.xi[i])
+                    xi[i] = self.xi[i]
             for i in other.keyXi:
                 if i not in self.keyXi:
-                    xi[i] = (other.xi[i])
+                    xi[i] = other.xi[i]
             return Affine(xi)
         if isinstance(other, int) or isinstance(other, float):
             xi = [self.xi[0] + other]
@@ -42,8 +43,8 @@ class Affine:
     def __sub__(self, other):
         """
         Operator -
-        :type other: Interval or int or float
-        :rtype: Interval
+        :type other: Affine or int or float
+        :rtype: Affine
         """
         if isinstance(other, self.__class__):
             xi = [self.xi[0] - other.xi[0]]
@@ -59,8 +60,8 @@ class Affine:
     def __mul__(self, other):
         """
         Operator *
-        :type other: Interval
-        :rtype: Interval
+        :type other: Affine
+        :rtype: Affine
         """
         if isinstance(other, self.__class__):
             xi = []
@@ -78,8 +79,8 @@ class Affine:
     def __truediv__(self, other):
         """
         Operator /
-        :type other: Interval
-        :rtype: Interval
+        :type other: Affine
+        :rtype: Affine
         """
         pass
 
@@ -87,7 +88,7 @@ class Affine:
         """
         Operator **
         :type other: int or float
-        :rtype: Interval
+        :rtype: Affine
         """
         pass
 
@@ -95,9 +96,26 @@ class Affine:
     def __neg__(self):
         """
         Operator - (unary)
-        :rtype: Interval
+        :rtype: Affine
         """
         pass
+
+    # Comparison operators
+    def __eq__(self, other):
+        """
+        Operator ==
+        :type other: Affine
+        :rtype: bool
+        """
+        return self.xi == other.xi
+
+    def __ne__(self, other):
+        """
+        Operator !=
+        :type other: Affine
+        :rtype: bool
+        """
+        return self.xi != other.xi
 
     # Formats
     def __str__(self):
@@ -186,7 +204,7 @@ class Affine:
 
 
 if __name__ == "__main__":
-    dict = {0:0, 10:5, 7:3}
+    dict = {0: 0, 10: 5, 7: 3}
     listKey = dict.keys()
     list(listKey).pop(0)
     print(list(listKey).pop(0))

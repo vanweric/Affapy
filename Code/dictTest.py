@@ -6,10 +6,10 @@ class MyTest(unittest.TestCase):
 
     def test_add(self):
         """Test le fonctionnement de la fonction 'add'."""
-        x = Affine({0: 0, 1:10})
-        y = Affine({0:5, 1:10, 2:5})
+        x = Affine({0: 0, 1: 10})
+        y = Affine({0: 5, 1: 10, 2: 5})
         z = x + y
-        ze = Affine({0:5, 3:20, 2:5})
+        ze = Affine({0: 5, 3: 20, 2: 5})
         self.assertEqual(z, ze)
 
 """
