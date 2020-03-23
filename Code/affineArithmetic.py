@@ -8,10 +8,25 @@ class Affine:
     count = 3
 
     def __init__(self, xi):
-        self.xi = xi    # dictionnaire
-        self.keyXi = list(xi.keys())[1:]
+        self._xi = xi    # dictionnaire
+        self._keyXi = list(xi.keys())[1:]
         # on enlève x0 de la liste des clés, il aura toujours l'id 0
-        self.xsi = sum(abs(i) for i in list(xi.values())[1:])
+        self._xsi = sum(abs(i) for i in list(xi.values())[1:])
+
+    @property
+    def xi(self):
+        """Return xi"""
+        return self._xi
+
+    @property
+    def keyXi(self):
+        """Return keyXi """
+        return self._keyXi
+
+    @property
+    def xsi(self):
+        """Returns xsi"""
+        return self._xsi
 
     # Binary operators
     def __add__(self, other):
@@ -130,9 +145,8 @@ class Affine:
         Make the string format
         :rtype: string
         """
-        return " + ".join([str(self.xi[0])] +
-                          ["".join([str(self.xi[i]), "*eps", str(i)])
-                           for i in range(1, len(self.xi))])
+        return " + ".join(["".join([str(self.xi[i]),
+                           "*eps", str(i)]) for i in self.xi])
 
     def __repr__(self):
         """
@@ -142,20 +156,6 @@ class Affine:
         return "Affine({})".format(self.xi)
 
     # Methods
-    def radius(self):
-        """
-        Return the radius of the interval
-        :rtype: int or float
-        """
-        return self.interval.radius()
-
-    def middle(self):
-        """
-        Return the middle of the interval
-        :rtype: float
-        """
-        return self.interval.middle()
-
     def abs(self):
         """
         Return the absolute value of an affine form
@@ -207,34 +207,16 @@ class Affine:
 
     def toInterval(self):
         """Convert an affine form to an interval form"""
-        return Interval(xi[0] + self.xsi, xi[0] - self.xsi)
+        return Interval(self.xi[0] + self.xsi, self.xi[0] - self.xsi)
 
 
 if __name__ == "__main__":
-    dict = {0: 0, 10: 5, 7: 3}
-    listKey = dict.keys()
-    list(listKey).pop(0)
-    print(list(listKey).pop(0))
-    print(list(dict.values())[1:])
-
-    """
-    x = Affine([0, 10])
-    y = Affine([5, 5])
+    x = Affine({0: 0, 1: 10})
     print(x)
+    y = Affine({0: 5, 1: 10, 2: 5})
     print(y)
-    print(x.interval)
-    print(y.interval)
     z = x + y
     print(z)
-    print(z.interval)
-    x1 = Affine([3 / 2, 1 / 2])
-    x2 = Affine([7 / 2, 1 / 2])
-    x3 = x1 * x2
-    print(x3)
-    print(x3.interval)
-    x4 = x1 * x1 + x2 * x2 - x1 * x2
-    print(x4)
-    print(x4.interval)
-    print(Affine([0, 10]).toInterval())
-    print(x.__repr__())
-    """
+    print(z.__repr__())
+    print(x - 1)
+    print(x + 1)
