@@ -5,10 +5,12 @@ from affapyError import AffApyError
 
 class Affine:
     """Representation of an affine form"""
-
+    count = 3
     def __init__(self, xi):
-        self.xi = xi  # liste
-        self.xsi = sum([abs(i) for i in xi[1:]])
+        self.xi = xi # dictionnaire
+        self.keyXi = list(xi.keys())
+        self.keyXi.pop(0) # on enleve x0 de la liste des clés, il aura toujours l'id 0
+        self.xsi = sum(abs(i) for i in list(xi.values())[1:])
         self.interval = Interval(xi[0] + self.xsi, xi[0] - self.xsi)
 
     # Binary operators
@@ -19,8 +21,16 @@ class Affine:
         :rtype: Interval
         """
         if isinstance(other, self.__class__):
-            xi = [self.xi[0] + other.xi[0]]
-            xi += self.xi[1:] + other.xi[1:]
+            xi = {0: self.xi[0] + other.xi[0]}
+            for i in self.keyXi:
+                if i in other.keyXi:
+                    xi[Affine.count] = (other.xi[i] + self.xi[i])
+                    Affine.count += 1
+                else:
+                    xi[i] = (self.xi[i])
+            for i in other.keyXi:
+                if i not in self.keyXi:
+                    xi[i] = (other.xi[i])
             return Affine(xi)
         if isinstance(other, int) or isinstance(other, float):
             xi = [self.xi[0] + other]
@@ -176,6 +186,13 @@ class Affine:
 
 
 if __name__ == "__main__":
+    dict = {0:0, 10:5, 7:3}
+    listKey = dict.keys()
+    list(listKey).pop(0)
+    print(list(listKey).pop(0))
+    print(list(dict.values())[1:])
+
+    """
     x = Affine([0, 10])
     y = Affine([5, 5])
     print(x)
@@ -195,3 +212,4 @@ if __name__ == "__main__":
     print(x4.interval)
     print(Affine([0, 10]).toInterval())
     print(x.__repr__())
+    """
