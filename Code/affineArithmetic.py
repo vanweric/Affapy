@@ -9,10 +9,9 @@ class Affine:
 
     def __init__(self, xi):
         self.xi = xi    # dictionnaire
-        self.keyXi = list(xi.keys())
-        self.keyXi.pop(0)   # on enleve x0 de la liste des clés, il aura toujours l'id 0
+        self.keyXi = list(xi.keys())[1:]
+        # on enlève x0 de la liste des clés, il aura toujours l'id 0
         self.xsi = sum(abs(i) for i in list(xi.values())[1:])
-        self.interval = Interval(xi[0] + self.xsi, xi[0] - self.xsi)
 
     # Binary operators
     def __add__(self, other):
@@ -34,8 +33,8 @@ class Affine:
                     xi[i] = other.xi[i]
             return Affine(xi)
         if isinstance(other, int) or isinstance(other, float):
-            xi = [self.xi[0] + other]
-            xi += self.xi[1:]
+            xi = dict(self.xi)
+            xi[0] += other
             return Affine(xi)
         raise AffApyError("type error")
         return None
@@ -47,12 +46,20 @@ class Affine:
         :rtype: Affine
         """
         if isinstance(other, self.__class__):
-            xi = [self.xi[0] - other.xi[0]]
-            xi += self.xi[1:] + [-i for i in other.xi[1:]]
+            xi = {0: self.xi[0] + other.xi[0]}
+            for i in self.keyXi:
+                if i in other.keyXi:
+                    xi[Affine.count] = other.xi[i] - self.xi[i]
+                    Affine.count += 1
+                else:
+                    xi[i] = self.xi[i]
+            for i in other.keyXi:
+                if i not in self.keyXi:
+                    xi[i] = other.xi[i]
             return Affine(xi)
         if isinstance(other, int) or isinstance(other, float):
-            xi = [other - self.xi[0]]
-            xi += self.xi[1:]
+            xi = dict(self.xi)
+            xi[0] -= other
             return Affine(xi)
         raise AffApyError("type error")
         return None
@@ -63,17 +70,17 @@ class Affine:
         :type other: Affine
         :rtype: Affine
         """
-        if isinstance(other, self.__class__):
-            xi = []
-            for x in self.xi:
-                for y in other.xi:
-                    xi.append(x * y)
-            return Affine(xi)
-        if isinstance(other, int) or isinstance(other, float):
-            xi = [other * self.xi[0]]
-            xi += [other * i for i in self.xi[1:]]
-            return Affine(xi)
-        raise AffApyError("type error")
+        # if isinstance(other, self.__class__):
+        #     xi = []
+        #     for x in self.xi:
+        #         for y in other.xi:
+        #             xi.append(x * y)
+        #     return Affine(xi)
+        # if isinstance(other, int) or isinstance(other, float):
+        #     xi = [other * self.xi[0]]
+        #     xi += [other * i for i in self.xi[1:]]
+        #     return Affine(xi)
+        # raise AffApyError("type error")
         return None
 
     def __truediv__(self, other):
@@ -200,7 +207,7 @@ class Affine:
 
     def toInterval(self):
         """Convert an affine form to an interval form"""
-        return self.interval
+        return Interval(xi[0] + self.xsi, xi[0] - self.xsi)
 
 
 if __name__ == "__main__":
