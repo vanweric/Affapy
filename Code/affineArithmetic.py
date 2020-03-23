@@ -39,8 +39,10 @@ class Affine:
             xi = {0: self.xi[0] + other.xi[0]}
             for i in self.keyXi:
                 if i in other.keyXi:
-                    xi[Affine.count] = other.xi[i] + self.xi[i]
-                    Affine.count += 1
+                    val = other.xi[i] + self.xi[i]
+                    if val != 0:
+                        xi[Affine.count] = val
+                        Affine.count += 1
                 else:
                     xi[i] = self.xi[i]
             for i in other.keyXi:
@@ -87,17 +89,20 @@ class Affine:
         :type other: Affine
         :rtype: Affine
         """
-        # if isinstance(other, self.__class__):
-        #     xi = []
-        #     for x in self.xi:
-        #         for y in other.xi:
-        #             xi.append(x * y)
-        #     return Affine(xi)
-        # if isinstance(other, int) or isinstance(other, float):
-        #     xi = [other * self.xi[0]]
-        #     xi += [other * i for i in self.xi[1:]]
-        #     return Affine(xi)
-        # raise AffApyError("type error")
+        if isinstance(other, self.__class__):
+            xi = {0: self.xi[0] * other.xi[0]}
+            for x in self.keyXi:
+                for y in other.keyXi:
+                    if self.xi[x] * other.xi[y] != 0:
+                        xi[Affine.count] = self.xi[x] * other.xi[y]
+                        Affine.count += 1
+            return Affine(xi)
+        if isinstance(other, int) or isinstance(other, float):
+            xi = dict(self.xi)
+            for i in xi:
+                xi[i] *= other
+            return Affine(xi)
+        raise AffApyError("type error")
         return None
 
     def __truediv__(self, other):
@@ -225,3 +230,5 @@ if __name__ == "__main__":
     print(x - x)
     print(y - y)
     print(x - y)
+    print(y*2)
+    print(x*y)
