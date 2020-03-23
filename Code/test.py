@@ -2,6 +2,7 @@
 from intervalArithmetic import Interval
 from affineArithmetic import Affine
 import unittest
+import numpy as np
 
 
 class MyTest(unittest.TestCase):
@@ -114,6 +115,12 @@ class MyTest(unittest.TestCase):
         y = Interval(1, 4)
         self.assertTrue(not(x < 1) and x < 2 and not(x < 0) and not(x < -4) and not (x < y))
 
+    def test_radius_interval(self):
+        """Test le fonctionnement de la fonction 'radius' de Interval"""
+        x = Interval(-3, 1)
+        y = Interval(3.5, 6.7)
+        self.assertTrue(x.radius() == 4, y.radius() == 3.2)
+
     def test_middle_interval(self):
         """Test le fonctionnement de la fonction 'middle' de Interval"""
         x = Interval(-3, 1)
@@ -121,6 +128,33 @@ class MyTest(unittest.TestCase):
         b1 = (x.middle() == -1)
         b2 = (y.middle() == 3.5)
         self.assertTrue(b1 and b2)
+
+    def test_log_interval(self):
+        """Test le fonctionnement de la fonction 'log' de Interval"""
+        x = Interval(3, 4)
+        self.assertTrue((x.log() == Interval(np.log(3), np.log(4))))
+
+    def test_exp_interval(self):
+        """Test le fonctionnement de la fonction 'exp' de Interval"""
+        x = Interval(-3, -1)
+        y = Interval(-3, 1)
+        z = Interval(1, 5)
+        b1 = (x.exp() == Interval(np.exp(-3), np.exp(-1)))
+        b2 = (y.exp() == Interval(np.exp(-3), np.exp(1)))
+        b3 = (z.exp() == Interval(np.exp(1), np.exp(5)))
+        self.assertTrue(b1 and b2 and b3)
+
+    def test_sqrt_interval(self):
+        """Test le fonctionnement de la fonction 'sqrt' de Interval"""
+        x = Interval(0, 3)
+        y = Interval(1, 10)
+        b1 = (x.sqrt() == Interval(0, np.sqrt(3)))
+        b2 = (y.sqrt() == Interval(np.sqrt(1), np.sqrt(10)))
+        self.assertTrue((b1 and b2))
+
+
+
+
 
 
 
