@@ -219,7 +219,8 @@ class Affine:
 
 if __name__ == "__main__":
     x = Affine({0: 0, 1: 10})
-    print(x)
+    print("x= :", x)
+    print("x+x= :", x + x)
     y = Affine({0: 5, 1: 10, 2: 5})
     print(y)
     z = x + y
@@ -232,3 +233,5 @@ if __name__ == "__main__":
     print(x - y)
     print(y*2)
     print(x*y)
+    x = Affine({0: 0, 1: 10})
+    print("x+x-x-x= :", x+x-x-x)

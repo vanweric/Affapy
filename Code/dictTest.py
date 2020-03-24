@@ -9,9 +9,9 @@ class MyTest(unittest.TestCase):
         """Test le fonctionnement de la fonction 'add'."""
         x = Affine({0: 0, 1: 10})
         y = Affine({0: 5, 1: 10, 2: 5})
-        z = x + y
-        ze = Affine({0: 5, 3: 20, 2: 5})
-        self.assertEqual(z, ze)
+        b1 = x + y == Affine({0: 5, 3: 20, 2: 5})
+        b2 = x + x == Affine({0: 0, 4: 20})
+        self.assertTrue(b1 and b2)
 
     def test_sub(self):
         """Test le fonctionnement de la fonction 'sub'."""
