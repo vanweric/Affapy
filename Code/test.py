@@ -199,6 +199,30 @@ class MyTest(unittest.TestCase):
         b5 = x2 * (y2 + z2) in x2 * y2 + x2 * z2
         self.assertTrue((b1 and not(b2) and b3 and not(b4) and b5))
 
+    def test_round_interval(self):
+        """Test le fonctionnement de la fonction 'round' de Interval"""
+        b1 = (round(Interval(-pi, pi), 2) == Interval(-3.14, 3.14))
+        b2 = (round(Interval(-pi, pi), 7) == Interval(-3.1415927, 3.1415927))
+        b3 = (round(Interval(-pi, pi), 0) == Interval(-3, 3))
+        self.assertTrue(b1 and b2 and b3)
+
+    def test_trunc_interval(self):
+        """Test le fonctionnement de la fonction 'trunc' de Interval"""
+        b1 = (trunc(Interval(-pi, pi)) == Interval(-3, 3))
+        b2 = (trunc(Interval(-1/3, 1/6)) == Interval(0, 0))
+        self.assertTrue(b1 and b2)
+
+    def test_floor_interval(self):
+        """Test le fonctionnement de la fonction 'floor' de Interval"""
+        b1 = (floor(Interval(-pi, pi)) == Interval(-4, 3))
+        b2 = (floor(Interval(1/6, 1/3)) == Interval(0, 0))
+        self.assertTrue(b1 and b2)
+
+    def test_ceil_interval(self):
+        """Test le fonctionnement de la fonction 'ceil' de Interval"""
+        b1 = (ceil(Interval(-pi, pi)) == Interval(-3, 4))
+        b2 = (ceil(Interval(1/6, 4/3)) == Interval(1, 2))
+        self.assertTrue(b1 and b2)
 
 
 
