@@ -168,25 +168,38 @@ class MyTest(unittest.TestCase):
         b6 = (z1.sin() == Interval(-1, 1))
         self.assertTrue(b1 and b2 and b3 and b4 and b5 and b6)
 
-    #def test_add(self):
-     #   """Test le fonctionnement de la fonction 'add'."""
-      #  x = Affine([0, 10])
-       # y = Affine([5, 5])
-        #z = x + y
-        #ze = Affine([5, 10, 5])
-        #self.assertEqual(z, ze)
+    def test_cos_interval(self):
+        """Test le fonctionnement de la fonction 'cos' de Interval"""
+        x = Interval(pi / 2, pi)
+        y = Interval(pi / 3, 3 * pi / 2)
+        z = Interval(pi / 4, 3 * pi)
+        x1 = Interval(3 * pi / 2, 2 * pi)
+        y1 = Interval(4 * pi / 3, 2 * pi + pi / 3)
+        z1 = Interval(3 * pi / 2, 4 * pi)
+        b1 = (x.cos() == Interval(-1, cos(pi/2)))
+        b2 = (y.cos() == Interval(-1, cos(pi / 3)))
+        b3 = (z.cos() == Interval(-1, 1))
+        b4 = (x1.cos() == Interval(cos(3 * pi / 2), cos(2 * pi)))
+        b5 = (y1.cos() == Interval(cos(4 * pi / 3), 1))
+        b6 = (z1.cos() == Interval(-1, 1))
+        self.assertTrue(b1 and b2 and b3 and b4 and b5 and b6)
 
-    #def test_sub(self):
-     #   """Test le fonctionnement de la fonction 'sub'."""
-      #  x = Affine([0, 10])
-       # y = Affine([5, 5])
-        #z = x - x
-        #z1 = Affine([0, 0])
-        #z2 = x - y
-        #z3 = Affine([-5, 10, -5])
-        #rep1 = z == z1  # rectifier le cas x-x=0
-        #rep2 = z2 == z3
-        #self.assertTrue(rep1 and rep2)
+    def test_contains_interval(self):
+        """Test le fonctionnement de la fonction 'sin' de Interval"""
+        x = Interval(1, 2)
+        y = Interval(3, 4)
+        z = Interval(-1, 1)
+        x2 = Interval(-2, 3)
+        y2 = Interval(1, 4)
+        z2 = Interval(-2, 1)
+        b1 = x in Interval(0, 4)
+        b2 = x in Interval(2, 4)
+        b3 = 0 in z
+        b4 = 0 in y
+        b5 = x2 * (y2 + z2) in x2 * y2 + x2 * z2
+        self.assertTrue((b1 and not(b2) and b3 and not(b4) and b5))
+
+
 
 
 if __name__ == "__main__":

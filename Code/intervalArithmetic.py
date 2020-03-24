@@ -427,5 +427,3 @@ if __name__ == "__main__":
     print(trunc(Interval(-pi, pi)))
     print(floor(Interval(-pi, pi)))
     print(ceil(Interval(-pi, pi)))
-    y = Interval(pi/3, pi)
-    print(y.sin())
