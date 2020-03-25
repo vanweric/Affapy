@@ -1,5 +1,7 @@
 """Defining test cases for Affine class"""
-from AffApy.affineArithmetic import Affine
+import sys
+sys.path.insert(0, '../AffApy')
+from affineArithmetic import Affine
 import unittest
 
 
