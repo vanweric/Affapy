@@ -1,20 +1,21 @@
-from affineArithmetic import Affine
+"""Defining test cases for Affine class"""
+from AffApy.affineArithmetic import Affine
 import unittest
 
 
-class MyTest(unittest.TestCase):
-    """Test case utilisé pour tester les fonctions de la classe Affine"""
+class TestAffine(unittest.TestCase):
+    """Test case used to test functions from class Affine"""
 
-    def test_add(self):
-        """Test le fonctionnement de la fonction 'add'."""
+    def test_add_affine(self):
+        """Test 'add' function from class Affine"""
         x = Affine({0: 0, 1: 10})
         y = Affine({0: 5, 1: 10, 2: 5})
         b1 = x + y == Affine({0: 5, 3: 20, 2: 5})
         b2 = x + x == Affine({0: 0, 4: 20})
         self.assertTrue(b1 and b2)
 
-    def test_sub(self):
-        """Test le fonctionnement de la fonction 'sub'."""
+    def test_sub_affine(self):
+        """Test 'sub' function from class Affine"""
         x = Affine({0: 0, 1: 10})
         y = Affine({0: 5, 1: 10, 2: 5})
         rep1 = x - x == Affine({0: 0})

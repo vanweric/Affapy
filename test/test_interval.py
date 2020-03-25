@@ -1,15 +1,14 @@
-"""définir des test unitaires"""
-from intervalArithmetic import Interval
-from affineArithmetic import Affine
+"""Defining test cases for Interval class"""
+from AffApy.intervalArithmetic import Interval
 import unittest
 from math import sqrt, log, exp, pi, sin, cos, floor, ceil, trunc
 
 
-class MyTest(unittest.TestCase):
-    """Test case utilisé pour tester les fonctions de la classe Affine"""
+class TestInterval(unittest.TestCase):
+    """Test case used to test functions from class Interval"""
 
     def test_add_interval(self):
-        """Test le fonctionnement de la fonction 'add' de Interval"""
+        """Test 'add' function from class Interval"""
         x = Interval(1, 2)
         y = Interval(3, 4)
         z = Interval(-1, 1)
@@ -19,7 +18,7 @@ class MyTest(unittest.TestCase):
         self.assertTrue(b1 and b2 and b3)
 
     def test_sub_interval(self):
-        """Test le fonctionnement de la fonction 'sub' de Interval"""
+        """Test 'sub' function from class Interval"""
         x = Interval(1, 2)
         y = Interval(3, 4)
         z = Interval(-1, 1)
@@ -29,8 +28,8 @@ class MyTest(unittest.TestCase):
         b4 = (x - x == Interval(-1, 1))
         self.assertTrue(b1 and b2 and b3 and b4)
 
-    def test_mul_interval(self): #TODO: test interval * reel, interval * 0
-        """Test le fonctionnement de la fonction 'mul' de Interval"""
+    def test_mul_interval(self):         # TODO: test interval * real, interval * 0
+        """Test 'mul' function from class Interval"""
         x = Interval(1, 2)
         y = Interval(3, 4)
         z = Interval(-1, 1)
@@ -38,8 +37,8 @@ class MyTest(unittest.TestCase):
         b2 = (z * (x + y) == Interval(-6, 6))
         self.assertTrue(b1 and b2)
 
-    def test_truediv_interval(self): #TODO: test interval / interval contient 0
-        """Test le fonctionnement de la fonction 'truediv' de Interval"""
+    def test_truediv_interval(self):         # TODO: test interval / interval contains 0
+        """Test 'truediv' function from class Interval"""
         x = Interval(1, 2)
         y = Interval(3, 4)
         #z = Interval(-1, 1)
@@ -48,7 +47,7 @@ class MyTest(unittest.TestCase):
         self.assertTrue(b1)
 
     def test_pow_interval(self):
-        """Test le fonctionnement de la fonction 'pow' de Interval"""
+        """Test 'pow' function from class Interval"""
         x = Interval(-3, -1)
         y = Interval(3, 4)
         z = Interval(-1, 1)
@@ -60,7 +59,7 @@ class MyTest(unittest.TestCase):
         self.assertTrue(b1 and b2 and b3 and b4)
 
     def test_neg_interval(self):
-        """Test le fonctionnement de la fonction 'nef' de Interval"""
+        """Test 'neg' function from class Interval"""
         x = Interval(-3, -1)
         y = Interval(3, 4)
         z = Interval(-1, 1)
@@ -70,7 +69,7 @@ class MyTest(unittest.TestCase):
         self.assertTrue(b1 and b2 and b3)
 
     def test_abs_interval(self):
-        """Test le fonctionnement de la fonction 'abs' de Interval"""
+        """Test 'abs' function from class Interval"""
         x = Interval(-3, -1)
         y = Interval(3, 4)
         z = Interval(-1, 1)
@@ -80,49 +79,49 @@ class MyTest(unittest.TestCase):
         self.assertTrue(b1 and b2 and b3)
 
     def test_eq_interval(self):
-        """Test le fonctionnement de la fonction 'eq' de Interval"""
+        """Test 'eq' function from class Interval"""
         x = Interval(-3, -1)
         y = Interval(3, 4)
         self.assertTrue(x == Interval(-3, -1) and not(x == y))
 
     def test_neq_interval(self):
-        """Test le fonctionnement de la fonction 'neq' de Interval"""
+        """Test 'neq' function from class Interval"""
         x = Interval(-3, -1)
         y = Interval(3, 4)
         self.assertTrue(not(x != Interval(-3, -1)) and x != y and not(x != x))
 
     def test_ge_interval(self):
-        """Test le fonctionnement de la fonction 'ge' de Interval"""
+        """Test 'ge' function from class Interval"""
         x = Interval(-3, -1)
         y = Interval(3, 4)
         self.assertTrue(not(x >= 0.1) and x >= -3 and not(x >= -2) and y >= x)
 
     def test_gt_interval(self):
-        """Test le fonctionnement de la fonction 'gt' de Interval"""
+        """Test 'gt' function from class Interval"""
         x = Interval(-3, 1)
         y = Interval(1, 4)
         self.assertTrue(not(x > 0.2) and not(x > -3) and not (x > -2) and not(y > x))
 
     def test_le_interval(self):
-        """Test le fonctionnement de la fonction 'le' de Interval"""
+        """Test 'le' function from class Interval"""
         x = Interval(-3, 1)
         y = Interval(3, 4)
         self.assertTrue(x <= 1 and x <= 2.3 and not(x <= 0) and not(x <= -4) and x <= y)
 
     def test_lt_interval(self):
-        """Test le fonctionnement de la fonction 'lt' de Interval"""
+        """Test 'lt' function from class Interval"""
         x = Interval(-3, 1)
         y = Interval(1, 4)
         self.assertTrue(not(x < 1) and x < 2 and not(x < 0) and not(x < -4) and not (x < y))
 
     def test_radius_interval(self):
-        """Test le fonctionnement de la fonction 'radius' de Interval"""
+        """Test 'radius' function from class Interval"""
         x = Interval(-3, 1)
         y = Interval(3.5, 6.7)
         self.assertTrue(x.radius() == 4, y.radius() == 3.2)
 
     def test_middle_interval(self):
-        """Test le fonctionnement de la fonction 'middle' de Interval"""
+        """Test 'middle' function from class Interval"""
         x = Interval(-3, 1)
         y = Interval(3, 4)
         b1 = (x.middle() == -1)
@@ -130,12 +129,12 @@ class MyTest(unittest.TestCase):
         self.assertTrue(b1 and b2)
 
     def test_log_interval(self):
-        """Test le fonctionnement de la fonction 'log' de Interval"""
+        """Test 'log' function from class Interval"""
         x = Interval(3, 4)
         self.assertTrue((x.log() == Interval(log(3), log(4))))
 
     def test_exp_interval(self):
-        """Test le fonctionnement de la fonction 'exp' de Interval"""
+        """Test 'exp' function from class Interval"""
         x = Interval(-3, -1)
         y = Interval(-3, 1)
         z = Interval(1, 5)
@@ -145,7 +144,7 @@ class MyTest(unittest.TestCase):
         self.assertTrue(b1 and b2 and b3)
 
     def test_sqrt_interval(self):
-        """Test le fonctionnement de la fonction 'sqrt' de Interval"""
+        """Test 'sqrt' function from class Interval"""
         x = Interval(0, 3)
         y = Interval(1, 10)
         b1 = (x.sqrt() == Interval(0, sqrt(3)))
@@ -153,7 +152,7 @@ class MyTest(unittest.TestCase):
         self.assertTrue((b1 and b2))
 
     def test_sin_interval(self):
-        """test le fonctionnement de la fonction 'sin' de Interval"""
+        """test 'sin' function from class Interval"""
         x = Interval(0, pi/2)
         y = Interval(pi/3, pi)
         z = Interval(pi/4, 2*pi)
@@ -169,7 +168,7 @@ class MyTest(unittest.TestCase):
         self.assertTrue(b1 and b2 and b3 and b4 and b5 and b6)
 
     def test_cos_interval(self):
-        """Test le fonctionnement de la fonction 'cos' de Interval"""
+        """Test 'cos' function from class Interval"""
         x = Interval(pi / 2, pi)
         y = Interval(pi / 3, 3 * pi / 2)
         z = Interval(pi / 4, 3 * pi)
@@ -185,7 +184,7 @@ class MyTest(unittest.TestCase):
         self.assertTrue(b1 and b2 and b3 and b4 and b5 and b6)
 
     def test_contains_interval(self):
-        """Test le fonctionnement de la fonction 'sin' de Interval"""
+        """Test 'sin' function from class Interval"""
         x = Interval(1, 2)
         y = Interval(3, 4)
         z = Interval(-1, 1)
@@ -200,30 +199,29 @@ class MyTest(unittest.TestCase):
         self.assertTrue((b1 and not(b2) and b3 and not(b4) and b5))
 
     def test_round_interval(self):
-        """Test le fonctionnement de la fonction 'round' de Interval"""
+        """Test 'round' function from class Interval"""
         b1 = (round(Interval(-pi, pi), 2) == Interval(-3.14, 3.14))
         b2 = (round(Interval(-pi, pi), 7) == Interval(-3.1415927, 3.1415927))
         b3 = (round(Interval(-pi, pi), 0) == Interval(-3, 3))
         self.assertTrue(b1 and b2 and b3)
 
     def test_trunc_interval(self):
-        """Test le fonctionnement de la fonction 'trunc' de Interval"""
+        """Test 'trunc' function from class Interval"""
         b1 = (trunc(Interval(-pi, pi)) == Interval(-3, 3))
         b2 = (trunc(Interval(-1/3, 1/6)) == Interval(0, 0))
         self.assertTrue(b1 and b2)
 
     def test_floor_interval(self):
-        """Test le fonctionnement de la fonction 'floor' de Interval"""
+        """Test 'floor' function from class Interval"""
         b1 = (floor(Interval(-pi, pi)) == Interval(-4, 3))
         b2 = (floor(Interval(1/6, 1/3)) == Interval(0, 0))
         self.assertTrue(b1 and b2)
 
     def test_ceil_interval(self):
-        """Test le fonctionnement de la fonction 'ceil' de Interval"""
+        """Test 'ceil' function from class Interval"""
         b1 = (ceil(Interval(-pi, pi)) == Interval(-3, 4))
         b2 = (ceil(Interval(1/6, 4/3)) == Interval(1, 2))
         self.assertTrue(b1 and b2)
-
 
 
 if __name__ == "__main__":
