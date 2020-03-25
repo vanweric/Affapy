@@ -1,6 +1,6 @@
 """Affine Arithmetic module"""
-from AffApy.intervalArithmetic import Interval
-from AffApy.affapyError import AffApyError
+from intervalArithmetic import Interval
+from affapyError import AffApyError
 
 
 class Affine:

@@ -5,4 +5,4 @@ majdoc: apidoc
 	make html
 
 apidoc:
-	sphinx-apidoc -f -o source ./../AffApy
+	sphinx-apidoc -f -o source ../AffApy
