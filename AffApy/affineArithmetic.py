@@ -1,6 +1,7 @@
 """Affine Arithmetic module"""
 from intervalArithmetic import Interval
 from affapyError import AffApyError
+from math import pi
 
 
 class Affine:
@@ -13,6 +14,7 @@ class Affine:
         # on enlève x0 de la liste des clés, il aura toujours l'id 0
         self._xsi = sum(abs(i) for i in list(xi.values())[1:])
 
+    # Getter
     @property
     def xi(self):
         """Return xi"""
@@ -27,6 +29,19 @@ class Affine:
     def xsi(self):
         """Returns xsi"""
         return self._xsi
+
+    # Setter
+    @xi.setter
+    def xi(self, value):
+        self._xi = value
+
+    @keyXi.setter
+    def keyXi(self, value):
+        self._keyXi = value
+
+    @xsi.setter
+    def xsi(self, value):
+        self._xsi = value
 
     # Binary operators
     def __add__(self, other):
@@ -163,7 +178,7 @@ class Affine:
         return "Affine({})".format(self.xi)
 
     # Methods
-    def abs(self):
+    def __abs__(self):
         """
         Return the absolute value of an affine form
         :rtype: Affine
@@ -191,27 +206,40 @@ class Affine:
         """
         pass
 
-    def cos(self):
-        """
-        Return the cosinus of an affine form
-        :rtype: Affine
-        """
-        pass
-
-    def sin(self):
+    # Trigo
+    def sin(self):  # TODO et toutes les fonctions d'après seront définies
         """
         Return the sinus of an affine form
         :rtype: Affine
         """
         pass
 
+    def cos(self):
+        """
+        Return the cosinus of an affine form
+        We use the identity cos(x) = sin(x + PI/2)
+        :rtype: Affine
+        """
+        x = self + pi/2
+        return x.sin()
+
     def tan(self):
         """
         Return the tangent of an affine form
+        We use the identity tan(x) = sin(x)/cos(x)
         :rtype: Affine
         """
-        pass
+        return self.sin() / self.cos()
 
+    def cotan(self):
+        """
+        Return the cotangent of an affine form
+        We use the identity cotan(x) = cos(x)/sin(x)
+        :rtype: Affine
+        """
+        return self.cos() / self.sin()
+
+    # Convertion
     def toInterval(self):
         """Convert an affine form to an interval form"""
         return Interval(self.xi[0] + self.xsi, self.xi[0] - self.xsi)
