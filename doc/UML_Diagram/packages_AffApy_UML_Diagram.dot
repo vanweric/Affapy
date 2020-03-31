@@ -1,0 +1,9 @@
+digraph "packages_AffApy_UML_Diagram" {
+charset="utf-8"
+rankdir=BT
+"0" [label="Projet Affapy/AffApy/affapyError.py", shape="box"];
+"1" [label="Projet Affapy/AffApy/affineArithmetic.py", shape="box"];
+"2" [label="Projet Affapy/AffApy/intervalArithmetic.py", shape="box"];
+"3" [label="Projet Affapy/test/test_affine.py", shape="box"];
+"4" [label="Projet Affapy/test/test_interval.py", shape="box"];
+}

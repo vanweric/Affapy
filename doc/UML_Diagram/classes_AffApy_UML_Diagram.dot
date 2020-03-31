@@ -1,0 +1,30 @@
+digraph "classes_AffApy_UML_Diagram" {
+charset="utf-8"
+rankdir=BT
+"0" [label="{AffApyError|
+		\l|
+	}", shape="record"];
+
+"1" [label="{Affine|
+		_COUNT : int\l_keyXi : list of int\l_xi : dict of float\l_xsi : float\l|
+		keyXi : list of int\lxi : dict of float\lxsi : float\l__init__(xi)\l|
+		__abs__() : Affine\l__add__(other) : Affine\l__eq__(other) : bool\l__mul__(other) : Affine\l__ne__(other) : bool\l__neg__() : Affine\l__pow__(n) : Affine\l__repr__() : string\l__str__() : string\l__sub__(other) : Affine\l__truediv__(other) : Affine\lcos() : Affine\lcotan() : Affine\lexp() : Affine\llog() : Affine\lsin() : Affine\lsqrt() : Affine\ltan() : Affine\ltoInterval() : Interval\l
+	}", shape="record"];
+
+"2" [label="{
+		Interval|
+		_inf : float\l_sup : float\l|
+		inf() : float\lsup() : float\l__init__(inf, sup)\l|
+		__abs__() : Interval\l__add__(other) : Interval\l__ceil__() : Interval\l__contains__(other) : bool\l__eq__(other) : bool\l__floor__() : Interval\l__ge__(other) : bool\l__gt__(other) : bool\l__le__(other) : bool\l__lt__(other) : bool\l__mul__(other) : Interval\l__ne__(other) : bool\l__neg__() : Interval\l__pow__(n) : Interval\l__repr__() : string\l__round__(ndigits) : Interval\l__str__() : string\l__sub__(other) : Interval\l__truediv__(other) : Interval\l__trunc__() : Interval\lcos() : Interval\lexp() : Interval\llog() : Interval\lmiddle() : float\lminTrigo() : Interval\lradius() : float\lsin() : Interval\lsqrt() : Interval\ltoAffine() : Affine\l
+	}", shape="record"];
+
+"3" [label="{TestAffine|
+		\l|
+		test_add_affine()\ltest_sub_affine()\l
+	}", shape="record"];
+
+"4" [label="{TestInterval|
+		\l|
+		test_abs_interval()\ltest_add_interval()\ltest_ceil_interval()\ltest_contains_interval()\ltest_cos_interval()\ltest_eq_interval()\ltest_exp_interval()\ltest_floor_interval()\ltest_ge_interval()\ltest_gt_interval()\ltest_le_interval()\ltest_log_interval()\ltest_lt_interval()\ltest_middle_interval()\ltest_mul_interval()\ltest_neg_interval()\ltest_neq_interval()\ltest_pow_interval()\ltest_radius_interval()\ltest_round_interval()\ltest_sin_interval()\ltest_sqrt_interval()\ltest_sub_interval()\ltest_truediv_interval()\ltest_trunc_interval()\l
+	}", shape="record"];
+}
