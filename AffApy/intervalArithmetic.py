@@ -1,6 +1,6 @@
 """Interval Arithmetic module"""
 from math import sqrt, log, exp, pi, sin, cos, floor, ceil, trunc
-from affapyError import AffApyError
+from AffApy.affapyError import AffApyError
 
 
 class Interval:

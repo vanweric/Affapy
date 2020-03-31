@@ -1,7 +1,6 @@
 """Defining test cases for Affine class"""
-import sys
-sys.path.insert(0, '../AffApy')
-from affineArithmetic import Affine
+
+from AffApy.affineArithmetic import Affine
 import unittest
 
 
@@ -12,9 +11,9 @@ class TestAffine(unittest.TestCase):
         """Test 'add' function from class Affine"""
         x = Affine({0: 0, 1: 10})
         y = Affine({0: 5, 1: 10, 2: 5})
-        b1 = x + y == Affine({0: 5, 3: 20, 2: 5})
-        b2 = x + x == Affine({0: 0, 4: 20})
-        self.assertTrue(b1 and b2)
+        self.assertEqual(x + y, Affine({0: 5, 3: 20, 2: 5}))
+        self.assertEqual(x + x, Affine({0: 0, 4: 20}))
+
 
     def test_sub_affine(self):
         """Test 'sub' function from class Affine"""

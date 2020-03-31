@@ -1,6 +1,6 @@
 """Affine Arithmetic module"""
-from intervalArithmetic import Interval
-from affapyError import AffApyError
+from AffApy.intervalArithmetic import Interval
+from AffApy.affapyError import AffApyError
 from math import pi
 
 

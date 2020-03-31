@@ -1,7 +1,6 @@
 """Defining test cases for Interval class"""
-import sys
-sys.path.insert(0, '../AffApy')
-from intervalArithmetic import Interval
+
+from AffApy.intervalArithmetic import Interval
 import unittest
 from math import sqrt, log, exp, pi, sin, cos, floor, ceil, trunc
 
