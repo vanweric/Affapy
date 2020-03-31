@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name='AffApy',
     version='0.1',  # to complete
-    scripts=['AffA'],  # to complete
+    #scripts=['AffApy'],  # to complete
     author=[
         "Ruxue ZENG",
         "Quentin DESCHAMPS",
@@ -25,6 +25,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/.../AffApy",  # to complete
     packages=setuptools.find_packages(),
+    install_requires=['Sphinx', 'unittest'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",  # to complete
