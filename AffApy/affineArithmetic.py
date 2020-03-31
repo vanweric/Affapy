@@ -5,7 +5,7 @@ from affapyError import AffApyError
 
 class Affine:
     """Representation of an affine form"""
-    count = 3
+    _COUNT = 3
 
     def __init__(self, xi):
         self._xi = xi    # dictionnaire
@@ -41,8 +41,8 @@ class Affine:
                 if i in other.keyXi:
                     val = other.xi[i] + self.xi[i]
                     if val != 0:
-                        xi[Affine.count] = val
-                        Affine.count += 1
+                        xi[Affine._COUNT] = val
+                        Affine._COUNT += 1
                 else:
                     xi[i] = self.xi[i]
             for i in other.keyXi:
@@ -68,8 +68,8 @@ class Affine:
                 if i in other.keyXi:
                     val = other.xi[i] - self.xi[i]
                     if val != 0:
-                        xi[Affine.count] = val
-                        Affine.count += 1
+                        xi[Affine._COUNT] = val
+                        Affine._COUNT += 1
                 else:
                     xi[i] = self.xi[i]
             for i in other.keyXi:
@@ -94,8 +94,8 @@ class Affine:
             for x in self.keyXi:
                 for y in other.keyXi:
                     if self.xi[x] * other.xi[y] != 0:
-                        xi[Affine.count] = self.xi[x] * other.xi[y]
-                        Affine.count += 1
+                        xi[Affine._COUNT] = self.xi[x] * other.xi[y]
+                        Affine._COUNT += 1
             return Affine(xi)
         if isinstance(other, int) or isinstance(other, float):
             xi = dict(self.xi)
