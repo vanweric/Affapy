@@ -18,6 +18,7 @@ class Interval:
             self._inf = sup
             self._sup = inf
 
+    # Getter
     @property
     def inf(self):
         """Return the inf"""
@@ -27,6 +28,15 @@ class Interval:
     def sup(self):
         """Return the sup"""
         return self._sup
+
+    # Setter
+    @inf.setter
+    def inf(self, value):
+        self._inf = value
+
+    @sup.setter
+    def sup(self, value):
+        self._sup = value
 
     # Inclusion
     def __contains__(self, other):
@@ -365,6 +375,19 @@ class Interval:
         inf, sup = self._inf, self._sup
         return Affine([(inf + sup) / 2, (inf - sup) / 2])
 
+    def minTrigo(self):
+        """"
+        Return the minimal 2PI periodic interval of an interval
+        Example : [5*PI, 6*PI] -> [PI, 2PI]
+        :rtype: Interval
+        """
+        inf, sup = self._inf, self._sup
+        t1 = floor(inf/(2*pi))
+        t2 = sup - inf
+        a = inf - (t1*2*pi)
+        b = a + t2
+        return Interval(a, b)
+
 
 if __name__ == "__main__":
     x = Interval(1, 2)
@@ -427,3 +450,4 @@ if __name__ == "__main__":
     print(trunc(Interval(-pi, pi)))
     print(floor(Interval(-pi, pi)))
     print(ceil(Interval(-pi, pi)))
+    print(Interval(5*pi, 6*pi).minTrigo())
