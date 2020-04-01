@@ -100,7 +100,7 @@ class Interval:
             sup = max([a * c, a * d, b * c, b * d])
             return Interval(inf, sup)
         if isinstance(other, int) or isinstance(other, float):
-            return Interval(other*self._inf, other*self._sup)
+            return Interval(other * self._inf, other * self._sup)
         raise AffApyError("type error")
         return None
 
@@ -126,13 +126,13 @@ class Interval:
         if isinstance(n, int) and n >= 0:
             inf, sup = self._inf, self._sup
             if n % 2 == 1:
-                return Interval(inf**n, sup**n)
+                return Interval(inf ** n, sup ** n)
             if inf >= 0:
-                return Interval(inf**n, sup**n)
+                return Interval(inf ** n, sup ** n)
             if sup < 0:
-                return Interval(sup**n, inf**n)
+                return Interval(sup ** n, inf ** n)
             else:
-                return Interval(0, max(inf**n, sup**n))
+                return Interval(0, max(inf ** n, sup ** n))
         raise AffApyError("n does not match with pow")
         return None
 
@@ -327,20 +327,20 @@ class Interval:
         :rtype: Interval
         """
         inf, sup = self._inf, self._sup
-        if inf <= pi/2:
-            if sup <= pi/2:
+        if inf <= pi / 2:
+            if sup <= pi / 2:
                 return Interval(sin(inf), sin(sup))
-            if pi/2 < sup <= 3*pi/2:
+            if pi / 2 < sup <= 3 * pi / 2:
                 print(inf, sin(inf), sup, sin(sup))
                 return Interval(min(sin(inf), sin(sup)), 1)
-            if sup > 3*pi/2:
+            if sup > 3 * pi / 2:
                 return Interval(-1, 1)
-        if pi/2 < inf <= 3*pi/2:
-            if pi/2 < sup <= 3*pi/2:
+        if pi / 2 < inf <= 3 * pi / 2:
+            if pi / 2 < sup <= 3 * pi / 2:
                 return Interval(sin(sup), sin(inf))
-            if 3*pi/2 < sup <= 2*pi + pi/2:
+            if 3 * pi / 2 < sup <= 2 * pi + pi / 2:
                 return Interval(-1, max(sin(inf), sin(sup)))
-            if sup >= 2*pi + pi/2:
+            if sup >= 2 * pi + pi / 2:
                 return Interval(-1, 1)
         raise AffApyError("the interval does not match with sinus")
         return None
@@ -355,16 +355,16 @@ class Interval:
         if inf <= pi:
             if sup <= pi:
                 return Interval(cos(sup), cos(inf))
-            if pi < sup <= 2*pi:
+            if pi < sup <= 2 * pi:
                 return Interval(-1, max(cos(inf), cos(sup)))
-            if sup > 2*pi:
+            if sup > 2 * pi:
                 return Interval(-1, 1)
-        if pi < inf <= 2*pi:
-            if sup <= 2*pi:
+        if pi < inf <= 2 * pi:
+            if sup <= 2 * pi:
                 return Interval(cos(inf), cos(sup))
-            if 2*pi < sup <= 3*pi:
+            if 2 * pi < sup <= 3 * pi:
                 return Interval(min(cos(inf), cos(sup)), 1)
-            if sup >= 3*pi:
+            if sup >= 3 * pi:
                 return Interval(-1, 1)
         raise AffApyError("the interval does not match with cosinus")
         return None
@@ -382,10 +382,28 @@ class Interval:
         :rtype: Interval
         """
         inf, sup = self._inf, self._sup
-        t1 = floor(inf/(2*pi))
+        t1 = floor(inf / (2 * pi))
         t2 = sup - inf
-        a = inf - (t1*2*pi)
+        a = inf - (t1 * 2 * pi)
         b = a + t2
+        return Interval(a, b)
+
+    def minTrigo2(self):
+        """
+        Return the minimal 2PI periodic interval of an interval
+        :return: Interval
+        """
+
+        inf, sup = self._inf, self._sup
+        a = inf % (2 * pi)
+        if inf < 0:
+            a = -a
+        if (sup - inf) >= 2 * pi:
+            b = a + 2 * pi
+        else:
+            b = sup % 2 * pi
+            if b <= a:
+                b += 2*pi
         return Interval(a, b)
 
 
@@ -440,14 +458,15 @@ if __name__ == "__main__":
     print(abs(Interval(-5, -2)))
     print(abs(Interval(-2, 1)))
     print(abs(Interval(1, 2)))
-    print(Interval(-pi/2, pi/2).sin())
-    print(Interval(pi/4, pi).sin())
-    print(Interval(-pi, pi/4).cos())
-    print(Interval(0, 3*pi/2).cos())
-    print(Interval(3, 5)**3)
-    print(Interval(-2, 3)**2)
+    print(Interval(-pi / 2, pi / 2).sin())
+    print(Interval(pi / 4, pi).sin())
+    print(Interval(-pi, pi / 4).cos())
+    print(Interval(0, 3 * pi / 2).cos())
+    print(Interval(3, 5) ** 3)
+    print(Interval(-2, 3) ** 2)
     print(round(Interval(-pi, pi), 2))
     print(trunc(Interval(-pi, pi)))
     print(floor(Interval(-pi, pi)))
     print(ceil(Interval(-pi, pi)))
-    print(Interval(5*pi, 6*pi).minTrigo())
+    print(Interval(0, 3 * pi).minTrigo())
+    print(Interval(-pi, 2 * pi).minTrigo2())

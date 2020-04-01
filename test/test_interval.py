@@ -13,39 +13,35 @@ class TestInterval(unittest.TestCase):
         x = Interval(1, 2)
         y = Interval(3, 4)
         z = Interval(-1, 1)
-        b1 = (x + y == Interval(4, 6))
-        b2 = (x + 2 == Interval(3, 4))
-        b3 = (x + y + z == Interval(3, 7))
-        self.assertTrue(b1 and b2 and b3)
+        self.assertEqual(x + y, Interval(4, 6))
+        self.assertEqual(x + 2, Interval(3, 4))
+        self.assertEqual(x + y + z, Interval(3, 7))
 
     def test_sub_interval(self):
         """Test 'sub' function from class Interval"""
         x = Interval(1, 2)
         y = Interval(3, 4)
         z = Interval(-1, 1)
-        b1 = (x - y == Interval(-3, -1))
-        b2 = (x - 2 == Interval(-1, 0))
-        b3 = (x - y - z == Interval(-4, 0))
-        b4 = (x - x == Interval(-1, 1))
-        self.assertTrue(b1 and b2 and b3 and b4)
+        self.assertEqual(x - y, Interval(-3, -1))
+        self.assertEqual(x - 2, Interval(-1, 0))
+        self.assertEqual(x - y - z, Interval(-4, 0))
+        self.assertEqual(x - x, Interval(-1, 1))
 
     def test_mul_interval(self):         # TODO: test interval * real, interval * 0
         """Test 'mul' function from class Interval"""
         x = Interval(1, 2)
         y = Interval(3, 4)
         z = Interval(-1, 1)
-        b1 = (x * y == Interval(3, 8))
-        b2 = (z * (x + y) == Interval(-6, 6))
-        self.assertTrue(b1 and b2)
+        self.assertEqual(x * y, Interval(3, 8))
+        self.assertEqual(z * (x + y), Interval(-6, 6))
 
     def test_truediv_interval(self):         # TODO: test interval / interval contains 0
         """Test 'truediv' function from class Interval"""
         x = Interval(1, 2)
         y = Interval(3, 4)
         #z = Interval(-1, 1)
-        b1 = (x / y == Interval(1/4, 2/3))
         #b2 = (x / z == None)
-        self.assertTrue(b1)
+        self.assertTrue(x / y == Interval(1/4, 2/3))
 
     def test_pow_interval(self):
         """Test 'pow' function from class Interval"""
@@ -53,81 +49,95 @@ class TestInterval(unittest.TestCase):
         y = Interval(3, 4)
         z = Interval(-1, 1)
 
-        b1 = (y ** 2 == Interval(9, 16))
-        b2 = (z ** 2 == Interval(0, 1))
-        b3 = (x ** 2 == Interval(1, 9))
-        b4 = (x ** 2 + y ** 2 - x * y == Interval(13, 37))
-        self.assertTrue(b1 and b2 and b3 and b4)
+        self.assertEqual(y ** 2, Interval(9, 16))
+        self.assertEqual(z ** 2, Interval(0, 1))
+        self.assertEqual(x ** 2, Interval(1, 9))
+        self.assertEqual(x ** 2 + y ** 2 - x * y, Interval(13, 37))
 
     def test_neg_interval(self):
         """Test 'neg' function from class Interval"""
         x = Interval(-3, -1)
         y = Interval(3, 4)
         z = Interval(-1, 1)
-        b1 = (-x == Interval(1, 3))
-        b2 = (-y == Interval(-4, -3))
-        b3 = (-z == Interval(-1, 1))
-        self.assertTrue(b1 and b2 and b3)
+        self.assertEqual(-x, Interval(1, 3))
+        self.assertEqual(-y, Interval(-4, -3))
+        self.assertEqual(-z, Interval(-1, 1))
 
     def test_abs_interval(self):
         """Test 'abs' function from class Interval"""
         x = Interval(-3, -1)
         y = Interval(3, 4)
         z = Interval(-1, 1)
-        b1 = (abs(x) == Interval(1, 3))
-        b2 = (abs(y) == Interval(3, 4))
-        b3 = (abs(z) == Interval(0, 1))
-        self.assertTrue(b1 and b2 and b3)
+        self.assertEqual(abs(x), Interval(1, 3))
+        self.assertEqual(abs(y), Interval(3, 4))
+        self.assertEqual(abs(z), Interval(0, 1))
 
     def test_eq_interval(self):
         """Test 'eq' function from class Interval"""
         x = Interval(-3, -1)
         y = Interval(3, 4)
-        self.assertTrue(x == Interval(-3, -1) and not(x == y))
+        self.assertTrue(x == Interval(-3, -1))
+        self.assertTrue(not(x == y))
 
     def test_neq_interval(self):
         """Test 'neq' function from class Interval"""
         x = Interval(-3, -1)
         y = Interval(3, 4)
-        self.assertTrue(not(x != Interval(-3, -1)) and x != y and not(x != x))
+        self.assertTrue(not(x != Interval(-3, -1)))
+        self.assertTrue(x != y)
+        self.assertTrue(not(x != x))
 
     def test_ge_interval(self):
         """Test 'ge' function from class Interval"""
         x = Interval(-3, -1)
         y = Interval(3, 4)
-        self.assertTrue(not(x >= 0.1) and x >= -3 and not(x >= -2) and y >= x)
+        self.assertTrue(not(x >= 0.1))
+        self.assertTrue(x >= -3)
+        self.assertTrue(not(x >= -2))
+        self.assertTrue(y >= x)
 
     def test_gt_interval(self):
         """Test 'gt' function from class Interval"""
         x = Interval(-3, 1)
         y = Interval(1, 4)
-        self.assertTrue(not(x > 0.2) and not(x > -3) and not (x > -2) and not(y > x))
+        self.assertTrue(not(x > 0.2))
+        self.assertTrue(not(x > -3))
+        self.assertTrue(not (x > -2))
+        self.assertTrue(not(y > x))
 
     def test_le_interval(self):
         """Test 'le' function from class Interval"""
         x = Interval(-3, 1)
         y = Interval(3, 4)
-        self.assertTrue(x <= 1 and x <= 2.3 and not(x <= 0) and not(x <= -4) and x <= y)
+        self.assertTrue(x <= 1)
+        self.assertTrue(x <= 2.3)
+        self.assertTrue(not(x <= 0))
+        self.assertTrue(not(x <= -4))
+        self.assertTrue(x <= y)
 
     def test_lt_interval(self):
         """Test 'lt' function from class Interval"""
         x = Interval(-3, 1)
         y = Interval(1, 4)
-        self.assertTrue(not(x < 1) and x < 2 and not(x < 0) and not(x < -4) and not (x < y))
+        self.assertTrue(not(x < 1))
+        self.assertTrue(x < 2)
+        self.assertTrue(not(x < 0))
+        self.assertTrue(not(x < -4))
+        self.assertTrue(not (x < y))
 
     def test_radius_interval(self):
         """Test 'radius' function from class Interval"""
         x = Interval(-3, 1)
         y = Interval(3.5, 6.7)
-        self.assertTrue(x.radius() == 4, y.radius() == 3.2)
+        self.assertTrue(x.radius() == 4)
+        self.assertTrue(y.radius() == 3.2)
 
     def test_middle_interval(self):
         """Test 'middle' function from class Interval"""
         x = Interval(-3, 1)
         y = Interval(3, 4)
-        b1 = (x.middle() == -1)
-        b2 = (y.middle() == 3.5)
-        self.assertTrue(b1 and b2)
+        self.assertEqual(x.middle(), -1)
+        self.assertEqual(y.middle(), 3.5)
 
     def test_log_interval(self):
         """Test 'log' function from class Interval"""
@@ -139,18 +149,16 @@ class TestInterval(unittest.TestCase):
         x = Interval(-3, -1)
         y = Interval(-3, 1)
         z = Interval(1, 5)
-        b1 = (x.exp() == Interval(exp(-3), exp(-1)))
-        b2 = (y.exp() == Interval(exp(-3), exp(1)))
-        b3 = (z.exp() == Interval(exp(1), exp(5)))
-        self.assertTrue(b1 and b2 and b3)
+        self.assertEqual(x.exp(), Interval(exp(-3), exp(-1)))
+        self.assertEqual(y.exp(), Interval(exp(-3), exp(1)))
+        self.assertEqual(z.exp(), Interval(exp(1), exp(5)))
 
     def test_sqrt_interval(self):
         """Test 'sqrt' function from class Interval"""
         x = Interval(0, 3)
         y = Interval(1, 10)
-        b1 = (x.sqrt() == Interval(0, sqrt(3)))
-        b2 = (y.sqrt() == Interval(sqrt(1), sqrt(10)))
-        self.assertTrue((b1 and b2))
+        self.assertEqual(x.sqrt(), Interval(0, sqrt(3)))
+        self.assertEqual(y.sqrt(), Interval(sqrt(1), sqrt(10)))
 
     def test_sin_interval(self):
         """test 'sin' function from class Interval"""
@@ -160,13 +168,12 @@ class TestInterval(unittest.TestCase):
         x1 = Interval(pi, pi)
         y1 = Interval(4*pi/3, 2*pi + pi/3)
         z1 = Interval(3*pi/2, 2*pi + pi/2)
-        b1 = (x.sin() == Interval(0, 1))
-        b2 = (y.sin() == Interval(sin(pi), 1))
-        b3 = (z.sin() == Interval(-1, 1))
-        b4 = (x1.sin() == Interval(sin(pi), sin(pi)))
-        b5 = (y1.sin() == Interval(-1, sin(2*pi + pi/3)))
-        b6 = (z1.sin() == Interval(-1, 1))
-        self.assertTrue(b1 and b2 and b3 and b4 and b5 and b6)
+        self.assertEqual(x.sin(), Interval(0, 1))
+        self.assertEqual(y.sin(), Interval(sin(pi), 1))
+        self.assertEqual(z.sin(), Interval(-1, 1))
+        self.assertEqual(x1.sin(), Interval(sin(pi), sin(pi)))
+        self.assertEqual(y1.sin(), Interval(-1, sin(2*pi + pi/3)))
+        self.assertEqual(z1.sin(), Interval(-1, 1))
 
     def test_cos_interval(self):
         """Test 'cos' function from class Interval"""
@@ -176,13 +183,12 @@ class TestInterval(unittest.TestCase):
         x1 = Interval(3 * pi / 2, 2 * pi)
         y1 = Interval(4 * pi / 3, 2 * pi + pi / 3)
         z1 = Interval(3 * pi / 2, 4 * pi)
-        b1 = (x.cos() == Interval(-1, cos(pi/2)))
-        b2 = (y.cos() == Interval(-1, cos(pi / 3)))
-        b3 = (z.cos() == Interval(-1, 1))
-        b4 = (x1.cos() == Interval(cos(3 * pi / 2), cos(2 * pi)))
-        b5 = (y1.cos() == Interval(cos(4 * pi / 3), 1))
-        b6 = (z1.cos() == Interval(-1, 1))
-        self.assertTrue(b1 and b2 and b3 and b4 and b5 and b6)
+        self.assertEqual(x.cos(), Interval(-1, cos(pi/2)))
+        self.assertEqual(y.cos(), Interval(-1, cos(pi / 3)))
+        self.assertEqual(z.cos(), Interval(-1, 1))
+        self.assertEqual(x1.cos(), Interval(cos(3 * pi / 2), cos(2 * pi)))
+        self.assertEqual(y1.cos(), Interval(cos(4 * pi / 3), 1))
+        self.assertEqual(z1.cos(), Interval(-1, 1))
 
     def test_contains_interval(self):
         """Test 'sin' function from class Interval"""
@@ -192,37 +198,40 @@ class TestInterval(unittest.TestCase):
         x2 = Interval(-2, 3)
         y2 = Interval(1, 4)
         z2 = Interval(-2, 1)
-        b1 = x in Interval(0, 4)
-        b2 = x in Interval(2, 4)
-        b3 = 0 in z
-        b4 = 0 in y
-        b5 = x2 * (y2 + z2) in x2 * y2 + x2 * z2
-        self.assertTrue((b1 and not(b2) and b3 and not(b4) and b5))
+        self.assertTrue(x in Interval(0, 4))
+        self.assertFalse(x in Interval(2, 4))
+        self.assertTrue(0 in z)
+        self.assertFalse(0 in y)
+        self.assertTrue(x2 * (y2 + z2) in x2 * y2 + x2 * z2)
 
     def test_round_interval(self):
         """Test 'round' function from class Interval"""
-        b1 = (round(Interval(-pi, pi), 2) == Interval(-3.14, 3.14))
-        b2 = (round(Interval(-pi, pi), 7) == Interval(-3.1415927, 3.1415927))
-        b3 = (round(Interval(-pi, pi), 0) == Interval(-3, 3))
-        self.assertTrue(b1 and b2 and b3)
+        self.assertEqual(round(Interval(-pi, pi), 2), Interval(-3.14, 3.14))
+        self.assertEqual(round(Interval(-pi, pi), 7), Interval(-3.1415927, 3.1415927))
+        self.assertEqual(round(Interval(-pi, pi), 0), Interval(-3, 3))
 
     def test_trunc_interval(self):
         """Test 'trunc' function from class Interval"""
-        b1 = (trunc(Interval(-pi, pi)) == Interval(-3, 3))
-        b2 = (trunc(Interval(-1/3, 1/6)) == Interval(0, 0))
-        self.assertTrue(b1 and b2)
+        self.assertEqual(trunc(Interval(-pi, pi)), Interval(-3, 3))
+        self.assertEqual(trunc(Interval(-1/3, 1/6)), Interval(0, 0))
 
     def test_floor_interval(self):
         """Test 'floor' function from class Interval"""
-        b1 = (floor(Interval(-pi, pi)) == Interval(-4, 3))
-        b2 = (floor(Interval(1/6, 1/3)) == Interval(0, 0))
-        self.assertTrue(b1 and b2)
+        self.assertEqual(floor(Interval(-pi, pi)), Interval(-4, 3))
+        self.assertEqual(floor(Interval(1/6, 1/3)), Interval(0, 0))
 
     def test_ceil_interval(self):
         """Test 'ceil' function from class Interval"""
-        b1 = (ceil(Interval(-pi, pi)) == Interval(-3, 4))
-        b2 = (ceil(Interval(1/6, 4/3)) == Interval(1, 2))
-        self.assertTrue(b1 and b2)
+        self.assertEqual(ceil(Interval(-pi, pi)), Interval(-3, 4))
+        self.assertEqual(ceil(Interval(1/6, 4/3)), Interval(1, 2))
+
+    def test_mintrigo_interval(self):
+        """Test 'minTrigo' function from class Interval"""
+        self.assertEqual(Interval(5*pi, 6*pi).minTrigo(), Interval(pi, 2*pi))
+        self.assertEqual(Interval(-pi, 2*pi).minTrigo(), Interval(-pi, pi))
+        self.assertEqual(Interval(0, 3*pi).minTrigo(), Interval(0, 2*pi))
+        self.assertEqual(Interval(-2*pi, 2*pi).minTrigo(), Interval(0, 2*pi))
+
 
 
 if __name__ == "__main__":
