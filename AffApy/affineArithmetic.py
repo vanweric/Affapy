@@ -98,14 +98,18 @@ class Affine:
         :type other: Affine
         :rtype: Affine
         """
-        # if isinstance(other, self.__class__):
-        #     xi = {0: self.xi[0] * other.xi[0]}
-        #     for x in self.keyXi:
-        #         for y in other.keyXi:
-        #             if self.xi[x] * other.xi[y] != 0:
-        #                 xi[Affine._COUNT] = self.xi[x] * other.xi[y]
-        #                 Affine._COUNT += 1
-        #     return Affine(xi)
+        if isinstance(other, self.__class__):
+            x0 = self.x0 * other.x0
+            xi = {}
+            for i in range(max(max(self.xi), max(other.xi)) + 1):
+                if i in self.xi and i not in other.xi:
+                    xi[i] = self.xi[i]*other.x0
+                elif i not in self.xi and i in other.xi:
+                    xi[i] = other.xi[i]*self.x0
+                elif i in self.xi and i in other.xi:
+                    xi[i] = self.xi[i]*other.x0 + other.xi[i]*self.x0
+            xi[max(xi) + 1] = self.rad()*other.rad()
+            return Affine(x0, xi)
         if isinstance(other, int) or isinstance(other, float):
             x0 = other*self.x0
             xi = {i: other*self.xi[i] for i in self.xi}
@@ -241,10 +245,10 @@ class Affine:
 
 if __name__ == "__main__":
     x = Affine(0, {1: 10})
-    print("x= :", x)
-    print("x+x= :", x + x)
+    print("x =", x)
+    print("x + x =", x + x)
     y = Affine(5, {1: 10, 2: 5})
-    print(y)
+    print("y =", y)
     z = x + y
     print(z)
     print(z.__repr__())
@@ -254,7 +258,7 @@ if __name__ == "__main__":
     print(y - y)
     print(x - y)
     print(y*2)
-    # print(x*y)
+    print(x*y)
     x = Affine(0, {1: 10})
-    print("x+x-x-x= :", x+x-x-x)
+    print("x + x - x - x =", x+x-x-x)
     print(-x+x)
