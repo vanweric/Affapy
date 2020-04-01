@@ -106,13 +106,11 @@ class Affine:
         #                 xi[Affine._COUNT] = self.xi[x] * other.xi[y]
         #                 Affine._COUNT += 1
         #     return Affine(xi)
-        # if isinstance(other, int) or isinstance(other, float):
-        #     xi = dict(self.xi)
-        #     for i in xi:
-        #         xi[i] *= other
-        #     return Affine(xi)
-        # raise AffApyError("type error")
-        # return None
+        if isinstance(other, int) or isinstance(other, float):
+            x0 = other*self.x0
+            xi = {i: other*self.xi[i] for i in self.xi}
+            return Affine(x0, xi)
+        raise AffApyError("type error")
 
     def __truediv__(self, other):
         """
@@ -256,7 +254,7 @@ if __name__ == "__main__":
     print(y - y)
     print(x - y)
     print(y*2)
-    print(x*y)
+    # print(x*y)
     x = Affine(0, {1: 10})
     print("x+x-x-x= :", x+x-x-x)
     print(-x+x)
