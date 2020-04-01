@@ -6,47 +6,41 @@ from math import pi
 
 class Affine:
     """Representation of an affine form"""
-    _COUNT = 3
-
-    def __init__(self, xi):
-        self._xi = xi.copy()    # dictionnaire
-        self._x0 = xi[0] #on isole x0, le centre
-        del self._xi[0]
-        self._keyXi = list(xi.keys())
+    def __init__(self, x0, xi):
+        self._x0 = x0           # x0 : centre
+        self._xi = xi.copy()    # xi : dictionnaire
         self._xsi = sum(abs(i) for i in list(xi.values()))
 
     # Getter
-    @property
-    def xi(self):
-        """Return xi"""
-        return self._xi
-
     @property
     def x0(self):
         """Return x0"""
         return self._x0
 
     @property
-    def keyXi(self):
-        """Return keyXi """
-        return self._keyXi
+    def xi(self):
+        """Return xi"""
+        return self._xi
 
     @property
     def xsi(self):
-        """Returns xsi"""
+        """Return xsi"""
         return self._xsi
 
     # Setter
+    @x0.setter
+    def x0(self, value):
+        """Set x0"""
+        self._x0 = value
+
     @xi.setter
     def xi(self, value):
+        """Set xi"""
         self._xi = value
-
-    @keyXi.setter
-    def keyXi(self, value):
-        self._keyXi = value
 
     @xsi.setter
     def xsi(self, value):
+        """Set xsi"""
         self._xsi = value
 
     # Binary operators
@@ -57,22 +51,23 @@ class Affine:
         :rtype: Affine
         """
         if isinstance(other, self.__class__):
-            xi = {0: self.x0 + other.x0}
-            for i in self.keyXi:
-                if i in other.keyXi:
-                    val = other.xi[i] + self.xi[i]
+            x0 = self.x0 + other.x0
+            xi = {}
+            for i in self.xi:
+                if i in other.xi:
+                    val = self.xi[i] + other.xi[i]
                     if val != 0:
                         xi[i] = val
                 else:
                     xi[i] = self.xi[i]
-            for i in other.keyXi:
-                if i not in self.keyXi:
+            for i in other.xi:
+                if i not in self.xi:
                     xi[i] = other.xi[i]
-            return Affine(xi)
+            return Affine(x0, xi)
         if isinstance(other, int) or isinstance(other, float):
+            x0 = self.x0 + other
             xi = self.xi.copy()
-            xi[0] += other
-            return Affine(xi)
+            return Affine(x0, xi)
         raise AffApyError("type error")
 
     def __sub__(self, other):
@@ -82,22 +77,23 @@ class Affine:
         :rtype: Affine
         """
         if isinstance(other, self.__class__):
-            xi = {0: self.x0 - other.x0}
-            for i in self.keyXi:
-                if i in other.keyXi:
+            x0 = self.x0 - other.x0
+            xi = {}
+            for i in self.xi:
+                if i in other.xi:
                     val = self.xi[i] - other.xi[i]
                     if val != 0:
                         xi[i] = val
                 else:
                     xi[i] = self.xi[i]
-            for i in other.keyXi:
-                if i not in self.keyXi:
-                    xi[i] = -other.xi[i]
-            return Affine(xi)
+            for i in other.xi:
+                if i not in self.xi:
+                    xi[i] = other.xi[i]
+            return Affine(x0, xi)
         if isinstance(other, int) or isinstance(other, float):
+            x0 = self.x0 - other
             xi = self.xi.copy()
-            xi[0] -= other
-            return Affine(xi)
+            return Affine(x0, xi)
         raise AffApyError("type error")
 
     def __mul__(self, other):
@@ -106,21 +102,21 @@ class Affine:
         :type other: Affine
         :rtype: Affine
         """
-        if isinstance(other, self.__class__):
-            xi = {0: self.xi[0] * other.xi[0]}
-            for x in self.keyXi:
-                for y in other.keyXi:
-                    if self.xi[x] * other.xi[y] != 0:
-                        xi[Affine._COUNT] = self.xi[x] * other.xi[y]
-                        Affine._COUNT += 1
-            return Affine(xi)
-        if isinstance(other, int) or isinstance(other, float):
-            xi = dict(self.xi)
-            for i in xi:
-                xi[i] *= other
-            return Affine(xi)
-        raise AffApyError("type error")
-        return None
+        # if isinstance(other, self.__class__):
+        #     xi = {0: self.xi[0] * other.xi[0]}
+        #     for x in self.keyXi:
+        #         for y in other.keyXi:
+        #             if self.xi[x] * other.xi[y] != 0:
+        #                 xi[Affine._COUNT] = self.xi[x] * other.xi[y]
+        #                 Affine._COUNT += 1
+        #     return Affine(xi)
+        # if isinstance(other, int) or isinstance(other, float):
+        #     xi = dict(self.xi)
+        #     for i in xi:
+        #         xi[i] *= other
+        #     return Affine(xi)
+        # raise AffApyError("type error")
+        # return None
 
     def __truediv__(self, other):
         """
@@ -153,7 +149,7 @@ class Affine:
         :type other: Affine
         :rtype: bool
         """
-        return self.xi == other.xi
+        return self.x0 == other.x0 and self.xi == other.xi
 
     def __ne__(self, other):
         """
@@ -161,7 +157,7 @@ class Affine:
         :type other: Affine
         :rtype: bool
         """
-        return self.xi != other.xi
+        return self.x0 != other.x0 or self.xi != other.xi
 
     # Formats
     def __str__(self):
@@ -169,15 +165,15 @@ class Affine:
         Make the string format
         :rtype: string
         """
-        return " + ".join([str(self.xi[0])] + ["".join([str(self.xi[i]),
-                          "*eps", str(i)]) for i in self.keyXi])
+        return " + ".join([str(self.x0)] + ["".join([str(self.xi[i]),
+                          "*eps", str(i)]) for i in self.xi])
 
     def __repr__(self):
         """
         Make the repr format
         :rtype: string
         """
-        return "Affine({})".format(self.xi)
+        return "Affine({}, {})".format(self.x0, self.xi)
 
     # Methods
     def __abs__(self):
@@ -244,14 +240,14 @@ class Affine:
     # Convertion
     def toInterval(self):
         """Convert an affine form to an interval form"""
-        return Interval(self.xi[0] + self.xsi, self.xi[0] - self.xsi)
+        return Interval(self.x0 + self.xsi, self.x0 - self.xsi)
 
 
 if __name__ == "__main__":
-    x = Affine({0: 0, 1: 10})
+    x = Affine(0, {1: 10})
     print("x= :", x)
     print("x+x= :", x + x)
-    y = Affine({0: 5, 1: 10, 2: 5})
+    y = Affine(5, {1: 10, 2: 5})
     print(y)
     z = x + y
     print(z)
@@ -263,5 +259,5 @@ if __name__ == "__main__":
     print(x - y)
     print(y*2)
     print(x*y)
-    x = Affine({0: 0, 1: 10})
+    x = Affine(0, {1: 10})
     print("x+x-x-x= :", x+x-x-x)
