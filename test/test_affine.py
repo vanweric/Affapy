@@ -21,6 +21,7 @@ class TestAffine(unittest.TestCase):
         y = Affine({0: 5, 1: 10, 2: 5})
         self.assertEqual(x - x, Affine({0: 0}))
         self.assertEqual(x - y, Affine({0: -5, 2: -5}))
+        self.assertEqual(x + y - y, x)
 
 
 if __name__ == "__main__":
