@@ -11,7 +11,7 @@ class Affine:
     def __init__(self, xi):
         self._xi = xi.copy()    # dictionnaire
         self._x0 = xi[0] #on isole x0, le centre
-        xi.del(0)
+        del self._xi[0]
         self._keyXi = list(xi.keys())
         self._xsi = sum(abs(i) for i in list(xi.values()))
 
@@ -74,7 +74,6 @@ class Affine:
             xi[0] += other
             return Affine(xi)
         raise AffApyError("type error")
-        return None
 
     def __sub__(self, other):
         """
@@ -83,13 +82,12 @@ class Affine:
         :rtype: Affine
         """
         if isinstance(other, self.__class__):
-            xi = {0: self.xi[0] - other.xi[0]}
+            xi = {0: self.x0 - other.x0}
             for i in self.keyXi:
                 if i in other.keyXi:
-                    val = other.xi[i] - self.xi[i]
+                    val = self.xi[i] - other.xi[i]
                     if val != 0:
-                        xi[Affine._COUNT] = val
-                        Affine._COUNT += 1
+                        xi[i] = val
                 else:
                     xi[i] = self.xi[i]
             for i in other.keyXi:
@@ -97,11 +95,10 @@ class Affine:
                     xi[i] = -other.xi[i]
             return Affine(xi)
         if isinstance(other, int) or isinstance(other, float):
-            xi = dict(self.xi)
+            xi = self.xi.copy()
             xi[0] -= other
             return Affine(xi)
         raise AffApyError("type error")
-        return None
 
     def __mul__(self, other):
         """
