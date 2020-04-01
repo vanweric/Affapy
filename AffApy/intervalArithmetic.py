@@ -50,7 +50,6 @@ class Interval:
         if isinstance(other, int) or isinstance(other, float):
             return self._inf <= other <= self._sup
         raise AffApyError("type error")
-        return None
 
     # Binary operators
     def __add__(self, other):
@@ -68,7 +67,6 @@ class Interval:
             sup = self._sup + other
             return Interval(inf, sup)
         raise AffApyError("type error")
-        return None
 
     def __sub__(self, other):
         """
@@ -85,7 +83,6 @@ class Interval:
             sup = self._sup - other
             return Interval(inf, sup)
         raise AffApyError("type error")
-        return None
 
     def __mul__(self, other):
         """
@@ -102,7 +99,6 @@ class Interval:
         if isinstance(other, int) or isinstance(other, float):
             return Interval(other * self._inf, other * self._sup)
         raise AffApyError("type error")
-        return None
 
     def __truediv__(self, other):  # TRAITER LES CAS INFINIS ?
         """
@@ -114,7 +110,6 @@ class Interval:
         if 0 not in other:
             return self * Interval(1 / d, 1 / c)
         raise AffApyError("division by 0")
-        return None
 
     def __pow__(self, n):  # TODO: le cas n<0 et n>2
         """
@@ -134,7 +129,6 @@ class Interval:
             else:
                 return Interval(0, max(inf ** n, sup ** n))
         raise AffApyError("n does not match with pow")
-        return None
 
     # Unary operator
     def __neg__(self):
@@ -184,7 +178,6 @@ class Interval:
         if isinstance(other, int) or isinstance(other, float):
             return self._inf >= other
         raise AffApyError("type error")
-        return None
 
     def __gt__(self, other):
         """
@@ -197,7 +190,6 @@ class Interval:
         if isinstance(other, int) or isinstance(other, float):
             return self._inf > other
         raise AffApyError("type error")
-        return None
 
     def __le__(self, other):
         """
@@ -210,7 +202,6 @@ class Interval:
         if isinstance(other, int) or isinstance(other, float):
             return self._sup <= other
         raise AffApyError("type error")
-        return None
 
     def __lt__(self, other):
         """
@@ -223,7 +214,6 @@ class Interval:
         if isinstance(other, int) or isinstance(other, float):
             return self._sup < other
         raise AffApyError("type error")
-        return None
 
     # Formats
     def __str__(self):
@@ -252,7 +242,6 @@ class Interval:
             return Interval(round(self._inf, ndigits),
                             round(self._sup, ndigits))
         raise AffApyError("n must be int")
-        return None
 
     def __trunc__(self):
         """
@@ -301,7 +290,6 @@ class Interval:
         if self._inf > 0:
             return Interval(log(self._inf), log(self._sup))
         raise AffApyError("inf must be > 0")
-        return None
 
     def exp(self):
         """
@@ -318,7 +306,6 @@ class Interval:
         if self._inf >= 0:
             return Interval(sqrt(self._inf), sqrt(self._sup))
         raise AffApyError("inf must be >= 0")
-        return None
 
     def sin(self):
         """
@@ -343,7 +330,6 @@ class Interval:
             if sup >= 2 * pi + pi / 2:
                 return Interval(-1, 1)
         raise AffApyError("the interval does not match with sinus")
-        return None
 
     def cos(self):
         """
@@ -367,7 +353,6 @@ class Interval:
             if sup >= 3 * pi:
                 return Interval(-1, 1)
         raise AffApyError("the interval does not match with cosinus")
-        return None
 
     def toAffine(self):
         """Convert an interval form to an affine form"""

@@ -9,7 +9,7 @@ class Affine:
     _COUNT = 3
 
     def __init__(self, xi):
-        self._xi = xi    # dictionnaire
+        self._xi = dict(xi)    # dictionnaire
         self._keyXi = list(xi.keys())[1:]
         # on enlève x0 de la liste des clés, il aura toujours l'id 0
         self._xsi = sum(abs(i) for i in list(xi.values())[1:])
@@ -69,7 +69,6 @@ class Affine:
             xi[0] += other
             return Affine(xi)
         raise AffApyError("type error")
-        return None
 
     def __sub__(self, other):
         """
@@ -96,7 +95,6 @@ class Affine:
             xi[0] -= other
             return Affine(xi)
         raise AffApyError("type error")
-        return None
 
     def __mul__(self, other):
         """
@@ -118,7 +116,6 @@ class Affine:
                 xi[i] *= other
             return Affine(xi)
         raise AffApyError("type error")
-        return None
 
     def __truediv__(self, other):
         """
