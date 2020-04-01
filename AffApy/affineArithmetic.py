@@ -140,7 +140,9 @@ class Affine:
         Operator - (unary)
         :rtype: Affine
         """
-        pass
+        x0 = -self.x0
+        xi = {i: -self.xi[i] for i in self.xi}
+        return Affine(x0, xi)
 
     # Comparison operators
     def __eq__(self, other):
@@ -261,3 +263,4 @@ if __name__ == "__main__":
     print(x*y)
     x = Affine(0, {1: 10})
     print("x+x-x-x= :", x+x-x-x)
+    print(-x+x)
