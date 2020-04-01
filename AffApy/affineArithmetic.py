@@ -9,7 +9,6 @@ class Affine:
     def __init__(self, x0, xi):
         self._x0 = x0           # x0 : centre
         self._xi = xi.copy()    # xi : dictionnaire
-        self._xsi = sum(abs(i) for i in list(xi.values()))
 
     # Getter
     @property
@@ -22,11 +21,6 @@ class Affine:
         """Return xi"""
         return self._xi
 
-    @property
-    def xsi(self):
-        """Return xsi"""
-        return self._xsi
-
     # Setter
     @x0.setter
     def x0(self, value):
@@ -38,10 +32,12 @@ class Affine:
         """Set xi"""
         self._xi = value
 
-    @xsi.setter
-    def xsi(self, value):
-        """Set xsi"""
-        self._xsi = value
+    def rad(self):
+        """
+        Return the radius of affine form
+        :rtype: int or float
+        """
+        return sum(abs(self.xi[i]) for i in self.xi)
 
     # Binary operators
     def __add__(self, other):
@@ -242,7 +238,7 @@ class Affine:
     # Convertion
     def toInterval(self):
         """Convert an affine form to an interval form"""
-        return Interval(self.x0 + self.xsi, self.x0 - self.xsi)
+        return Interval(self.x0 + self.rad(), self.x0 - self.rad())
 
 
 if __name__ == "__main__":
