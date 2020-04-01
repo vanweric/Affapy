@@ -376,32 +376,18 @@ class Interval:
         return Affine([(inf + sup) / 2, (inf - sup) / 2])
 
     def minTrigo(self):
-        """"
-        Return the minimal 2PI periodic interval of an interval
-        Example : [5*PI, 6*PI] -> [PI, 2PI]
-        :rtype: Interval
-        """
-        inf, sup = self._inf, self._sup
-        t1 = floor(inf / (2 * pi))
-        t2 = sup - inf
-        a = inf - (t1 * 2 * pi)
-        b = a + t2
-        return Interval(a, b)
-
-    def minTrigo2(self):
         """
         Return the minimal 2PI periodic interval of an interval
         :return: Interval
         """
-
         inf, sup = self._inf, self._sup
         a = inf % (2 * pi)
         if inf < 0:
             a = -a
-        if (sup - inf) >= 2 * pi:
+        if (sup - inf) >= (2 * pi):
             b = a + 2 * pi
         else:
-            b = sup % 2 * pi
+            b = sup % (2 * pi)
             if b <= a:
                 b += 2*pi
         return Interval(a, b)
@@ -468,5 +454,5 @@ if __name__ == "__main__":
     print(trunc(Interval(-pi, pi)))
     print(floor(Interval(-pi, pi)))
     print(ceil(Interval(-pi, pi)))
-    print(Interval(0, 3 * pi).minTrigo())
-    print(Interval(-pi, 2 * pi).minTrigo2())
+    print((6*pi - 5*pi) >= 2 * pi)
+    print(Interval(5*pi, 6 * pi).minTrigo())
