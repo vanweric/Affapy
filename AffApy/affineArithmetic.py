@@ -1,14 +1,14 @@
 """Affine Arithmetic module"""
 from AffApy.intervalArithmetic import Interval
 from AffApy.affapyError import AffApyError
-from math import pi
+from mpmath import mp
 
 
 class Affine:
     """Representation of an affine form"""
     def __init__(self, x0, xi):
-        self._x0 = x0           # x0 : centre
-        self._xi = xi.copy()    # xi : dictionnaire
+        self._x0 = mp.mpf(x0)                   # x0 : centre
+        self._xi = {i: mp.mpf(xi[i]) for i in xi}   # xi : dictionnaire
 
     # Getter
     @property
@@ -218,7 +218,7 @@ class Affine:
         We use the identity cos(x) = sin(x + PI/2)
         :rtype: Affine
         """
-        x = self + pi/2
+        x = self + mp.pi/2
         return x.sin()
 
     def tan(self):
@@ -241,24 +241,3 @@ class Affine:
     def toInterval(self):
         """Convert an affine form to an interval form"""
         return Interval(self.x0 + self.rad(), self.x0 - self.rad())
-
-
-if __name__ == "__main__":
-    x = Affine(0, {1: 10})
-    print("x =", x)
-    print("x + x =", x + x)
-    y = Affine(5, {1: 10, 2: 5})
-    print("y =", y)
-    z = x + y
-    print(z)
-    print(z.__repr__())
-    print(x - 1)
-    print(x + 1)
-    print(x - x)
-    print(y - y)
-    print(x - y)
-    print(y*2)
-    print(x*y)
-    x = Affine(0, {1: 10})
-    print("x + x - x - x =", x+x-x-x)
-    print(-x+x)
