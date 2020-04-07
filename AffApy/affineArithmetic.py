@@ -228,7 +228,6 @@ class Affine:
             delta = rdelta**2 / (8*t)
             x0 = alpha*self.x0 + dzeta
             xi = {i: alpha*self.xi[i] for i in self.xi}
-            print(xi)
             xi[max(xi) + 1] = delta
             return Affine(x0, xi)
         raise AffApyError(
