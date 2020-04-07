@@ -1,6 +1,7 @@
 """Affine Arithmetic module"""
 import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError
+import mpmath
 from mpmath import mp
 
 
@@ -193,7 +194,20 @@ class Affine:
         Return the square root of an affine form
         :rtype: Affine
         """
-        pass
+        interval = self.toInterval()
+        if interval >= 0:
+            a, b = interval.inf, interval.sup
+            t = mpmath.sqrt(a) + mpmath.sqrt(b)
+            alpha = 1 / t
+            dzeta = (t / 8) + 0.5*(mpmath.sqrt(a*b)) / t
+            rdelta = mpmath.sqrt(b) - mpmath.sqrt(a)
+            delta = rdelta*rdelta / (8*t)
+            x0 = alpha*self.x0 + dzeta
+            xi = {alpha*self.xi[i] for i in self.xi}
+            xi[max(xi) + 1] = delta
+            return Affine(x0, xi)
+        raise AffApyError(
+            "the interval associated to the affine form must be >= 0")
 
     def exp(self):
         """
