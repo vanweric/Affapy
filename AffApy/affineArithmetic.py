@@ -61,7 +61,7 @@ class Affine:
                     xi[i] = other.xi[i]
             return Affine(x0, xi)
         if isinstance(other, int) or isinstance(other, float):
-            x0 = self.x0 + other
+            x0 = self.x0 + mp.mpf(other)
             xi = self.xi.copy()
             return Affine(x0, xi)
         raise AffApyError("type error")
@@ -87,7 +87,7 @@ class Affine:
                     xi[i] = -other.xi[i]
             return Affine(x0, xi)
         if isinstance(other, int) or isinstance(other, float):
-            x0 = self.x0 - other
+            x0 = self.x0 - mp.mpf(other)
             xi = self.xi.copy()
             return Affine(x0, xi)
         raise AffApyError("type error")
@@ -111,8 +111,8 @@ class Affine:
             xi[max(xi) + 1] = self.rad()*other.rad()
             return Affine(x0, xi)
         if isinstance(other, int) or isinstance(other, float):
-            x0 = other*self.x0
-            xi = {i: other*self.xi[i] for i in self.xi}
+            x0 = mp.mpf(other)*self.x0
+            xi = {i: mp.mpf(other)*self.xi[i] for i in self.xi}
             return Affine(x0, xi)
         raise AffApyError("type error")
 
@@ -218,7 +218,7 @@ class Affine:
         We use the identity cos(x) = sin(x + PI/2)
         :rtype: Affine
         """
-        x = self + mp.pi/2
+        x = self + mp.mpf(mp.pi/2)
         return x.sin()
 
     def tan(self):
