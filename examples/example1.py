@@ -25,3 +25,7 @@ print("y * 2 = ", y*2)
 print("x * y =", x*y)
 print("x + x - x - x =", x + x - x - x)
 print("-x + x =", -x + x)
+
+# Init with list
+a = Affine(mp.pi, [3, 5, 2])
+print("a =", a)

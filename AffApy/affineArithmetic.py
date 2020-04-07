@@ -7,8 +7,13 @@ from mpmath import mp
 class Affine:
     """Representation of an affine form"""
     def __init__(self, x0, xi):
-        self._x0 = mp.mpf(x0)                       # x0 : center
-        self._xi = {i: mp.mpf(xi[i]) for i in xi}   # xi : dictionnary
+        self._x0 = mp.mpf(x0)       # x0 : center
+        if isinstance(xi, dict):    # Init xi with dictionary
+            self._xi = {i: mp.mpf(xi[i]) for i in xi}
+        elif isinstance(xi, list):  # Init xi with list
+            self._xi = {i + 1: mp.mpf(xi[i]) for i in range(len(xi))}
+        else:
+            raise AffApyError("type error : xi must be dict or list")
 
     # Getter
     @property
@@ -64,7 +69,7 @@ class Affine:
             x0 = self.x0 + mp.mpf(other)
             xi = self.xi.copy()
             return Affine(x0, xi)
-        raise AffApyError("type error")
+        raise AffApyError("type error : other must be Affine, int or float")
 
     def __sub__(self, other):
         """
@@ -90,7 +95,7 @@ class Affine:
             x0 = self.x0 - mp.mpf(other)
             xi = self.xi.copy()
             return Affine(x0, xi)
-        raise AffApyError("type error")
+        raise AffApyError("type error : other must be Affine, int or float")
 
     def __mul__(self, other):
         """
@@ -114,7 +119,7 @@ class Affine:
             x0 = mp.mpf(other)*self.x0
             xi = {i: mp.mpf(other)*self.xi[i] for i in self.xi}
             return Affine(x0, xi)
-        raise AffApyError("type error")
+        raise AffApyError("type error : other must be Affine, int or float")
 
     def __truediv__(self, other):
         """

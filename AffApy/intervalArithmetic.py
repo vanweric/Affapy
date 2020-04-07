@@ -354,11 +354,11 @@ class Interval:
                 return Interval(-1, 1)
         raise AffApyError("the interval does not match with cosinus")
 
-    def toAffine(self):
-        """Convert an interval form to an affine form"""
-        from affineArithmetic import Affine
-        inf, sup = self._inf, self._sup
-        return Affine([(inf + sup) / 2, (inf - sup) / 2])
+    # def toAffine(self):
+    #     """Convert an interval form to an affine form"""
+    #     from affineArithmetic import Affine
+    #     inf, sup = self._inf, self._sup
+    #     return Affine([(inf + sup) / 2, (inf - sup) / 2])
 
     def minTrigo(self):
         """
