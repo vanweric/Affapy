@@ -7,8 +7,8 @@ from mpmath import mp
 class Affine:
     """Representation of an affine form"""
     def __init__(self, x0, xi):
-        self._x0 = mp.mpf(x0)                   # x0 : centre
-        self._xi = {i: mp.mpf(xi[i]) for i in xi}   # xi : dictionnaire
+        self._x0 = mp.mpf(x0)                       # x0 : center
+        self._xi = {i: mp.mpf(xi[i]) for i in xi}   # xi : dictionnary
 
     # Getter
     @property
@@ -84,7 +84,7 @@ class Affine:
                     xi[i] = self.xi[i]
             for i in other.xi:
                 if i not in self.xi:
-                    xi[i] = other.xi[i]
+                    xi[i] = -other.xi[i]
             return Affine(x0, xi)
         if isinstance(other, int) or isinstance(other, float):
             x0 = self.x0 - other
