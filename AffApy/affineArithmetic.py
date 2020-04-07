@@ -122,13 +122,37 @@ class Affine:
             return Affine(x0, xi)
         raise AffApyError("type error : other must be Affine, int or float")
 
+    def inv(self):
+        """
+        Inverse of an affine form
+        :rtype: Affine
+        """
+        interval = self.toInterval()
+        if 0 not in interval:
+            inf, sup = interval.inf, interval.sup
+            a, b = min(abs(inf), abs(sup)), max(abs(inf), abs(sup))
+            alpha = -1 / (b**2)
+            i = AffApy.intervalArithmetic.Interval((1/a) - alpha*a, 2/b)
+            dzeta = i.middle()
+            if inf < 0:
+                dzeta = -dzeta
+            delta = i.radius()
+            x0 = alpha*self.x0 + dzeta
+            xi = {alpha*self.xi[i] for i in self.xi}
+            xi[max(xi) + 1] = delta
+            return Affine(x0, xi)
+        raise AffApyError(
+            "the interval associated to the affine form contains 0")
+
     def __truediv__(self, other):
         """
         Operator /
         :type other: Affine
         :rtype: Affine
         """
-        pass
+        if isinstance(other, self.__class__):
+            return self*other.inv()
+        raise AffApy("only / between two affine forms")
 
     def __pow__(self, n):
         """
@@ -201,7 +225,7 @@ class Affine:
             alpha = 1 / t
             dzeta = (t / 8) + 0.5*(mpmath.sqrt(a*b)) / t
             rdelta = mpmath.sqrt(b) - mpmath.sqrt(a)
-            delta = rdelta*rdelta / (8*t)
+            delta = rdelta**2 / (8*t)
             x0 = alpha*self.x0 + dzeta
             xi = {alpha*self.xi[i] for i in self.xi}
             xi[max(xi) + 1] = delta
