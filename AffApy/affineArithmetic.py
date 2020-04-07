@@ -1,5 +1,5 @@
 """Affine Arithmetic module"""
-from AffApy.intervalArithmetic import Interval
+import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError
 from mpmath import mp
 
@@ -245,4 +245,4 @@ class Affine:
     # Convertion
     def toInterval(self):
         """Convert an affine form to an interval form"""
-        return Interval(self.x0 + self.rad(), self.x0 - self.rad())
+        return AffApy.intervalArithmetic.Interval(self.x0 + self.rad(), self.x0 - self.rad())
