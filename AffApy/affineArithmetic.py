@@ -245,4 +245,5 @@ class Affine:
     # Convertion
     def toInterval(self):
         """Convert an affine form to an interval form"""
-        return AffApy.intervalArithmetic.Interval(self.x0 + self.rad(), self.x0 - self.rad())
+        return AffApy.intervalArithmetic.Interval(
+            self.x0 + self.rad(), self.x0 - self.rad())
