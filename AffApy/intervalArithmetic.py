@@ -1,7 +1,8 @@
 """Interval Arithmetic module"""
 import AffApy.affineArithmetic
-from math import sqrt, log, exp, pi, sin, cos, floor, ceil, trunc
 from AffApy.affapyError import AffApyError
+from mpmath import mp
+from math import sqrt, log, exp, sin, cos, floor, ceil
 
 
 class Interval:
@@ -13,11 +14,11 @@ class Interval:
         :type sup: float or int
         """
         if inf < sup:
-            self._inf = inf
-            self._sup = sup
+            self._inf = mp.mpf(inf)
+            self._sup = mp.mpf(sup)
         else:
-            self._inf = sup
-            self._sup = inf
+            self._inf = mp.mpf(sup)
+            self._sup = mp.mpf(inf)
 
     # Getter
     @property
@@ -64,8 +65,8 @@ class Interval:
             sup = self._sup + other._sup
             return Interval(inf, sup)
         if isinstance(other, int) or isinstance(other, float):
-            inf = self._inf + other
-            sup = self._sup + other
+            inf = self._inf + mp.mpf(other)
+            sup = self._sup + mp.mpf(other)
             return Interval(inf, sup)
         raise AffApyError("type error")
 
@@ -80,8 +81,8 @@ class Interval:
             sup = self._sup - other._inf
             return Interval(inf, sup)
         if isinstance(other, int) or isinstance(other, float):
-            inf = self._inf - other
-            sup = self._sup - other
+            inf = self._inf - mp.mpf(other)
+            sup = self._sup - mp.mpf(other)
             return Interval(inf, sup)
         raise AffApyError("type error")
 
@@ -98,7 +99,8 @@ class Interval:
             sup = max([a * c, a * d, b * c, b * d])
             return Interval(inf, sup)
         if isinstance(other, int) or isinstance(other, float):
-            return Interval(other * self._inf, other * self._sup)
+            return Interval(mp.mpf(other) * self._inf,
+                            mp.mpf(other) * self._sup)
         raise AffApyError("type error")
 
     def __truediv__(self, other):  # TRAITER LES CAS INFINIS ?
@@ -222,14 +224,14 @@ class Interval:
         Make the string format
         :rtype: string
         """
-        return "".join(["[", str(self._inf), " ; ", str(self._sup), "]"])
+        return "".join(["[", str(self._inf), ", ", str(self._sup), "]"])
 
     def __repr__(self):
         """
         Make the repr format
         :rtype: string
         """
-        return "Interval([{0} ; {1}])".format(self._inf, self._sup)
+        return "Interval({}, {})".format(self._inf, self._sup)
 
     # Precision
     def __round__(self, ndigits):
@@ -244,13 +246,13 @@ class Interval:
                             round(self._sup, ndigits))
         raise AffApyError("n must be int")
 
-    def __trunc__(self):
-        """
-        Return the truncate of the interval
-        :type self: Interval
-        :rtype: Interval
-        """
-        return Interval(trunc(self._inf), trunc(self._sup))
+    # def __trunc__(self):
+    #     """
+    #     Return the truncate of the interval
+    #     :type self: Interval
+    #     :rtype: Interval
+    #     """
+    #     return Interval(trunc(self._inf), trunc(self._sup))
 
     def __floor__(self):
         """
@@ -315,20 +317,20 @@ class Interval:
         :rtype: Interval
         """
         inf, sup = self._inf, self._sup
-        if inf <= pi / 2:
-            if sup <= pi / 2:
+        if inf <= mp.pi / 2:
+            if sup <= mp.pi / 2:
                 return Interval(sin(inf), sin(sup))
-            if pi / 2 < sup <= 3 * pi / 2:
+            if mp.pi / 2 < sup <= 3 * mp.pi / 2:
                 print(inf, sin(inf), sup, sin(sup))
                 return Interval(min(sin(inf), sin(sup)), 1)
-            if sup > 3 * pi / 2:
+            if sup > 3 * mp.pi / 2:
                 return Interval(-1, 1)
-        if pi / 2 < inf <= 3 * pi / 2:
-            if pi / 2 < sup <= 3 * pi / 2:
+        if mp.pi / 2 < inf <= 3 * mp.pi / 2:
+            if mp.pi / 2 < sup <= 3 * mp.pi / 2:
                 return Interval(sin(sup), sin(inf))
-            if 3 * pi / 2 < sup <= 2 * pi + pi / 2:
+            if 3 * mp.pi / 2 < sup <= 2 * mp.pi + mp.pi / 2:
                 return Interval(-1, max(sin(inf), sin(sup)))
-            if sup >= 2 * pi + pi / 2:
+            if sup >= 2 * mp.pi + mp.pi / 2:
                 return Interval(-1, 1)
         raise AffApyError("the interval does not match with sinus")
 
@@ -339,19 +341,19 @@ class Interval:
         :rtype: Interval
         """
         inf, sup = self._inf, self._sup
-        if inf <= pi:
-            if sup <= pi:
+        if inf <= mp.pi:
+            if sup <= mp.pi:
                 return Interval(cos(sup), cos(inf))
-            if pi < sup <= 2 * pi:
+            if mp.pi < sup <= 2 * mp.pi:
                 return Interval(-1, max(cos(inf), cos(sup)))
-            if sup > 2 * pi:
+            if sup > 2 * mp.pi:
                 return Interval(-1, 1)
-        if pi < inf <= 2 * pi:
-            if sup <= 2 * pi:
+        if mp.pi < inf <= 2 * mp.pi:
+            if sup <= 2 * mp.pi:
                 return Interval(cos(inf), cos(sup))
-            if 2 * pi < sup <= 3 * pi:
+            if 2 * mp.pi < sup <= 3 * mp.pi:
                 return Interval(min(cos(inf), cos(sup)), 1)
-            if sup >= 3 * pi:
+            if sup >= 3 * mp.pi:
                 return Interval(-1, 1)
         raise AffApyError("the interval does not match with cosinus")
 
@@ -363,82 +365,17 @@ class Interval:
 
     def minTrigo(self):
         """
-        Return the minimal 2PI periodic interval of an interval
+        Return the minimal 2pi periodic interval of an interval
         :return: Interval
         """
         inf, sup = self._inf, self._sup
-        a = inf % (2 * pi)
+        a = inf % (2 * mp.pi)
         if inf < 0:
             a = -a
-        if (sup - inf) >= (2 * pi):
-            b = a + 2 * pi
+        if (sup - inf) >= (2 * mp.pi):
+            b = a + 2 * mp.pi
         else:
-            b = sup % (2 * pi)
+            b = sup % (2 * mp.pi)
             if b <= a:
-                b += 2*pi
+                b += 2*mp.pi
         return Interval(a, b)
-
-
-if __name__ == "__main__":
-    x = Interval(1, 2)
-    y = Interval(3, 4)
-    z = Interval(-1, 1)
-    print(x + y)
-    print(x + 2)
-    print(x - y)
-    print(x - 2)
-    print(x * y)
-    print(x / y)
-    # print(x / z)
-    print(z * (x + y))
-    print(y ** 2)
-    print(z ** 2)
-    # print(x ** 3)
-    print(x ** 2 + y ** 2 - x * y)
-    print(-x)
-    print(x == y)
-    print(x != y)
-    print(x == Interval(1, 2))
-    print(x != Interval(1, 2))
-    print(x >= 0)
-    print(x > 1)
-    print(x <= 2)
-    print(x < 2)
-    print(x.middle())
-    print(z.middle())
-    print(x.radius())
-    print(z.radius())
-    print(x in Interval(0, 4))
-    print(x in Interval(2, 4))
-    print(0 in z)
-    print(0 in y)
-    print(x.exp())
-    print(x.log())
-    print(y.sqrt())
-    x2 = Interval(-2, 3)
-    y2 = Interval(1, 4)
-    z2 = Interval(-2, 1)
-    print(x2 * x2)
-    print(x2 ** 2)
-    print(x2 * (y2 + z2))
-    print(x2 * y2 + x2 * z2)
-    print(x2 * (y2 + z2) in x2 * y2 + x2 * z2)
-    # print(Interval(-2, 0).sqrt())
-    # print(Interval(0, 1).log())
-    # print(Interval(-10, 10).toAffine())
-    print(x.__repr__())
-    print(abs(Interval(-5, -2)))
-    print(abs(Interval(-2, 1)))
-    print(abs(Interval(1, 2)))
-    print(Interval(-pi / 2, pi / 2).sin())
-    print(Interval(pi / 4, pi).sin())
-    print(Interval(-pi, pi / 4).cos())
-    print(Interval(0, 3 * pi / 2).cos())
-    print(Interval(3, 5) ** 3)
-    print(Interval(-2, 3) ** 2)
-    print(round(Interval(-pi, pi), 2))
-    print(trunc(Interval(-pi, pi)))
-    print(floor(Interval(-pi, pi)))
-    print(ceil(Interval(-pi, pi)))
-    print((6*pi - 5*pi) >= 2 * pi)
-    print(Interval(5*pi, 6 * pi).minTrigo())

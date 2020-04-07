@@ -210,10 +210,10 @@ class TestInterval(unittest.TestCase):
         self.assertEqual(round(Interval(-pi, pi), 7), Interval(-3.1415927, 3.1415927))
         self.assertEqual(round(Interval(-pi, pi), 0), Interval(-3, 3))
 
-    def test_trunc_interval(self):
-        """Test 'trunc' function from class Interval"""
-        self.assertEqual(trunc(Interval(-pi, pi)), Interval(-3, 3))
-        self.assertEqual(trunc(Interval(-1/3, 1/6)), Interval(0, 0))
+    # def test_trunc_interval(self):
+    #     """Test 'trunc' function from class Interval"""
+    #     self.assertEqual(trunc(Interval(-pi, pi)), Interval(-3, 3))
+    #     self.assertEqual(trunc(Interval(-1/3, 1/6)), Interval(0, 0))
 
     def test_floor_interval(self):
         """Test 'floor' function from class Interval"""
