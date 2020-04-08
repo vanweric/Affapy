@@ -2,7 +2,7 @@
 import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError
 import mpmath
-from mpmath import mp, fdiv, fadd, fsub, fsum, fabs
+from mpmath import mp, fdiv, fadd, fsub, fsum, fabs, fneg, fmul
 
 
 class Affine:
@@ -68,11 +68,11 @@ class Affine:
         :rtype: Affine
         """
         if isinstance(other, self.__class__):
-            x0 = self.x0 + other.x0
+            x0 = fadd(self.x0, other.x0)
             xi = {}
             for i in self.xi:
                 if i in other.xi:
-                    val = self.xi[i] + other.xi[i]
+                    val = fadd(self.xi[i], other.xi[i])
                     if val != 0:
                         xi[i] = val
                 else:
@@ -80,11 +80,11 @@ class Affine:
             for i in other.xi:
                 if i not in self.xi:
                     xi[i] = other.xi[i]
-            return Affine(xi, x0)
+            return Affine(x0=x0, xi=xi)
         if isinstance(other, int) or isinstance(other, float):
-            x0 = self.x0 + mp.mpf(str(other))
+            x0 = fadd(self.x0, mp.mpf(str(other)))
             xi = self.xi.copy()
-            return Affine(xi, x0)
+            return Affine(x0=x0, xi=xi)
         raise AffApyError("type error : other must be Affine, int or float")
 
     def __sub__(self, other):
@@ -94,23 +94,23 @@ class Affine:
         :rtype: Affine
         """
         if isinstance(other, self.__class__):
-            x0 = self.x0 - other.x0
+            x0 = fsub(self.x0, other.x0)
             xi = {}
             for i in self.xi:
                 if i in other.xi:
-                    val = self.xi[i] - other.xi[i]
+                    val = fsub(self.xi[i], other.xi[i])
                     if val != 0:
                         xi[i] = val
                 else:
                     xi[i] = self.xi[i]
             for i in other.xi:
                 if i not in self.xi:
-                    xi[i] = -other.xi[i]
-            return Affine(xi, x0)
+                    xi[i] = fneg(other.xi[i])
+            return Affine(x0=x0, xi=xi)
         if isinstance(other, int) or isinstance(other, float):
-            x0 = self.x0 - mp.mpf(str(other))
+            x0 = fsub(self.x0, mp.mpf(str(other)))
             xi = self.xi.copy()
-            return Affine(xi, x0)
+            return Affine(x0=x0, xi=xi)
         raise AffApyError("type error : other must be Affine, int or float")
 
     def __mul__(self, other):
@@ -120,21 +120,22 @@ class Affine:
         :rtype: Affine
         """
         if isinstance(other, self.__class__):
-            x0 = self.x0 * other.x0
+            x0 = fmul(self.x0, other.x0)
             xi = {}
             for i in range(max(max(self.xi), max(other.xi)) + 1):
                 if i in self.xi and i not in other.xi:
-                    xi[i] = self.xi[i] * other.x0
+                    xi[i] = fmul(self.xi[i], other.x0)
                 elif i not in self.xi and i in other.xi:
-                    xi[i] = other.xi[i] * self.x0
+                    xi[i] = fmul(other.xi[i], self.x0)
                 elif i in self.xi and i in other.xi:
-                    xi[i] = self.xi[i] * other.x0 + other.xi[i] * self.x0
-            xi[max(xi) + 1] = self.rad() * other.rad()
-            return Affine(x0, xi)
+                    xi[i] = fadd(fmul(self.xi[i], other.x0),
+                                 fmul(other.xi[i], self.x0))
+            xi[max(xi) + 1] = fmul(self.rad(), other.rad())
+            return Affine(x0=x0, xi=xi)
         if isinstance(other, int) or isinstance(other, float):
-            x0 = mp.mpf(str(other)) * self.x0
-            xi = {i: mp.mpf(str(other)) * self.xi[i] for i in self.xi}
-            return Affine(xi, x0)
+            x0 = fmul(mp.mpf(str(other)), self.x0)
+            xi = {i: fmul(mp.mpf(str(other)), self.xi[i]) for i in self.xi}
+            return Affine(x0=x0, xi=xi)
         raise AffApyError("type error : other must be Affine, int or float")
 
     def inv(self):
