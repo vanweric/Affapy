@@ -1,8 +1,7 @@
 """Interval Arithmetic module"""
 import AffApy.affineArithmetic
 from AffApy.affapyError import AffApyError
-from mpmath import mp, fadd, fsub, fmul, fdiv, fneg
-from math import sqrt, log, exp, sin, cos, floor, ceil
+from mpmath import mp, fadd, fsub, fmul, fdiv, fneg, fabs, floor, ceil
 
 
 class Interval:
@@ -152,9 +151,11 @@ class Interval:
         :rtype: Interval
         """
         if self < 0:
-            return Interval(abs(self.sup), abs(self.inf))
+            return Interval(fabs(self.sup, rounding='d'),
+                            fabs(self.inf, rounding='u'))
         if 0 in self:
-            return Interval(0, max(abs(self.inf), abs(self.sup)))
+            return Interval(0, max(fabs(self.inf, rounding='u'),
+                                   fabs(self.sup, rounding='u')))
         return self
 
     # Comparison operators
@@ -264,7 +265,8 @@ class Interval:
         :type self: Interval
         :rtype: Interval
         """
-        return Interval(floor(self.inf), floor(self.sup))
+        return Interval(floor(self.inf, rounding='d'),
+                        floor(self.sup, rounding='u'))
 
     def __ceil__(self):
         """
@@ -272,7 +274,8 @@ class Interval:
         :type self: Interval
         :rtype: Interval
         """
-        return Interval(ceil(self.inf), ceil(self.sup))
+        return Interval(ceil(self.inf, rounding='d'),
+                        ceil(self.sup, rounding='u'))
 
     # Methods
     def radius(self):
