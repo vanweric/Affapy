@@ -7,14 +7,19 @@ from mpmath import mp
 
 class Affine:
     """Representation of an affine form"""
-    def __init__(self, x0, xi):
-        self._x0 = mp.mpf(x0)       # x0 : center
-        if isinstance(xi, dict):    # Init xi with dictionary
-            self._xi = {i: mp.mpf(xi[i]) for i in xi}
-        elif isinstance(xi, list):  # Init xi with list
-            self._xi = {i + 1: mp.mpf(xi[i]) for i in range(len(xi))}
+    weightCount = 1
+
+    def __init__(self, xi=None, x0=None):
+        if isinstance(xi, AffApy.intervalArithmetic.Interval):
+            inf, sup = xi.inf, xi.sup
+            self._x0 = mp.mpf(str((inf + sup) / 2))  # x0 : center
+            self._xi = {Affine.updateWeightCount(): mp.mpf(str((inf - sup) / 2))}
+
+        elif isinstance(xi, dict) and x0:  # Init xi with dictionary
+            self._x0 = mp.mpf(x0)  # x0 : center
+            self._xi = {i: mp.mpf(str(xi[i])) for i in xi}
         else:
-            raise AffApyError("type error : xi must be dict or list")
+            raise AffApyError("type error : xi must be an Interval")
 
     # Getter
     @property
@@ -65,11 +70,11 @@ class Affine:
             for i in other.xi:
                 if i not in self.xi:
                     xi[i] = other.xi[i]
-            return Affine(x0, xi)
+            return Affine(xi, x0)
         if isinstance(other, int) or isinstance(other, float):
-            x0 = self.x0 + mp.mpf(other)
+            x0 = self.x0 + mp.mpf(str(other))
             xi = self.xi.copy()
-            return Affine(x0, xi)
+            return Affine(xi, x0)
         raise AffApyError("type error : other must be Affine, int or float")
 
     def __sub__(self, other):
@@ -91,11 +96,11 @@ class Affine:
             for i in other.xi:
                 if i not in self.xi:
                     xi[i] = -other.xi[i]
-            return Affine(x0, xi)
+            return Affine(xi, x0)
         if isinstance(other, int) or isinstance(other, float):
-            x0 = self.x0 - mp.mpf(other)
+            x0 = self.x0 - mp.mpf(str(other))
             xi = self.xi.copy()
-            return Affine(x0, xi)
+            return Affine(xi, x0)
         raise AffApyError("type error : other must be Affine, int or float")
 
     def __mul__(self, other):
@@ -109,17 +114,17 @@ class Affine:
             xi = {}
             for i in range(max(max(self.xi), max(other.xi)) + 1):
                 if i in self.xi and i not in other.xi:
-                    xi[i] = self.xi[i]*other.x0
+                    xi[i] = self.xi[i] * other.x0
                 elif i not in self.xi and i in other.xi:
-                    xi[i] = other.xi[i]*self.x0
+                    xi[i] = other.xi[i] * self.x0
                 elif i in self.xi and i in other.xi:
-                    xi[i] = self.xi[i]*other.x0 + other.xi[i]*self.x0
-            xi[max(xi) + 1] = self.rad()*other.rad()
+                    xi[i] = self.xi[i] * other.x0 + other.xi[i] * self.x0
+            xi[max(xi) + 1] = self.rad() * other.rad()
             return Affine(x0, xi)
         if isinstance(other, int) or isinstance(other, float):
-            x0 = mp.mpf(other)*self.x0
-            xi = {i: mp.mpf(other)*self.xi[i] for i in self.xi}
-            return Affine(x0, xi)
+            x0 = mp.mpf(str(other)) * self.x0
+            xi = {i: mp.mpf(str(other)) * self.xi[i] for i in self.xi}
+            return Affine(xi, x0)
         raise AffApyError("type error : other must be Affine, int or float")
 
     def inv(self):
@@ -131,16 +136,16 @@ class Affine:
         if 0 not in interval:
             inf, sup = interval.inf, interval.sup
             a, b = min(abs(inf), abs(sup)), max(abs(inf), abs(sup))
-            alpha = -1 / (b**2)
-            i = AffApy.intervalArithmetic.Interval((1/a) - alpha*a, 2/b)
+            alpha = -1 / (b ** 2)
+            i = AffApy.intervalArithmetic.Interval((1 / a) - alpha * a, 2 / b)
             dzeta = i.middle()
             if inf < 0:
                 dzeta = -dzeta
             delta = i.radius()
-            x0 = alpha*self.x0 + dzeta
-            xi = {i: alpha*self.xi[i] for i in self.xi}
+            x0 = alpha * self.x0 + dzeta
+            xi = {i: alpha * self.xi[i] for i in self.xi}
             xi[max(xi) + 1] = delta
-            return Affine(x0, xi)
+            return Affine(xi, x0)
         raise AffApyError(
             "the interval associated to the affine form contains 0")
 
@@ -151,7 +156,7 @@ class Affine:
         :rtype: Affine
         """
         if isinstance(other, self.__class__):
-            return self*other.inv()
+            return self * other.inv()
         raise AffApy("only / between two affine forms")
 
     def __pow__(self, n):
@@ -160,7 +165,7 @@ class Affine:
         :type other: int or float
         :rtype: Affine
         """
-        return (n*self.log(self)).exp()
+        return (n * self.log(self)).exp()
 
     # Unary operator
     def __neg__(self):
@@ -170,7 +175,7 @@ class Affine:
         """
         x0 = -self.x0
         xi = {i: -self.xi[i] for i in self.xi}
-        return Affine(x0, xi)
+        return Affine(xi, x0)
 
     # Comparison operators
     def __eq__(self, other):
@@ -196,7 +201,7 @@ class Affine:
         :rtype: string
         """
         return " + ".join([str(self.x0)] + ["".join([str(self.xi[i]),
-                          "*eps", str(i)]) for i in self.xi])
+                                                     "*eps", str(i)]) for i in self.xi])
 
     def __repr__(self):
         """
@@ -223,13 +228,13 @@ class Affine:
             a, b = interval.inf, interval.sup
             t = mpmath.sqrt(a) + mpmath.sqrt(b)
             alpha = 1 / t
-            dzeta = (t / 8) + 0.5*(mpmath.sqrt(a*b)) / t
+            dzeta = (t / 8) + 0.5 * (mpmath.sqrt(a * b)) / t
             rdelta = mpmath.sqrt(b) - mpmath.sqrt(a)
-            delta = rdelta**2 / (8*t)
-            x0 = alpha*self.x0 + dzeta
-            xi = {i: alpha*self.xi[i] for i in self.xi}
+            delta = rdelta ** 2 / (8 * t)
+            x0 = alpha * self.x0 + dzeta
+            xi = {i: alpha * self.xi[i] for i in self.xi}
             xi[max(xi) + 1] = delta
-            return Affine(x0, xi)
+            return Affine(xi, x0)
         raise AffApyError(
             "the interval associated to the affine form must be >= 0")
 
@@ -261,7 +266,7 @@ class Affine:
         We use the identity cos(x) = sin(x + PI/2)
         :rtype: Affine
         """
-        x = self + mp.mpf(mp.pi/2)
+        x = self + mp.mpf(mp.pi / 2)
         return x.sin()
 
     def tan(self):
@@ -303,3 +308,8 @@ class Affine:
         """Convert an affine form to an interval form"""
         return AffApy.intervalArithmetic.Interval(
             self.x0 + self.rad(), self.x0 - self.rad())
+
+    def updateWeightCount(self):
+        count = Affine.weightCount
+        Affine.weightCount += 1
+        return count
