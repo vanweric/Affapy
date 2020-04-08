@@ -239,6 +239,18 @@ class Affine:
             return self * fdiv(1, other)
         raise AffApyError("type error: other must be Affine, int or float")
 
+    def __rtruediv__(self, other):
+        """
+        Reverse operator / : other / self
+        We use the identity x/y = x * (1/y)
+        :type other: Affine
+        :rtype: Affine
+        """
+        if (isinstance(other, self.__class__) or
+                isinstance(other, int) or isinstance(other, float)):
+            return other * self.inv()
+        raise AffApyError("type error: other must be Affine, int or float")
+
     def __pow__(self, other):   # TODO other type int or float
         """
         Operator **
@@ -391,7 +403,7 @@ class Affine:
         # if isinstance(other, AffApy.intervalArithmetic.Interval):
         #     return self.interval in other
         raise AffApyError(
-            "type error : other must be Affine")
+            "type error: other must be Affine")
 
     # Formats
     def __str__(self):
