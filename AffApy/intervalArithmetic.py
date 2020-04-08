@@ -1,7 +1,7 @@
 """Interval Arithmetic module"""
 import AffApy.affineArithmetic
 from AffApy.affapyError import AffApyError
-from mpmath import mp, fadd, fsub, fmul
+from mpmath import mp, fadd, fsub, fmul, fdiv
 from math import sqrt, log, exp, sin, cos, floor, ceil
 
 
@@ -103,7 +103,7 @@ class Interval:
         if isinstance(other, int) or isinstance(other, float):
             return Interval(fmul(mp.mpf(other), self.inf, rounding='d'),
                             fmul(mp.mpf(other), self.sup, rounding='u'))
-        raise AffApyError("type error")
+        raise AffApyError("type error : other must be Interval, int or float")
 
     def __truediv__(self, other):  # TRAITER LES CAS INFINIS ?
         """
@@ -113,7 +113,8 @@ class Interval:
         """
         c, d = other.inf, other.sup
         if 0 not in other:
-            return self * Interval(1 / d, 1 / c)
+            return self * Interval(fdiv(1, d, rounding='d'),
+                                   fdiv(1, c, rounding='u'))
         raise AffApyError("division by 0")
 
     def __pow__(self, n):  # TODO: le cas n<0 et n>2
@@ -278,14 +279,14 @@ class Interval:
         Return the radius of the interval
         :rtype: int or float
         """
-        return self.sup - self.inf
+        return fsub(self.sup, self.inf)
 
     def middle(self):
         """
         Return the middle of the interval
         :rtype: float
         """
-        return (self.inf + self.sup) / 2
+        return fdiv(fadd(self.inf + self.sup), 2)
 
     def log(self):
         """
