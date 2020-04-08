@@ -338,7 +338,7 @@ class Interval:
         inf must be in [-pi/2, 3pi/2]
         :rtype: Interval
         """
-        return (-self + mp.pi/2).cos()
+        return (-self + float(mp.pi/2)).cos()
 
     def toAffine(self):
         """Convert an interval form to an affine form"""
