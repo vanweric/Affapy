@@ -364,8 +364,4 @@ class Interval:
         Convert an interval form to an affine form
         :rtype: Affine
         """
-        inf, sup = self.inf, self.sup
-        return AffApy.affineArithmetic.Affine(
-            x0=fdiv(fadd(inf, sup), 2),
-            xi={AffApy.affineArithmetic.updateWeightCount():
-                fdiv(fsub(inf, sup), 2)})
+        return AffApy.affineArithmetic.Affine(interval=[self.inf, self.sup])
