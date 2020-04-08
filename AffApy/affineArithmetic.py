@@ -21,6 +21,7 @@ class Affine:
             self._x0 = fdiv(fadd(inf, sup), 2)
             self._xi = {Affine._weightCount: fdiv(fsub(inf, sup), 2)}
             Affine._weightCount += 1
+            self._interval = AffApy.intervalArithmetic.Interval(inf, sup)
         else:
             if x0:
                 self._x0 = mp.mpf(x0)
@@ -30,6 +31,7 @@ class Affine:
                 self._xi = {i: mp.mpf(str(xi[i])) for i in xi}
             else:
                 self._xi = {}
+            self._interval = self.toInterval()
 
     # Getter
     @property
@@ -42,6 +44,11 @@ class Affine:
         """Return xi"""
         return self._xi
 
+    @property
+    def interval(self):
+        """Return interval"""
+        return self._interval
+
     # Setter
     @x0.setter
     def x0(self, value):
@@ -52,6 +59,11 @@ class Affine:
     def xi(self, value):
         """Set xi"""
         self._xi = value
+
+    @interval.setter
+    def xi(self, value):
+        """Set interval"""
+        self._interval = value
 
     def rad(self):
         """
