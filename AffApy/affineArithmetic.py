@@ -106,7 +106,7 @@ class Affine:
             x0 = fadd(self.x0, mp.mpf(str(other)))
             xi = self.xi.copy()
             return Affine(x0=x0, xi=xi)
-        raise AffApyError("type error : other must be Affine, int or float")
+        raise AffApyError("type error: other must be Affine, int or float")
 
     def __radd__(self, other):
         """
@@ -140,7 +140,7 @@ class Affine:
             x0 = fsub(self.x0, mp.mpf(str(other)))
             xi = self.xi.copy()
             return Affine(x0=x0, xi=xi)
-        raise AffApyError("type error : other must be Affine, int or float")
+        raise AffApyError("type error: other must be Affine, int or float")
 
     def __rsub__(self, other):
         """
@@ -185,7 +185,7 @@ class Affine:
             x0 = fmul(mp.mpf(str(other)), self.x0)
             xi = {i: fmul(mp.mpf(str(other)), self.xi[i]) for i in self.xi}
             return Affine(x0=x0, xi=xi)
-        raise AffApyError("type error : other must be Affine, int or float")
+        raise AffApyError("type error: other must be Affine, int or float")
 
     def __rmul__(self, other):
         """
@@ -226,7 +226,7 @@ class Affine:
         raise AffApyError(
             "the interval associated to the affine form contains 0")
 
-    def __truediv__(self, other):   # TODO other int or float
+    def __truediv__(self, other):
         """
         Operator /
         We use the identity x/y = x * (1/y)
@@ -235,7 +235,9 @@ class Affine:
         """
         if isinstance(other, self.__class__):
             return self * other.inv()
-        raise AffApy("only / between two affine forms")
+        if isinstance(other, int) or isinstance(other, float):
+            return self * fdiv(1, other)
+        raise AffApyError("type error: other must be Affine, int or float")
 
     def __pow__(self, other):   # TODO other type int or float
         """
@@ -377,6 +379,20 @@ class Affine:
         """
         return self.x0 != other.x0 or self.xi != other.xi
 
+    # Inclusion
+    def __contains__(self, other):
+        """
+        Operator in
+        :type other: Affine
+        :rtype: bool
+        """
+        if isinstance(other, self.__class__):
+            return self.interval in other.interval
+        # if isinstance(other, AffApy.intervalArithmetic.Interval):
+        #     return self.interval in other
+        raise AffApyError(
+            "type error : other must be Affine")
+
     # Formats
     def __str__(self):
         """
@@ -393,17 +409,3 @@ class Affine:
         :rtype: string
         """
         return "Affine({}, {})".format(self.x0, self.xi)
-
-    # Inclusion
-    def __contains__(self, other):
-        """
-        Operator in
-        :type other: Affine
-        :rtype: bool
-        """
-        if isinstance(other, self.__class__):
-            return self.interval in other.interval
-        # if isinstance(other, AffApy.intervalArithmetic.Interval):
-        #     return self.interval in other
-        raise AffApyError(
-            "type error : other must be Affine")
