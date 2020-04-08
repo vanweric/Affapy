@@ -21,18 +21,16 @@ class Affine:
             self._xi = {Affine._weightCount: fdiv(fsub(inf, sup), 2)}
             Affine._weightCount += 1
             self._interval = AffApy.intervalArithmetic.Interval(inf, sup)
-        else:
-            if x0:
-                self._x0 = mp.mpf(x0)
-            else:
-                self._x0 = mp.mpf(0)
-            if xi and isinstance(xi, dict):
-                self._xi = {i: mp.mpf(str(xi[i])) for i in xi}
-                Affine._weightCount = max(xi) + 1
-            else:
-                self._xi = {}
+        elif x0 and xi:
+            self._x0 = mp.mpf(x0)
+            self._xi = {i: mp.mpf(str(xi[i])) for i in xi}
+            Affine._weightCount = max(xi) + 1
             self._interval = AffApy.intervalArithmetic.Interval(
                 fadd(self._x0, self.rad()), fsub(self._x0, self.rad()))
+        else:
+            self._x0 = mp.mpf(0)
+            self._xi = {}
+            self._interval = AffApy.intervalArithmetic.Interval(0, 0)
 
     # Getter
     @property
@@ -73,7 +71,17 @@ class Affine:
         """
         return fsum(fabs(self.xi[i]) for i in self.xi)
 
-    # Binary operators
+    # Unary operator
+    def __neg__(self):
+        """
+        Operator - (unary)
+        :rtype: Affine
+        """
+        x0 = fneg(self.x0)
+        xi = {i: fneg(self.xi[i]) for i in self.xi}
+        return Affine(x0=x0, xi=xi)
+
+    # Affine operations
     def __add__(self, other):
         """
         Operator +
@@ -187,26 +195,34 @@ class Affine:
         """
         return self * other
 
+    # Non-affine operations
+    def affineConstructor(self, alpha, dzeta, delta):
+        """
+        Return the affine form for non-affine operations
+        :rtype: Affine
+        """
+        x0 = fadd(fmul(alpha, self.x0), dzeta)
+        xi = {i: fmul(alpha, self.xi[i]) for i in self.xi}
+        xi[Affine._weightCount] = delta
+        Affine._weightCount += 1
+        return Affine(x0=x0, xi=xi)
+
     def inv(self):
         """
         Inverse of an affine form
         :rtype: Affine
         """
-        interval = self.toInterval()
-        if 0 not in interval:
-            inf, sup = interval.inf, interval.sup
+        if 0 not in self.interval:
+            inf, sup = self.interval.inf, self.interval.sup
             a, b = min(abs(inf), abs(sup)), max(abs(inf), abs(sup))
-            alpha = -1 / (b ** 2)
-            i = AffApy.intervalArithmetic.Interval((1 / a) - alpha * a, 2 / b)
+            alpha = fdiv(fneg(1), fmul(b, b))
+            i = AffApy.intervalArithmetic.Interval(fsub(fdiv(1, a),
+                                                   fmul(alpha, a)), fdiv(2, b))
             dzeta = i.middle()
             if inf < 0:
-                dzeta = -dzeta
+                dzeta = fneg(dzeta)
             delta = i.radius()
-            x0 = alpha * self.x0 + dzeta
-            xi = {i: alpha * self.xi[i] for i in self.xi}
-            xi[Affine._weightCount] = delta
-            Affine._weightCount += 1
-            return Affine(x0=x0, xi=xi)
+            return self.affineConstructor(alpha, dzeta, delta)
         raise AffApyError(
             "the interval associated to the affine form contains 0")
 
@@ -228,50 +244,6 @@ class Affine:
         """
         return (n * self.log(self)).exp()
 
-    # Unary operator
-    def __neg__(self):
-        """
-        Operator - (unary)
-        :rtype: Affine
-        """
-        x0 = fneg(self.x0)
-        xi = {i: fneg(self.xi[i]) for i in self.xi}
-        return Affine(x0=x0, xi=xi)
-
-    # Comparison operators
-    def __eq__(self, other):
-        """
-        Operator ==
-        :type other: Affine
-        :rtype: bool
-        """
-        return self.x0 == other.x0 and self.xi == other.xi
-
-    def __ne__(self, other):
-        """
-        Operator !=
-        :type other: Affine
-        :rtype: bool
-        """
-        return self.x0 != other.x0 or self.xi != other.xi
-
-    # Formats
-    def __str__(self):
-        """
-        Make the string format
-        :rtype: string
-        """
-        return " + ".join(
-            [str(self.x0)] +
-            ["".join([str(self.xi[i]), "*eps", str(i)]) for i in self.xi])
-
-    def __repr__(self):
-        """
-        Make the repr format
-        :rtype: string
-        """
-        return "Affine({}, {})".format(self.x0, self.xi)
-
     # Methods
     def __abs__(self):  # TODO
         """
@@ -285,19 +257,14 @@ class Affine:
         Return the square root of an affine form
         :rtype: Affine
         """
-        interval = self.toInterval()
-        if interval >= 0:
-            a, b = interval.inf, interval.sup
-            t = sqrt(a) + sqrt(b)
-            alpha = 1 / t
-            dzeta = (t / 8) + 0.5 * (sqrt(a * b)) / t
-            rdelta = sqrt(b) - sqrt(a)
-            delta = rdelta ** 2 / (8 * t)
-            x0 = alpha * self.x0 + dzeta
-            xi = {i: alpha * self.xi[i] for i in self.xi}
-            xi[Affine._weightCount] = delta
-            Affine._weightCount += 1
-            return Affine(xi, x0)
+        if self.interval >= 0:
+            a, b = self.interval.inf, self.interval.sup
+            t = fadd(sqrt(a), sqrt(b))
+            alpha = fdiv(1, t)
+            dzeta = fadd(fdiv(t, 8), fdiv(fmul(0.5, sqrt(fmul(a, b))), t))
+            rdelta = fsub(sqrt(b), sqrt(a))
+            delta = fdiv(fmul(rdelta, rdelta), fmul(8, t))
+            return self.affineConstructor(alpha, dzeta, delta)
         raise AffApyError(
             "the interval associated to the affine form must be >= 0")
 
@@ -347,6 +314,40 @@ class Affine:
         :rtype: Affine
         """
         return self.cos() / self.sin()
+
+    # Comparison operators
+    def __eq__(self, other):
+        """
+        Operator ==
+        :type other: Affine
+        :rtype: bool
+        """
+        return self.x0 == other.x0 and self.xi == other.xi
+
+    def __ne__(self, other):
+        """
+        Operator !=
+        :type other: Affine
+        :rtype: bool
+        """
+        return self.x0 != other.x0 or self.xi != other.xi
+
+    # Formats
+    def __str__(self):
+        """
+        Make the string format
+        :rtype: string
+        """
+        return " + ".join(
+            [str(self.x0)] +
+            ["".join([str(self.xi[i]), "*eps", str(i)]) for i in self.xi])
+
+    def __repr__(self):
+        """
+        Make the repr format
+        :rtype: string
+        """
+        return "Affine({}, {})".format(self.x0, self.xi)
 
     # Inclusion
     def __contains__(self, other):
