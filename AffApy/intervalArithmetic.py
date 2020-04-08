@@ -2,7 +2,7 @@
 import AffApy.affineArithmetic
 from AffApy.affapyError import AffApyError
 from mpmath import (mp, fadd, fsub, fmul, fdiv, fneg, fabs, floor, ceil,
-                    sqrt, exp, log, cos)
+                    sqrt, exp, log, cos, fmod)
 
 
 class Interval:
@@ -297,15 +297,16 @@ class Interval:
         :return: Interval
         """
         inf, sup = self.inf, self.sup
-        a = inf % (2 * mp.pi)
+        pi_fois_2 = fmul(2, mp.pi)
+        a = fmod(inf, pi_fois_2)
         if inf < 0:
-            a = -a
-        if (sup - inf) >= (2 * mp.pi):
-            b = a + 2 * mp.pi
+            a = fneg(a)
+        if fsub(sup, inf) >= pi_fois_2:
+            b = fadd(a, pi_fois_2)
         else:
-            b = sup % (2 * mp.pi)
+            b = fmod(sup, pi_fois_2)
             if b <= a:
-                b += 2*mp.pi
+                b = fadd(b, pi_fois_2)
         return Interval(a, b)
 
     def cos(self):
