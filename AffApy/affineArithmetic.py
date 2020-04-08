@@ -1,8 +1,7 @@
 """Affine Arithmetic module"""
 import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError
-import mpmath
-from mpmath import mp, fdiv, fadd, fsub, fsum, fabs, fneg, fmul
+from mpmath import mp, fdiv, fadd, fsub, fsum, fabs, fneg, fmul, sqrt
 
 
 class Affine:
@@ -262,8 +261,9 @@ class Affine:
         Make the string format
         :rtype: string
         """
-        return " + ".join([str(self.x0)] + ["".join([str(self.xi[i]),
-                                                     "*eps", str(i)]) for i in self.xi])
+        return " + ".join(
+            [str(self.x0)] +
+            ["".join([str(self.xi[i]), "*eps", str(i)]) for i in self.xi])
 
     def __repr__(self):
         """
@@ -288,10 +288,10 @@ class Affine:
         interval = self.toInterval()
         if interval >= 0:
             a, b = interval.inf, interval.sup
-            t = mpmath.sqrt(a) + mpmath.sqrt(b)
+            t = sqrt(a) + sqrt(b)
             alpha = 1 / t
-            dzeta = (t / 8) + 0.5 * (mpmath.sqrt(a * b)) / t
-            rdelta = mpmath.sqrt(b) - mpmath.sqrt(a)
+            dzeta = (t / 8) + 0.5 * (sqrt(a * b)) / t
+            rdelta = sqrt(b) - sqrt(a)
             delta = rdelta ** 2 / (8 * t)
             x0 = alpha * self.x0 + dzeta
             xi = {i: alpha * self.xi[i] for i in self.xi}
