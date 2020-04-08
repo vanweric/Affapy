@@ -280,6 +280,22 @@ class Affine:
         """
         return self.cos() / self.sin()
 
+    # Inclusion
+    def __contains__(self, other):
+        """
+        Operator in
+        :type other: Affine or int or float
+        :rtype: bool
+        """
+        int1 = self.toInterval()
+        if isinstance(other, self.__class__):
+            int2 = other.toInterval()
+            return int2 in int1
+        if isinstance(other, int) or isinstance(other, float):
+            return other in int1
+        raise AffApyError("type error")
+
+
     # Convertion
     def toInterval(self):
         """Convert an affine form to an interval form"""
