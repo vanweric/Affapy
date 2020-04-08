@@ -2,24 +2,34 @@
 import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError
 import mpmath
-from mpmath import mp
+from mpmath import mp, fdiv, fadd, fsub
 
 
 class Affine:
     """Representation of an affine form"""
-    weightCount = 1
+    _weightCount = 0
 
-    def __init__(self, xi=None, x0=None):
-        if isinstance(xi, AffApy.intervalArithmetic.Interval):
-            inf, sup = xi.inf, xi.sup
-            self._x0 = mp.mpf(str((inf + sup) / 2))  # x0 : center
-            self._xi = {Affine.updateWeightCount(): mp.mpf(str((inf - sup) / 2))}
-
-        elif isinstance(xi, dict) and x0:  # Init xi with dictionary
-            self._x0 = mp.mpf(x0)  # x0 : center
-            self._xi = {i: mp.mpf(str(xi[i])) for i in xi}
+    def __init__(self, interval=None, x0=None, xi=None):
+        """
+        Two ways for init Affine:
+        - Affine(interval=[inf, sup])
+        - Affine(x0=0, xi={})
+        If no arguments, x0=0 and xi={}
+        """
+        if interval and isinstance(interval, list) and len(interval) == 2:
+            inf, sup = min(interval), max(interval)
+            self._x0 = fdiv(fadd(inf, sup), 2)
+            self._xi = {Affine.updateWeightCount():
+                        fdiv(fsub(inf, sup), 2)}
         else:
-            raise AffApyError("type error : xi must be an Interval")
+            if x0:
+                self._x0 = mp.mpf(x0)
+            else:
+                self._x0 = mp.mpf(0)
+            if xi and isinstance(xi, dict):
+                self._xi = {i: mp.mpf(str(xi[i])) for i in xi}
+            else:
+                self._xi = {}
 
     # Getter
     @property
@@ -302,14 +312,12 @@ class Affine:
             return other in int1
         raise AffApyError("type error")
 
-
-    # Convertion
+    # Conversion
     def toInterval(self):
         """Convert an affine form to an interval form"""
         return AffApy.intervalArithmetic.Interval(
             self.x0 + self.rad(), self.x0 - self.rad())
 
     def updateWeightCount(self):
-        count = Affine.weightCount
-        Affine.weightCount += 1
-        return count
+        Affine._weightCount += 1
+        return Affine._weightCount
