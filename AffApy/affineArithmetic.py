@@ -285,7 +285,7 @@ class Affine:
         delta = fdiv(maxdelta, 2)
         return self.affineConstructor(alpha, dzeta, delta)
 
-    def log(self):  # TODO
+    def log(self):
         """
         Return the logarithm of an affine form
         :rtype: Affine
@@ -335,6 +335,30 @@ class Affine:
         :rtype: Affine
         """
         return self.cos() / self.sin()
+
+    def cosh(self):
+        """
+        Return the hyperbolic cosine of an affine form
+        We use the identity cosh(x) = (exp(x) + exp(-x))/2
+        :rtype: Affine
+        """
+        return (self.exp() + (-self).exp())*0.5
+
+    def sinh(self):
+        """
+        Return the hyperbolic sine of an affine form
+        We use the identity sinh(x) = (exp(x) - exp(-x))/2
+        :rtype: Affine
+        """
+        return (self.exp() - (-self).exp())*0.5
+
+    def tanh(self):
+        """
+        Return the hyperbolic sine of an affine form
+        We use the identity tanh(x) = sinh(x)/cosh(x)
+        :rtype: Affine
+        """
+        return self.sinh() / self.cosh()
 
     # Comparison operators
     def __eq__(self, other):
