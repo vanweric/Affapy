@@ -14,11 +14,11 @@ class Interval:
         :type sup: float or int
         """
         if inf < sup:
-            self._inf = mp.mpf(inf)
-            self._sup = mp.mpf(sup)
+            self._inf = mp.mpf(inf, rounding='d')
+            self._sup = mp.mpf(sup, rounding='u')
         else:
-            self._inf = mp.mpf(sup)
-            self._sup = mp.mpf(inf)
+            self._inf = mp.mpf(sup, rounding='d')
+            self._sup = mp.mpf(inf, rounding='u')
 
     # Getter
     @property
