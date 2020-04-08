@@ -24,7 +24,6 @@ class Affine:
         elif x0 and xi:
             self._x0 = mp.mpf(x0)
             self._xi = {i: mp.mpf(str(xi[i])) for i in xi}
-            Affine._weightCount = max(xi) + 1
             self._interval = AffApy.intervalArithmetic.Interval(
                 fadd(self._x0, self.rad()), fsub(self._x0, self.rad()))
         else:

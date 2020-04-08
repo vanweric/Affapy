@@ -24,6 +24,7 @@ print("x - y =", x - y)
 print("y * 2 = ", y*2)
 print("x * y =", x*y)
 print("x + x - x - x =", x + x - x - x)
+print("-x =", -x)
 print("-x + x =", -x + x)
 
 x = Affine(interval=[1, 2])
