@@ -72,6 +72,7 @@ class TestAffine(unittest.TestCase):
         self.assertTrue(-x == Affine(-10, {1: -6}))
         self.assertTrue(-y == Affine(20, {1: 2, 2: -6}))
         self.assertTrue(x + (-x) == Affine(0, {}))
+        self.assertTrue(x + (-y) == x - y)
 
     def test_eq_affine(self):
         """Test 'eq' function from class Affine"""
