@@ -9,6 +9,10 @@ class Affine:
     """Representation of an affine form"""
     _weightCount = 0
 
+    def updateWeightCount(self):
+        Affine._weightCount += 1
+        return Affine._weightCount
+
     def __init__(self, interval=None, x0=None, xi=None):
         """
         Two ways for init Affine:
@@ -317,8 +321,4 @@ class Affine:
     def toInterval(self):
         """Convert an affine form to an interval form"""
         return AffApy.intervalArithmetic.Interval(
-            self.x0 + self.rad(), self.x0 - self.rad())
-
-    def updateWeightCount(self):
-        Affine._weightCount += 1
-        return Affine._weightCount
+            fadd(self.x0, self.rad()), fsub(self.x0, self.rad()))
