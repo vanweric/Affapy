@@ -7,11 +7,7 @@ from mpmath import mp, fdiv, fadd, fsub, fsum, fabs, fneg, fmul
 
 class Affine:
     """Representation of an affine form"""
-    _weightCount = 0
-
-    def updateWeightCount(self):
-        Affine._weightCount += 1
-        return Affine._weightCount
+    _weightCount = 1
 
     def __init__(self, interval=None, x0=None, xi=None):
         """
@@ -23,8 +19,8 @@ class Affine:
         if interval and isinstance(interval, list) and len(interval) == 2:
             inf, sup = min(interval), max(interval)
             self._x0 = fdiv(fadd(inf, sup), 2)
-            self._xi = {Affine.updateWeightCount():
-                        fdiv(fsub(inf, sup), 2)}
+            self._xi = {Affine._weightCount: fdiv(fsub(inf, sup), 2)}
+            Affine._weightCount += 1
         else:
             if x0:
                 self._x0 = mp.mpf(x0)
@@ -134,7 +130,8 @@ class Affine:
                 elif i in self.xi and i in other.xi:
                     xi[i] = fadd(fmul(self.xi[i], other.x0),
                                  fmul(other.xi[i], self.x0))
-            xi[max(xi) + 1] = fmul(self.rad(), other.rad())
+            xi[Affine._weightCount] = fmul(self.rad(), other.rad())
+            Affine._weightCount += 1
             return Affine(x0=x0, xi=xi)
         if isinstance(other, int) or isinstance(other, float):
             x0 = fmul(mp.mpf(str(other)), self.x0)
@@ -159,8 +156,9 @@ class Affine:
             delta = i.radius()
             x0 = alpha * self.x0 + dzeta
             xi = {i: alpha * self.xi[i] for i in self.xi}
-            xi[max(xi) + 1] = delta
-            return Affine(xi, x0)
+            xi[Affine._weightCount] = delta
+            Affine._weightCount += 1
+            return Affine(x0=x0, xi=xi)
         raise AffApyError(
             "the interval associated to the affine form contains 0")
 
@@ -248,7 +246,8 @@ class Affine:
             delta = rdelta ** 2 / (8 * t)
             x0 = alpha * self.x0 + dzeta
             xi = {i: alpha * self.xi[i] for i in self.xi}
-            xi[max(xi) + 1] = delta
+            xi[Affine._weightCount] = delta
+            Affine._weightCount += 1
             return Affine(xi, x0)
         raise AffApyError(
             "the interval associated to the affine form must be >= 0")
