@@ -1,7 +1,7 @@
 """Interval Arithmetic module"""
 import AffApy.affineArithmetic
 from AffApy.affapyError import AffApyError
-from mpmath import mp, fadd, fsub
+from mpmath import mp, fadd, fsub, fmul
 from math import sqrt, log, exp, sin, cos, floor, ceil
 
 
@@ -95,12 +95,14 @@ class Interval:
         if isinstance(other, self.__class__):
             a, b = self.inf, self.sup
             c, d = other.inf, other.sup
-            inf = min([a * c, a * d, b * c, b * d])
-            sup = max([a * c, a * d, b * c, b * d])
+            inf = min([fmul(a, c, rounding='d'), fmul(a, d, rounding='d'),
+                       fmul(b, c, rounding='d'), fmul(b, d, rounding='d')])
+            sup = max([fmul(a, c, rounding='u'), fmul(a, d, rounding='u'),
+                       fmul(b, c, rounding='u'), fmul(b, d, rounding='u')])
             return Interval(inf, sup)
         if isinstance(other, int) or isinstance(other, float):
-            return Interval(mp.mpf(other) * self.inf,
-                            mp.mpf(other) * self.sup)
+            return Interval(fmul(mp.mpf(other), self.inf, rounding='d'),
+                            fmul(mp.mpf(other), self.sup, rounding='u'))
         raise AffApyError("type error")
 
     def __truediv__(self, other):  # TRAITER LES CAS INFINIS ?
