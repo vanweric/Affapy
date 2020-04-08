@@ -291,6 +291,8 @@ class Affine:
         if isinstance(other, self.__class__):
             int2 = other.toInterval()
             return int2 in int1
+        if isinstance(other, AffApy.intervalArithmetic.Interval):
+            return other in int1
         if isinstance(other, int) or isinstance(other, float):
             return other in int1
         raise AffApyError("type error")
