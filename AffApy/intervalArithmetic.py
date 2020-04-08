@@ -2,7 +2,7 @@
 import AffApy.affineArithmetic
 from AffApy.affapyError import AffApyError
 from mpmath import (mp, fadd, fsub, fmul, fdiv, fneg, fabs, floor, ceil,
-                    sqrt, exp, log)
+                    sqrt, exp, log, cos)
 
 
 class Interval:
@@ -124,17 +124,7 @@ class Interval:
         :type n: int
         :rtype: Interval
         """
-        if isinstance(n, int) and n >= 0:
-            inf, sup = self.inf, self.sup
-            if n % 2 == 1:
-                return Interval(inf ** n, sup ** n)
-            if inf >= 0:
-                return Interval(inf ** n, sup ** n)
-            if sup < 0:
-                return Interval(sup ** n, inf ** n)
-            else:
-                return Interval(0, max(inf ** n, sup ** n))
-        raise AffApyError("n does not match with pow")
+        return (n*self.log(self)).exp()
 
     # Unary operator
     def __neg__(self):
@@ -186,7 +176,7 @@ class Interval:
             return self.inf >= other.sup
         if isinstance(other, int) or isinstance(other, float):
             return self.inf >= other
-        raise AffApyError("type error")
+        raise AffApyError("type error : other must be Interval, int or float")
 
     def __gt__(self, other):
         """
@@ -198,7 +188,7 @@ class Interval:
             return self.inf > other.sup
         if isinstance(other, int) or isinstance(other, float):
             return self.inf > other
-        raise AffApyError("type error")
+        raise AffApyError("type error : other must be Interval, int or float")
 
     def __le__(self, other):
         """
@@ -210,7 +200,7 @@ class Interval:
             return self.sup <= other.inf
         if isinstance(other, int) or isinstance(other, float):
             return self.sup <= other
-        raise AffApyError("type error")
+        raise AffApyError("type error : other must be Interval, int or float")
 
     def __lt__(self, other):
         """
@@ -222,7 +212,7 @@ class Interval:
             return self.sup < other.inf
         if isinstance(other, int) or isinstance(other, float):
             return self.sup < other
-        raise AffApyError("type error")
+        raise AffApyError("type error : other must be Interval, int or float")
 
     # Formats
     def __str__(self):
@@ -230,7 +220,7 @@ class Interval:
         Make the string format
         :rtype: string
         """
-        return "".join(["[", str(self.inf), ", ", str(self.sup), "]"])
+        return "[{}, {}]".format(self.inf, self.sup)
 
     def __repr__(self):
         """
@@ -301,59 +291,6 @@ class Interval:
                             sqrt(self.sup, rounding='u'))
         raise AffApyError("inf must be >= 0")
 
-    def sin(self):
-        """
-        Return the sinus of an interval
-        inf must be in [-pi/2, 3pi/2]
-        :rtype: Interval
-        """
-        inf, sup = self.inf, self.sup
-        if inf <= mp.pi / 2:
-            if sup <= mp.pi / 2:
-                return Interval(sin(inf), sin(sup))
-            if mp.pi / 2 < sup <= 3 * mp.pi / 2:
-                print(inf, sin(inf), sup, sin(sup))
-                return Interval(min(sin(inf), sin(sup)), 1)
-            if sup > 3 * mp.pi / 2:
-                return Interval(-1, 1)
-        if mp.pi / 2 < inf <= 3 * mp.pi / 2:
-            if mp.pi / 2 < sup <= 3 * mp.pi / 2:
-                return Interval(sin(sup), sin(inf))
-            if 3 * mp.pi / 2 < sup <= 2 * mp.pi + mp.pi / 2:
-                return Interval(-1, max(sin(inf), sin(sup)))
-            if sup >= 2 * mp.pi + mp.pi / 2:
-                return Interval(-1, 1)
-        raise AffApyError("the interval does not match with sinus")
-
-    def cos(self):
-        """
-        Return the cosinus of an interval
-        inf must be in [0, 2pi]
-        :rtype: Interval
-        """
-        inf, sup = self.inf, self.sup
-        if inf <= mp.pi:
-            if sup <= mp.pi:
-                return Interval(cos(sup), cos(inf))
-            if mp.pi < sup <= 2 * mp.pi:
-                return Interval(-1, max(cos(inf), cos(sup)))
-            if sup > 2 * mp.pi:
-                return Interval(-1, 1)
-        if mp.pi < inf <= 2 * mp.pi:
-            if sup <= 2 * mp.pi:
-                return Interval(cos(inf), cos(sup))
-            if 2 * mp.pi < sup <= 3 * mp.pi:
-                return Interval(min(cos(inf), cos(sup)), 1)
-            if sup >= 3 * mp.pi:
-                return Interval(-1, 1)
-        raise AffApyError("the interval does not match with cosinus")
-
-    def toAffine(self):
-        """Convert an interval form to an affine form"""
-        inf, sup = self.inf, self.sup
-        return AffApy.affineArithmetic.Affine(
-            (inf + sup) / 2, [(inf - sup) / 2])
-
     def minTrigo(self):
         """
         Return the minimal 2pi periodic interval of an interval
@@ -370,3 +307,41 @@ class Interval:
             if b <= a:
                 b += 2*mp.pi
         return Interval(a, b)
+
+    def cos(self):
+        """
+        Return the cosinus of an interval
+        inf must be in [0, 2pi]
+        :rtype: Interval
+        """
+        inf, sup = self.minTrigo().inf, self.minTrigo().sup
+        if inf <= mp.pi:
+            if sup <= mp.pi:
+                return Interval(cos(sup, rounding='d'), cos(inf, rounding='u'))
+            if mp.pi < sup <= 2 * mp.pi:
+                return Interval(-1, max(cos(inf, rounding='u'),
+                                        cos(sup, rounding='u')))
+            if sup > 2 * mp.pi:
+                return Interval(-1, 1)
+        if mp.pi < inf <= 2 * mp.pi:
+            if sup <= 2 * mp.pi:
+                return Interval(cos(inf, rounding='d'), cos(sup, rounding='u'))
+            if 2 * mp.pi < sup <= 3 * mp.pi:
+                return Interval(min(cos(inf, rounding='d'),
+                                    cos(sup, rounding='u')), 1)
+            if sup >= 3 * mp.pi:
+                return Interval(-1, 1)
+
+    def sin(self):
+        """
+        Return the sinus of an interval
+        inf must be in [-pi/2, 3pi/2]
+        :rtype: Interval
+        """
+        return (self + fdiv(-mp.pi, 2)).cos()
+
+    def toAffine(self):
+        """Convert an interval form to an affine form"""
+        inf, sup = self.inf, self.sup
+        return AffApy.affineArithmetic.Affine(
+            (inf + sup) / 2, [(inf - sup) / 2])
