@@ -100,6 +100,14 @@ class Affine:
             return Affine(x0=x0, xi=xi)
         raise AffApyError("type error : other must be Affine, int or float")
 
+    def __radd__(self, other):
+        """
+        Reverse operator + : other + self
+        :type other: Affine or int or float
+        :rtype: Affine
+        """
+        return self + other
+
     def __sub__(self, other):
         """
         Operator -
@@ -126,10 +134,18 @@ class Affine:
             return Affine(x0=x0, xi=xi)
         raise AffApyError("type error : other must be Affine, int or float")
 
+    def __rsub__(self, other):
+        """
+        Reverse operator - : other - self
+        :type other: Affine or int or float
+        :rtype: Affine
+        """
+        return -self + other
+
     def __mul__(self, other):
         """
         Operator *
-        :type other: Affine
+        :type other: Affine or int or float
         :rtype: Affine
         """
         if isinstance(other, self.__class__):
@@ -151,6 +167,14 @@ class Affine:
             xi = {i: fmul(mp.mpf(str(other)), self.xi[i]) for i in self.xi}
             return Affine(x0=x0, xi=xi)
         raise AffApyError("type error : other must be Affine, int or float")
+
+    def __rmul__(self, other):
+        """
+        Reverse operator * : other*self
+        :type other: Affine or int or float
+        :rtype: Affine
+        """
+        return self * other
 
     def inv(self):
         """
