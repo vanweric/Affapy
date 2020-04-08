@@ -1,7 +1,7 @@
 """Affine Arithmetic module"""
 import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError
-from mpmath import mp, fdiv, fadd, fsub, fsum, fabs, fneg, fmul, sqrt
+from mpmath import mp, fdiv, fadd, fsub, fsum, fabs, fneg, fmul, sqrt, exp, log
 
 
 class Affine:
@@ -226,9 +226,10 @@ class Affine:
         raise AffApyError(
             "the interval associated to the affine form contains 0")
 
-    def __truediv__(self, other):
+    def __truediv__(self, other):   # TODO other int or float
         """
         Operator /
+        We use the identity x/y = x * (1/y)
         :type other: Affine
         :rtype: Affine
         """
@@ -236,15 +237,17 @@ class Affine:
             return self * other.inv()
         raise AffApy("only / between two affine forms")
 
-    def __pow__(self, n):
+    def __pow__(self, other):   # TODO other type int or float
         """
         Operator **
-        :type other: int or float
+        We use the identity : x**y = exp(y * log(x))
+        :type other: Affine, int or float
         :rtype: Affine
         """
-        return (n * self.log(self)).exp()
+        if isinstance(other, self.__class__):
+            return (other * self.log(self)).exp()
+        raise AffApy("only ** between two affine forms")
 
-    # Methods
     def __abs__(self):  # TODO
         """
         Return the absolute value of an affine form
@@ -268,12 +271,19 @@ class Affine:
         raise AffApyError(
             "the interval associated to the affine form must be >= 0")
 
-    def exp(self):  # TODO
+    def exp(self):
         """
         Return the exponential of an affine form
         :rtype: Affine
         """
-        pass
+        a, b = self.interval.inf, self.interval.sup
+        ea, eb = exp(a), exp(b)
+        alpha = fdiv(fsub(eb, ea), fsub(b, a))
+        xs = log(alpha)
+        maxdelta = fadd(fmul(alpha, fsub(xs, fsub(1, a))), ea)
+        dzeta = fmul(alpha, fsub(1, xs))
+        delta = fdiv(maxdelta, 2)
+        return self.affineConstructor(alpha, dzeta, delta)
 
     def log(self):  # TODO
         """
