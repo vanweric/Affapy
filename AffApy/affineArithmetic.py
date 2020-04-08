@@ -2,7 +2,7 @@
 import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError
 import mpmath
-from mpmath import mp, fdiv, fadd, fsub
+from mpmath import mp, fdiv, fadd, fsub, fsum, fabs
 
 
 class Affine:
@@ -58,7 +58,7 @@ class Affine:
         Return the radius of affine form
         :rtype: int or float
         """
-        return sum(abs(self.xi[i]) for i in self.xi)
+        return fsum(fabs(self.xi[i]) for i in self.xi)
 
     # Binary operators
     def __add__(self, other):
