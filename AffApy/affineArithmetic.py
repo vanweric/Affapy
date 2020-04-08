@@ -398,15 +398,12 @@ class Affine:
     def __contains__(self, other):
         """
         Operator in
-        :type other: Affine or int or float
+        :type other: Affine
         :rtype: bool
         """
-        int1 = self.toInterval()
         if isinstance(other, self.__class__):
-            int2 = other.toInterval()
-            return int2 in int1
-        if isinstance(other, AffApy.intervalArithmetic.Interval):
-            return other in int1
-        if isinstance(other, int) or isinstance(other, float):
-            return other in int1
-        raise AffApyError("type error")
+            return self.interval in other.interval
+        # if isinstance(other, AffApy.intervalArithmetic.Interval):
+        #     return self.interval in other
+        raise AffApyError(
+            "type error : other must be Affine")
