@@ -39,9 +39,9 @@ class TestInterval(unittest.TestCase):
         """Test 'truediv' function from class Interval"""
         x = Interval(1, 2)
         y = Interval(3, 4)
-        #z = Interval(-1, 1)
-        #b2 = (x / z == None)
+        z = Interval(-5, -1)
         self.assertTrue(x / y == Interval(1/4, 2/3))
+        self.assertTrue(x / z == Interval(-2, -1/5))
 
     def test_pow_interval(self):
         """Test 'pow' function from class Interval"""
