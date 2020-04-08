@@ -1,7 +1,7 @@
 """Interval Arithmetic module"""
 import AffApy.affineArithmetic
 from AffApy.affapyError import AffApyError
-from mpmath import mp
+from mpmath import mp, fadd, fsub
 from math import sqrt, log, exp, sin, cos, floor, ceil
 
 
@@ -48,9 +48,9 @@ class Interval:
         :rtype: bool
         """
         if isinstance(other, self.__class__):
-            return self._inf <= other._inf and self._sup >= other._sup
+            return self.inf <= other.inf and self.sup >= other.sup
         if isinstance(other, int) or isinstance(other, float):
-            return self._inf <= other <= self._sup
+            return self.inf <= other <= self.sup
         raise AffApyError("type error")
 
     # Binary operators
@@ -61,14 +61,14 @@ class Interval:
         :rtype: Interval
         """
         if isinstance(other, self.__class__):
-            inf = self._inf + other._inf
-            sup = self._sup + other._sup
+            inf = fadd(self.inf, other.inf, rounding='d')
+            sup = fadd(self.sup, other.sup, rounding='u')
             return Interval(inf, sup)
         if isinstance(other, int) or isinstance(other, float):
-            inf = self._inf + mp.mpf(other)
-            sup = self._sup + mp.mpf(other)
+            inf = fadd(self.inf, mp.mpf(other), rounding='d')
+            sup = fadd(self.sup, mp.mpf(other), rounding='u')
             return Interval(inf, sup)
-        raise AffApyError("type error")
+        raise AffApyError("type error : other must be Interval, int or float")
 
     def __sub__(self, other):
         """
@@ -77,14 +77,14 @@ class Interval:
         :rtype: Interval
         """
         if isinstance(other, self.__class__):
-            inf = self._inf - other._sup
-            sup = self._sup - other._inf
+            inf = fsub(self.inf, other.sup, rounding='d')
+            sup = fsub(self.sup, other.inf, rounding='u')
             return Interval(inf, sup)
         if isinstance(other, int) or isinstance(other, float):
-            inf = self._inf - mp.mpf(other)
-            sup = self._sup - mp.mpf(other)
+            inf = fsub(self.inf, mp.mpf(other), rounding='d')
+            sup = fsub(self.sup, mp.mpf(other), rounding='u')
             return Interval(inf, sup)
-        raise AffApyError("type error")
+        raise AffApyError("type error : other must be Interval, int or float")
 
     def __mul__(self, other):
         """
@@ -93,14 +93,14 @@ class Interval:
         :rtype: Interval
         """
         if isinstance(other, self.__class__):
-            a, b = self._inf, self._sup
-            c, d = other._inf, other._sup
+            a, b = self.inf, self.sup
+            c, d = other.inf, other.sup
             inf = min([a * c, a * d, b * c, b * d])
             sup = max([a * c, a * d, b * c, b * d])
             return Interval(inf, sup)
         if isinstance(other, int) or isinstance(other, float):
-            return Interval(mp.mpf(other) * self._inf,
-                            mp.mpf(other) * self._sup)
+            return Interval(mp.mpf(other) * self.inf,
+                            mp.mpf(other) * self.sup)
         raise AffApyError("type error")
 
     def __truediv__(self, other):  # TRAITER LES CAS INFINIS ?
@@ -109,7 +109,7 @@ class Interval:
         :type other: Interval
         :rtype: Interval
         """
-        c, d = other._inf, other._sup
+        c, d = other.inf, other.sup
         if 0 not in other:
             return self * Interval(1 / d, 1 / c)
         raise AffApyError("division by 0")
@@ -122,7 +122,7 @@ class Interval:
         :rtype: Interval
         """
         if isinstance(n, int) and n >= 0:
-            inf, sup = self._inf, self._sup
+            inf, sup = self.inf, self.sup
             if n % 2 == 1:
                 return Interval(inf ** n, sup ** n)
             if inf >= 0:
@@ -140,7 +140,7 @@ class Interval:
         :type self: Interval
         :rtype: Interval
         """
-        return Interval(-self._sup, -self._inf)
+        return Interval(-self.sup, -self.inf)
 
     def __abs__(self):
         """
@@ -148,9 +148,9 @@ class Interval:
         :rtype: Interval
         """
         if self < 0:
-            return Interval(abs(self._sup), abs(self._inf))
+            return Interval(abs(self.sup), abs(self.inf))
         if 0 in self:
-            return Interval(0, max(abs(self._inf), abs(self._sup)))
+            return Interval(0, max(abs(self.inf), abs(self.sup)))
         return self
 
     # Comparison operators
@@ -160,7 +160,7 @@ class Interval:
         :type other: Interval
         :rtype: bool
         """
-        return self._inf == other._inf and self._sup == other._sup
+        return self.inf == other.inf and self.sup == other.sup
 
     def __ne__(self, other):
         """
@@ -168,7 +168,7 @@ class Interval:
         :type other: Interval
         :rtype: bool
         """
-        return self._inf != other._inf or self._sup != other._sup
+        return self.inf != other.inf or self.sup != other.sup
 
     def __ge__(self, other):
         """
@@ -177,9 +177,9 @@ class Interval:
         :rtype: bool
         """
         if isinstance(other, self.__class__):
-            return self._inf >= other._sup
+            return self.inf >= other.sup
         if isinstance(other, int) or isinstance(other, float):
-            return self._inf >= other
+            return self.inf >= other
         raise AffApyError("type error")
 
     def __gt__(self, other):
@@ -189,9 +189,9 @@ class Interval:
         :rtype: bool
         """
         if isinstance(other, self.__class__):
-            return self._inf > other._sup
+            return self.inf > other.sup
         if isinstance(other, int) or isinstance(other, float):
-            return self._inf > other
+            return self.inf > other
         raise AffApyError("type error")
 
     def __le__(self, other):
@@ -201,9 +201,9 @@ class Interval:
         :rtype: bool
         """
         if isinstance(other, self.__class__):
-            return self._sup <= other._inf
+            return self.sup <= other.inf
         if isinstance(other, int) or isinstance(other, float):
-            return self._sup <= other
+            return self.sup <= other
         raise AffApyError("type error")
 
     def __lt__(self, other):
@@ -213,9 +213,9 @@ class Interval:
         :rtype: bool
         """
         if isinstance(other, self.__class__):
-            return self._sup < other._inf
+            return self.sup < other.inf
         if isinstance(other, int) or isinstance(other, float):
-            return self._sup < other
+            return self.sup < other
         raise AffApyError("type error")
 
     # Formats
@@ -224,14 +224,14 @@ class Interval:
         Make the string format
         :rtype: string
         """
-        return "".join(["[", str(self._inf), ", ", str(self._sup), "]"])
+        return "".join(["[", str(self.inf), ", ", str(self.sup), "]"])
 
     def __repr__(self):
         """
         Make the repr format
         :rtype: string
         """
-        return "Interval({}, {})".format(self._inf, self._sup)
+        return "Interval({}, {})".format(self.inf, self.sup)
 
     # Precision
     def __round__(self, ndigits):
@@ -242,8 +242,8 @@ class Interval:
         :rtype: Interval
         """
         if isinstance(ndigits, int):
-            return Interval(round(self._inf, ndigits),
-                            round(self._sup, ndigits))
+            return Interval(round(self.inf, ndigits),
+                            round(self.sup, ndigits))
         raise AffApyError("n must be int")
 
     # def __trunc__(self):
@@ -252,7 +252,7 @@ class Interval:
     #     :type self: Interval
     #     :rtype: Interval
     #     """
-    #     return Interval(trunc(self._inf), trunc(self._sup))
+    #     return Interval(trunc(self.inf), trunc(self.sup))
 
     def __floor__(self):
         """
@@ -260,7 +260,7 @@ class Interval:
         :type self: Interval
         :rtype: Interval
         """
-        return Interval(floor(self._inf), floor(self._sup))
+        return Interval(floor(self.inf), floor(self.sup))
 
     def __ceil__(self):
         """
@@ -268,7 +268,7 @@ class Interval:
         :type self: Interval
         :rtype: Interval
         """
-        return Interval(ceil(self._inf), ceil(self._sup))
+        return Interval(ceil(self.inf), ceil(self.sup))
 
     # Methods
     def radius(self):
@@ -276,22 +276,22 @@ class Interval:
         Return the radius of the interval
         :rtype: int or float
         """
-        return self._sup - self._inf
+        return self.sup - self.inf
 
     def middle(self):
         """
         Return the middle of the interval
         :rtype: float
         """
-        return (self._inf + self._sup) / 2
+        return (self.inf + self.sup) / 2
 
     def log(self):
         """
         Return the logarithm of an interval
         :rtype: Interval
         """
-        if self._inf > 0:
-            return Interval(log(self._inf), log(self._sup))
+        if self.inf > 0:
+            return Interval(log(self.inf), log(self.sup))
         raise AffApyError("inf must be > 0")
 
     def exp(self):
@@ -299,15 +299,15 @@ class Interval:
         Return the exponential of an interval
         :rtype: Interval
         """
-        return Interval(exp(self._inf), exp(self._sup))
+        return Interval(exp(self.inf), exp(self.sup))
 
     def sqrt(self):
         """
         Return the square root of an interval
         :rtype: Interval
         """
-        if self._inf >= 0:
-            return Interval(sqrt(self._inf), sqrt(self._sup))
+        if self.inf >= 0:
+            return Interval(sqrt(self.inf), sqrt(self.sup))
         raise AffApyError("inf must be >= 0")
 
     def sin(self):
@@ -316,7 +316,7 @@ class Interval:
         inf must be in [-pi/2, 3pi/2]
         :rtype: Interval
         """
-        inf, sup = self._inf, self._sup
+        inf, sup = self.inf, self.sup
         if inf <= mp.pi / 2:
             if sup <= mp.pi / 2:
                 return Interval(sin(inf), sin(sup))
@@ -340,7 +340,7 @@ class Interval:
         inf must be in [0, 2pi]
         :rtype: Interval
         """
-        inf, sup = self._inf, self._sup
+        inf, sup = self.inf, self.sup
         if inf <= mp.pi:
             if sup <= mp.pi:
                 return Interval(cos(sup), cos(inf))
@@ -359,7 +359,7 @@ class Interval:
 
     def toAffine(self):
         """Convert an interval form to an affine form"""
-        inf, sup = self._inf, self._sup
+        inf, sup = self.inf, self.sup
         return AffApy.affineArithmetic.Affine(
             (inf + sup) / 2, [(inf - sup) / 2])
 
@@ -368,7 +368,7 @@ class Interval:
         Return the minimal 2pi periodic interval of an interval
         :return: Interval
         """
-        inf, sup = self._inf, self._sup
+        inf, sup = self.inf, self.sup
         a = inf % (2 * mp.pi)
         if inf < 0:
             a = -a
