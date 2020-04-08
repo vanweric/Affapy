@@ -160,7 +160,7 @@ class Affine:
         :type other: int or float
         :rtype: Affine
         """
-        pass
+        return (n*self.log(self)).exp()
 
     # Unary operator
     def __neg__(self):
@@ -206,7 +206,7 @@ class Affine:
         return "Affine({}, {})".format(self.x0, self.xi)
 
     # Methods
-    def __abs__(self):
+    def __abs__(self):  # TODO
         """
         Return the absolute value of an affine form
         :rtype: Affine
@@ -233,14 +233,14 @@ class Affine:
         raise AffApyError(
             "the interval associated to the affine form must be >= 0")
 
-    def exp(self):
+    def exp(self):  # TODO
         """
         Return the exponential of an affine form
         :rtype: Affine
         """
         pass
 
-    def log(self):
+    def log(self):  # TODO
         """
         Return the logarithm of an affine form
         :rtype: Affine
