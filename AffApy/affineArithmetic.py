@@ -151,14 +151,25 @@ class Affine:
         if isinstance(other, self.__class__):
             x0 = fmul(self.x0, other.x0)
             xi = {}
-            for i in range(max(max(self.xi), max(other.xi)) + 1):
+            if self.xi == {} and other.xi != {}:
+                keyMax = max(other.xi)
+            elif self.xi != {} and other.xi == {}:
+                keyMax = max(self.xi)
+            elif self.xi != {} and other.xi != {}:
+                keyMax = max(max(self.xi), max(other.xi))
+            else:
+                keyMax = 0
+            for i in range(keyMax + 1):
+                v = 0
                 if i in self.xi and i not in other.xi:
-                    xi[i] = fmul(self.xi[i], other.x0)
+                    v = fmul(self.xi[i], other.x0)
                 elif i not in self.xi and i in other.xi:
-                    xi[i] = fmul(other.xi[i], self.x0)
+                    v = fmul(other.xi[i], self.x0)
                 elif i in self.xi and i in other.xi:
-                    xi[i] = fadd(fmul(self.xi[i], other.x0),
-                                 fmul(other.xi[i], self.x0))
+                    v = fadd(fmul(self.xi[i], other.x0),
+                             fmul(other.xi[i], self.x0))
+                if v != 0:
+                    xi[i] = v
             xi[Affine._weightCount] = fmul(self.rad(), other.rad())
             Affine._weightCount += 1
             return Affine(x0=x0, xi=xi)
