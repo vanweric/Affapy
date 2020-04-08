@@ -290,7 +290,18 @@ class Affine:
         Return the logarithm of an affine form
         :rtype: Affine
         """
-        pass
+        if self.interval > 0:
+            a, b = self.interval.inf, self.interval.sup
+            la, lb = log(a), log(b)
+            alpha = fdiv(fsub(lb, la), fsub(b, a))
+            xs = fdiv(1, alpha)
+            ys = fadd(fmul(alpha, fsub(xs, a)), la)
+            maxdelta = fsub(log(xs), ys)
+            dzeta = fadd(fmul(alpha, fneg(xs)), fdiv(fadd(log(xs), ys), 2))
+            delta = fdiv(maxdelta, 2)
+            return self.affineConstructor(alpha, dzeta, delta)
+        raise AffApyError(
+            "the interval associated to the affine form must be > 0")
 
     # Trigo
     def sin(self):  # TODO et toutes les fonctions d'après seront définies
