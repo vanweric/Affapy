@@ -1,7 +1,7 @@
 """Interval Arithmetic module"""
 import AffApy.affineArithmetic
 from AffApy.affapyError import AffApyError
-from mpmath import mp, fadd, fsub, fmul, fdiv
+from mpmath import mp, fadd, fsub, fmul, fdiv, fneg
 from math import sqrt, log, exp, sin, cos, floor, ceil
 
 
@@ -143,7 +143,8 @@ class Interval:
         :type self: Interval
         :rtype: Interval
         """
-        return Interval(-self.sup, -self.inf)
+        return Interval(fneg(self.sup, rounding='d'),
+                        fneg(self.inf, rounding='u'))
 
     def __abs__(self):
         """
@@ -286,7 +287,7 @@ class Interval:
         Return the middle of the interval
         :rtype: float
         """
-        return fdiv(fadd(self.inf + self.sup), 2)
+        return fdiv(fadd(self.inf, self.sup), 2)
 
     def log(self):
         """
