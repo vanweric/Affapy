@@ -341,7 +341,7 @@ class Interval:
         We use the identity sin(x) = cos(pi/2 - x)
         :rtype: Interval
         """
-        return (-self + float(mp.pi/2)).cos()
+        return (-self + float(mp.pi/2)).cos()   # TODO supprimer le float
 
     def tan(self):
         """
@@ -366,4 +366,6 @@ class Interval:
         """
         inf, sup = self.inf, self.sup
         return AffApy.affineArithmetic.Affine(
-            (inf + sup) / 2, [(inf - sup) / 2])
+            x0=fdiv(fadd(inf, sup), 2),
+            xi={AffApy.affineArithmetic.updateWeightCount():
+                fdiv(fsub(inf, sup), 2)})
