@@ -31,7 +31,8 @@ class Affine:
                 self._xi = {i: mp.mpf(str(xi[i])) for i in xi}
             else:
                 self._xi = {}
-            self._interval = self.toInterval()
+            self._interval = AffApy.intervalArithmetic.Interval(
+                fadd(self._x0, self.rad()), fsub(self._x0, self.rad()))
 
     # Getter
     @property
@@ -61,7 +62,7 @@ class Affine:
         self._xi = value
 
     @interval.setter
-    def xi(self, value):
+    def interval(self, value):
         """Set interval"""
         self._interval = value
 
@@ -327,9 +328,3 @@ class Affine:
         if isinstance(other, int) or isinstance(other, float):
             return other in int1
         raise AffApyError("type error")
-
-    # Conversion
-    def toInterval(self):
-        """Convert an affine form to an interval form"""
-        return AffApy.intervalArithmetic.Interval(
-            fadd(self.x0, self.rad()), fsub(self.x0, self.rad()))
