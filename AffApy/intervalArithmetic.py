@@ -335,13 +335,32 @@ class Interval:
     def sin(self):
         """
         Return the sinus of an interval
-        inf must be in [-pi/2, 3pi/2]
+        We use the identity sin(x) = cos(pi/2 - x)
         :rtype: Interval
         """
         return (-self + float(mp.pi/2)).cos()
 
+    def tan(self):
+        """
+        Return the tangent of an interval
+        We use the identity tan(x) = sin(x)/cos(x)
+        :rtype: Interval
+        """
+        return self.sin() / self.cos()
+
+    def cotan(self):
+        """
+        Return the cotangent of an interval
+        We use the identity cotan(x) = cos(x)/sin(x)
+        :rtype: Interval
+        """
+        return self.cos() / self.sin()
+
     def toAffine(self):
-        """Convert an interval form to an affine form"""
+        """
+        Convert an interval form to an affine form
+        :rtype: Affine
+        """
         inf, sup = self.inf, self.sup
         return AffApy.affineArithmetic.Affine(
             (inf + sup) / 2, [(inf - sup) / 2])
