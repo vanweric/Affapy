@@ -235,9 +235,9 @@ class Affine:
         Operator - (unary)
         :rtype: Affine
         """
-        x0 = -self.x0
-        xi = {i: -self.xi[i] for i in self.xi}
-        return Affine(xi, x0)
+        x0 = fneg(self.x0)
+        xi = {i: fneg(self.xi[i]) for i in self.xi}
+        return Affine(x0=x0, xi=xi)
 
     # Comparison operators
     def __eq__(self, other):
