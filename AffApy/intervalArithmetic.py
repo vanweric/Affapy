@@ -1,7 +1,8 @@
 """Interval Arithmetic module"""
 import AffApy.affineArithmetic
 from AffApy.affapyError import AffApyError
-from mpmath import mp, fadd, fsub, fmul, fdiv, fneg, fabs, floor, ceil
+from mpmath import (mp, fadd, fsub, fmul, fdiv, fneg, fabs, floor, ceil,
+                    sqrt, exp, log)
 
 
 class Interval:
@@ -239,26 +240,6 @@ class Interval:
         return "Interval({}, {})".format(self.inf, self.sup)
 
     # Precision
-    def __round__(self, ndigits):
-        """
-        Return the round form of the interval
-        :type self: Interval
-        :type ndigits: int
-        :rtype: Interval
-        """
-        if isinstance(ndigits, int):
-            return Interval(round(self.inf, ndigits),
-                            round(self.sup, ndigits))
-        raise AffApyError("n must be int")
-
-    # def __trunc__(self):
-    #     """
-    #     Return the truncate of the interval
-    #     :type self: Interval
-    #     :rtype: Interval
-    #     """
-    #     return Interval(trunc(self.inf), trunc(self.sup))
-
     def __floor__(self):
         """
         Return the floor of the interval
@@ -298,7 +279,8 @@ class Interval:
         :rtype: Interval
         """
         if self.inf > 0:
-            return Interval(log(self.inf), log(self.sup))
+            return Interval(log(self.inf, rounding='d'),
+                            log(self.sup, rounding='u'))
         raise AffApyError("inf must be > 0")
 
     def exp(self):
@@ -306,7 +288,8 @@ class Interval:
         Return the exponential of an interval
         :rtype: Interval
         """
-        return Interval(exp(self.inf), exp(self.sup))
+        return Interval(exp(self.inf, rounding='d'),
+                        exp(self.sup, rounding='u'))
 
     def sqrt(self):
         """
@@ -314,7 +297,8 @@ class Interval:
         :rtype: Interval
         """
         if self.inf >= 0:
-            return Interval(sqrt(self.inf), sqrt(self.sup))
+            return Interval(sqrt(self.inf, rounding='d'),
+                            sqrt(self.sup, rounding='u'))
         raise AffApyError("inf must be >= 0")
 
     def sin(self):
