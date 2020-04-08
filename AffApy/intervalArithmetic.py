@@ -117,14 +117,14 @@ class Interval:
                                    fdiv(1, c, rounding='u'))
         raise AffApyError("division by 0")
 
-    def __pow__(self, n):  # TODO: le cas n<0 et n>2
+    def __pow__(self, n):
         """
         Operator **
         :type self: Interval
         :type n: int
         :rtype: Interval
         """
-        return (n*self.log(self)).exp()
+        return (self.log()*n).exp()
 
     # Unary operator
     def __neg__(self):
@@ -142,11 +142,11 @@ class Interval:
         :rtype: Interval
         """
         if self < 0:
-            return Interval(fabs(self.sup, rounding='d'),
-                            fabs(self.inf, rounding='u'))
+            return Interval(fabs(self.sup),
+                            fabs(self.inf))
         if 0 in self:
-            return Interval(0, max(fabs(self.inf, rounding='u'),
-                                   fabs(self.sup, rounding='u')))
+            return Interval(0, max(fabs(self.inf),
+                                   fabs(self.sup)))
         return self
 
     # Comparison operators
@@ -269,8 +269,8 @@ class Interval:
         :rtype: Interval
         """
         if self.inf > 0:
-            return Interval(log(self.inf, rounding='d'),
-                            log(self.sup, rounding='u'))
+            return Interval(log(self.inf),
+                            log(self.sup))
         raise AffApyError("inf must be > 0")
 
     def exp(self):
@@ -338,7 +338,7 @@ class Interval:
         inf must be in [-pi/2, 3pi/2]
         :rtype: Interval
         """
-        return (self + fdiv(-mp.pi, 2)).cos()
+        return (-self + mp.pi/2).cos()
 
     def toAffine(self):
         """Convert an interval form to an affine form"""
