@@ -29,6 +29,7 @@ class Affine:
                 self._x0 = mp.mpf(0)
             if xi and isinstance(xi, dict):
                 self._xi = {i: mp.mpf(str(xi[i])) for i in xi}
+                Affine._weightCount = max(xi) + 1
             else:
                 self._xi = {}
             self._interval = AffApy.intervalArithmetic.Interval(
