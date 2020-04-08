@@ -316,21 +316,23 @@ class Interval:
         :rtype: Interval
         """
         inf, sup = self.minTrigo().inf, self.minTrigo().sup
+        pi_fois_2 = fmul(2, mp.pi)
+        pi_fois_3 = fmul(3, mp.pi)
         if inf <= mp.pi:
             if sup <= mp.pi:
                 return Interval(cos(sup, rounding='d'), cos(inf, rounding='u'))
-            if mp.pi < sup <= 2 * mp.pi:
+            if mp.pi < sup <= pi_fois_2:
                 return Interval(-1, max(cos(inf, rounding='u'),
                                         cos(sup, rounding='u')))
-            if sup > 2 * mp.pi:
+            if sup > pi_fois_2:
                 return Interval(-1, 1)
-        if mp.pi < inf <= 2 * mp.pi:
-            if sup <= 2 * mp.pi:
+        if mp.pi < inf <= pi_fois_2:
+            if sup <= pi_fois_2:
                 return Interval(cos(inf, rounding='d'), cos(sup, rounding='u'))
-            if 2 * mp.pi < sup <= 3 * mp.pi:
+            if pi_fois_2 < sup <= pi_fois_3:
                 return Interval(min(cos(inf, rounding='d'),
                                     cos(sup, rounding='u')), 1)
-            if sup >= 3 * mp.pi:
+            if sup >= pi_fois_3:
                 return Interval(-1, 1)
 
     def sin(self):
