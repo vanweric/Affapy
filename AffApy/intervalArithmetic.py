@@ -2,7 +2,7 @@
 import AffApy.affineArithmetic
 from AffApy.affapyError import AffApyError
 from mpmath import (mp, fadd, fsub, fmul, fdiv, fneg, fabs, floor, ceil,
-                    sqrt, exp, log, cos)
+                    sqrt, exp, log, cos, fmod)
 
 
 class Interval:
@@ -14,11 +14,11 @@ class Interval:
         :type sup: float or int
         """
         if inf < sup:
-            self._inf = mp.mpf(inf)
-            self._sup = mp.mpf(sup)
+            self._inf = mp.mpf(inf, rounding='d')
+            self._sup = mp.mpf(sup, rounding='u')
         else:
-            self._inf = mp.mpf(sup)
-            self._sup = mp.mpf(inf)
+            self._inf = mp.mpf(sup, rounding='d')
+            self._sup = mp.mpf(inf, rounding='u')
 
     # Getter
     @property
@@ -297,15 +297,16 @@ class Interval:
         :return: Interval
         """
         inf, sup = self.inf, self.sup
-        a = inf % (2 * mp.pi)
+        pi_fois_2 = fmul(2, mp.pi)
+        a = fmod(inf, pi_fois_2)
         if inf < 0:
-            a = -a
-        if (sup - inf) >= (2 * mp.pi):
-            b = a + 2 * mp.pi
+            a = fneg(a)
+        if fsub(sup, inf) >= pi_fois_2:
+            b = fadd(a, pi_fois_2)
         else:
-            b = sup % (2 * mp.pi)
+            b = fmod(sup, pi_fois_2)
             if b <= a:
-                b += 2*mp.pi
+                b = fadd(b, pi_fois_2)
         return Interval(a, b)
 
     def cos(self):
@@ -315,33 +316,56 @@ class Interval:
         :rtype: Interval
         """
         inf, sup = self.minTrigo().inf, self.minTrigo().sup
+        pi_fois_2 = fmul(2, mp.pi)
+        pi_fois_3 = fmul(3, mp.pi)
         if inf <= mp.pi:
             if sup <= mp.pi:
                 return Interval(cos(sup, rounding='d'), cos(inf, rounding='u'))
-            if mp.pi < sup <= 2 * mp.pi:
+            if mp.pi < sup <= pi_fois_2:
                 return Interval(-1, max(cos(inf, rounding='u'),
                                         cos(sup, rounding='u')))
-            if sup > 2 * mp.pi:
+            if sup > pi_fois_2:
                 return Interval(-1, 1)
-        if mp.pi < inf <= 2 * mp.pi:
-            if sup <= 2 * mp.pi:
+        if mp.pi < inf <= pi_fois_2:
+            if sup <= pi_fois_2:
                 return Interval(cos(inf, rounding='d'), cos(sup, rounding='u'))
-            if 2 * mp.pi < sup <= 3 * mp.pi:
+            if pi_fois_2 < sup <= pi_fois_3:
                 return Interval(min(cos(inf, rounding='d'),
                                     cos(sup, rounding='u')), 1)
-            if sup >= 3 * mp.pi:
+            if sup >= pi_fois_3:
                 return Interval(-1, 1)
 
     def sin(self):
         """
         Return the sinus of an interval
-        inf must be in [-pi/2, 3pi/2]
+        We use the identity sin(x) = cos(pi/2 - x)
         :rtype: Interval
         """
-        return (-self + float(mp.pi/2)).cos()
+        return (-self + float(mp.pi/2)).cos()   # TODO supprimer le float
+
+    def tan(self):
+        """
+        Return the tangent of an interval
+        We use the identity tan(x) = sin(x)/cos(x)
+        :rtype: Interval
+        """
+        return self.sin() / self.cos()
+
+    def cotan(self):
+        """
+        Return the cotangent of an interval
+        We use the identity cotan(x) = cos(x)/sin(x)
+        :rtype: Interval
+        """
+        return self.cos() / self.sin()
 
     def toAffine(self):
-        """Convert an interval form to an affine form"""
+        """
+        Convert an interval form to an affine form
+        :rtype: Affine
+        """
         inf, sup = self.inf, self.sup
         return AffApy.affineArithmetic.Affine(
-            (inf + sup) / 2, [(inf - sup) / 2])
+            x0=fdiv(fadd(inf, sup), 2),
+            xi={AffApy.affineArithmetic.updateWeightCount():
+                fdiv(fsub(inf, sup), 2)})
