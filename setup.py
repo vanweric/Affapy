@@ -15,7 +15,7 @@ setuptools.setup(
         "Tristan MICHEL"
     ],
     author_email=[
-        "roxue.zeng@etu.sorbonne-universite.fr",
+        "ruxue.zeng@etu.sorbonne-universite.fr",
         "quentin.deschamps1@etu.sorbonne-universite.fr",
         "florian.guily@etu.sorbonne-universite.fr",
         "tristan.michel1@etu.sorbonne-universite.fr"
