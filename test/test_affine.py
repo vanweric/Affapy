@@ -15,10 +15,13 @@ class TestAffine(unittest.TestCase):
         """Test 'add' function from class Affine"""
         x = Affine({1: 10}, 0)
         y = Affine({1: 10, 2: 5}, 5)
+        test = {1: 10, 2: 5}
+        print(x)
+        print(y)
         self.assertEqual(x + y, Affine({1: 20, 2: 5}, 5))
         self.assertEqual(x + x, Affine({1: 20}, 0))
         self.assertEqual(x + 4, Affine({1: 10}, 4))
-        self.assertEqual(x + 7.536 + y, Affine({1: 20, 2: 5}, 12.356))
+        self.assertEqual(x + 7.536 + y, Affine({1: 20, 2: 5}, 12.536))
 
     def test_sub_affine(self):
         """Test 'sub' function from class Affine"""
@@ -34,8 +37,8 @@ class TestAffine(unittest.TestCase):
         """Test 'mult' function from class Affine"""
         x = Affine({1: 10}, 0)
         y = Affine({1: 10, 2: 5}, 5)
-        self.assertEqual(x * y, Affine({1: 50, 2: 0, 3: 150}, 0))   #TODO: enlever clé de epsilon lorsque valeur vaut 0
-        self.assertEqual(x * x, Affine({1: 0, 2: 100}, 0))
+        self.assertEqual(x * y, Affine({1: 50, 3: 150}, 0))   #TODO: enlever clé de epsilon lorsque valeur vaut 0
+        self.assertEqual(x * x, Affine({2: 100}, 0))
         # TODO: pb car la conversion en intervalle donne [-100, 100] pour x²
         self.assertEqual(y * 4, Affine({1: 40, 2: 20}, 20))
         self.assertEqual(y * 7.536, Affine({1: 75.36, 2: 37.68}, 37.68))
@@ -47,7 +50,9 @@ class TestAffine(unittest.TestCase):
         z = Interval(-7, 5)
         self.assertTrue(x in y)
         self.assertTrue(0 in x)
-        self.assertTrue(z in x)
+        self.assertTrue(z in y)
+        # self.assertFalse(y in z) TODO
+        # self.assertFalse(x in 0) TODO
 
     def test_inv_affine(self):
         """Test 'inv' function from class Affine"""
@@ -80,6 +85,7 @@ class TestAffine(unittest.TestCase):
         y = Affine({1: 10, 2: 5}, 5)
         z = Affine({1: 4, 2: 6}, 0)
         X = Affine({2: 10}, 0)
+        print('voici x', x)
         self.assertFalse(x == y)
         self.assertFalse(x == z)
         self.assertFalse(x == X)

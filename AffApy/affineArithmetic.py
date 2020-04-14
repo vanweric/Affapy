@@ -8,20 +8,20 @@ class Affine:
     """Representation of an affine form"""
     _weightCount = 1
 
-    def __init__(self, interval=None, x0=None, xi=None):
+    def __init__(self, xi=None, x0=None):
         """
         Two ways for init Affine:
         - Affine(interval=[inf, sup])
         - Affine(x0=0, xi={})
         If no arguments, x0=0 and xi={}
         """
-        if interval and isinstance(interval, list) and len(interval) == 2:
-            inf, sup = min(interval), max(interval)
+        if xi is not None and isinstance(xi, list) and len(xi) == 2:
+            inf, sup = min(xi), max(xi)
             self._x0 = fdiv(fadd(inf, sup), 2)
             self._xi = {Affine._weightCount: fdiv(fsub(inf, sup), 2)}
             Affine._weightCount += 1
             self._interval = AffApy.intervalArithmetic.Interval(inf, sup)
-        elif x0 and xi:
+        elif x0 is not None and xi is not None:
             self._x0 = mp.mpf(x0)
             self._xi = {i: mp.mpf(str(xi[i])) for i in xi}
             self._interval = AffApy.intervalArithmetic.Interval(
@@ -78,7 +78,7 @@ class Affine:
         """
         x0 = fneg(self.x0)
         xi = {i: fneg(self.xi[i]) for i in self.xi}
-        return Affine(x0=x0, xi=xi)
+        return Affine(xi=xi, x0=x0)
 
     # Affine operations
     def __add__(self, other):
@@ -100,11 +100,11 @@ class Affine:
             for i in other.xi:
                 if i not in self.xi:
                     xi[i] = other.xi[i]
-            return Affine(x0=x0, xi=xi)
+            return Affine(xi=xi, x0=x0)
         if isinstance(other, int) or isinstance(other, float):
             x0 = fadd(self.x0, mp.mpf(str(other)))
             xi = self.xi.copy()
-            return Affine(x0=x0, xi=xi)
+            return Affine(xi=xi, x0=x0)
         raise AffApyError("type error: other must be Affine, int or float")
 
     def __radd__(self, other):
@@ -134,11 +134,11 @@ class Affine:
             for i in other.xi:
                 if i not in self.xi:
                     xi[i] = fneg(other.xi[i])
-            return Affine(x0=x0, xi=xi)
+            return Affine(xi=xi, x0=x0)
         if isinstance(other, int) or isinstance(other, float):
             x0 = fsub(self.x0, mp.mpf(str(other)))
             xi = self.xi.copy()
-            return Affine(x0=x0, xi=xi)
+            return Affine(xi=xi, x0=x0)
         raise AffApyError("type error: other must be Affine, int or float")
 
     def __rsub__(self, other):
@@ -179,11 +179,11 @@ class Affine:
                     xi[i] = v
             xi[Affine._weightCount] = fmul(self.rad(), other.rad())
             Affine._weightCount += 1
-            return Affine(x0=x0, xi=xi)
+            return Affine(xi=xi, x0=x0)
         if isinstance(other, int) or isinstance(other, float):
             x0 = fmul(mp.mpf(str(other)), self.x0)
             xi = {i: fmul(mp.mpf(str(other)), self.xi[i]) for i in self.xi}
-            return Affine(x0=x0, xi=xi)
+            return Affine(xi=xi, x0=x0)
         raise AffApyError("type error: other must be Affine, int or float")
 
     def __rmul__(self, other):
@@ -204,7 +204,7 @@ class Affine:
         xi = {i: fmul(alpha, self.xi[i]) for i in self.xi}
         xi[Affine._weightCount] = delta
         Affine._weightCount += 1
-        return Affine(x0=x0, xi=xi)
+        return Affine(xi=xi, x0=x0)
 
     def inv(self):
         """
@@ -216,7 +216,7 @@ class Affine:
             a, b = min(abs(inf), abs(sup)), max(abs(inf), abs(sup))
             alpha = fdiv(fneg(1), fmul(b, b))
             i = AffApy.intervalArithmetic.Interval(fsub(fdiv(1, a),
-                                                   fmul(alpha, a)), fdiv(2, b))
+                                                        fmul(alpha, a)), fdiv(2, b))
             dzeta = i.middle()
             if inf < 0:
                 dzeta = fneg(dzeta)
@@ -250,7 +250,7 @@ class Affine:
             return other * self.inv()
         raise AffApyError("type error: other must be Affine, int or float")
 
-    def __pow__(self, other):   # TODO other type int or float
+    def __pow__(self, other):  # TODO other type int or float
         """
         Operator **
         We use the identity : x**y = exp(y * log(x))
@@ -355,7 +355,7 @@ class Affine:
         We use the identity cosh(x) = (exp(x) + exp(-x))/2
         :rtype: Affine
         """
-        return (self.exp() + (-self).exp())*0.5
+        return (self.exp() + (-self).exp()) * 0.5
 
     def sinh(self):
         """
@@ -363,7 +363,7 @@ class Affine:
         We use the identity sinh(x) = (exp(x) - exp(-x))/2
         :rtype: Affine
         """
-        return (self.exp() - (-self).exp())*0.5
+        return (self.exp() - (-self).exp()) * 0.5
 
     def tanh(self):
         """
@@ -398,9 +398,11 @@ class Affine:
         :rtype: bool
         """
         if isinstance(other, self.__class__):
-            return self.interval in other.interval
-        # if isinstance(other, AffApy.intervalArithmetic.Interval):
-        #     return self.interval in other
+            return other.interval in self.interval
+        if isinstance(other, AffApy.intervalArithmetic.Interval):
+            return other in self.interval
+        if isinstance(other, int or float):
+            return other in self.interval
         raise AffApyError(
             "type error: other must be Affine")
 
@@ -411,8 +413,7 @@ class Affine:
         :rtype: string
         """
         return " + ".join(
-            [str(self.x0)] +
-            ["".join([str(self.xi[i]), "*eps", str(i)]) for i in self.xi])
+            ["".join([str(self.xi[i]), "*eps", str(i)]) for i in self.xi] + [str(self.x0)])
 
     def __repr__(self):
         """
