@@ -1,11 +1,9 @@
 """Defining test cases for Affine class"""
 
 from AffApy.affineArithmetic import Affine
-from mpmath import mpf
-from math import sqrt, pi, sin, cos
-import unittest
-
 from AffApy.intervalArithmetic import Interval
+import unittest
+from mpmath import sqrt
 
 
 class TestAffine(unittest.TestCase):
@@ -28,15 +26,14 @@ class TestAffine(unittest.TestCase):
         self.assertEqual(x - y, Affine(x0=-5, xi={2: -5}))
         self.assertEqual(x + y - y, x)
         self.assertEqual(x - 4, Affine(x0=-4, xi={1: 10}))
-        self.assertEqual(x - 7.536 - y, Affine(x0=12.536, xi={2: -5}))
+        self.assertEqual(x - 7.536 - y, Affine(x0=-12.536, xi={2: -5}))
 
-    def test_mult_affine(self):
-        """Test 'mult' function from class Affine"""
+    def test_mul_affine(self):
+        """Test 'mul' function from class Affine"""
         x = Affine(xi={1: 10}, x0=0)
         y = Affine(xi={1: 10, 2: 5}, x0=5)
-        self.assertEqual(x * y, Affine(xi={1: 50, 3: 150}, x0=0))   #TODO: enlever clé de epsilon lorsque valeur vaut 0
-        self.assertEqual(x * x, Affine(xi={2: 100}, x0=0))
-        # TODO: pb car la conversion en intervalle donne [-100, 100] pour x²
+        self.assertEqual(x * y, Affine(xi={1: 50, 3: 150}, x0=0))
+        self.assertEqual(x * x, Affine(xi={4: 100}, x0=0))
         self.assertEqual(y * 4, Affine(xi={1: 40, 2: 20}, x0=20))
         self.assertEqual(y * 7.536, Affine(xi={1: 75.36, 2: 37.68}, x0=37.68))
 
@@ -64,7 +61,7 @@ class TestAffine(unittest.TestCase):
         y = Affine(xi={1: -2, 2: 6}, x0=-20)
         X = Interval(4, 16)
         Y = Interval(-28, -12)
-        self.assertTrue(x / y == x * y.inv())
+        self.assertEqual(x / y, x * y.inv())
         self.assertTrue(X / Y in x / y)
 
     def test_neq_affine(self):
@@ -82,7 +79,6 @@ class TestAffine(unittest.TestCase):
         y = Affine(xi={1: 10, 2: 5}, x0=5)
         z = Affine(xi={1: 4, 2: 6}, x0=0)
         X = Affine(xi={2: 10}, x0=0)
-        print('voici x', x)
         self.assertFalse(x == y)
         self.assertFalse(x == z)
         self.assertFalse(x == X)
@@ -101,7 +97,7 @@ class TestAffine(unittest.TestCase):
         """Test 'sqrt' function from class Affine"""
         x = Affine(x0=5, xi={1: 5})
         y = Affine(x0=20, xi={2: 5, 5: 7})
-        self.assertTrue(Interval(0, sqrt(10) in x.sqrt()))
+        self.assertTrue(Interval(0, sqrt(10)) in x.sqrt())
         self.assertTrue(y.toInterval().sqrt() in y.sqrt())
 
 
