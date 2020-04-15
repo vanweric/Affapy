@@ -27,7 +27,7 @@ print("x + x - x - x =", x + x - x - x)
 print("-x =", -x)
 print("-x + x =", -x + x)
 
-x = Affine(interval=[1, 2])
+x = Affine(interval=[-mp.pi, mp.pi])
 print(x)
 print(x.interval)
 y = Affine(interval=[-1, 1])
