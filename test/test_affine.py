@@ -13,25 +13,22 @@ class TestAffine(unittest.TestCase):
 
     def test_add_affine(self):
         """Test 'add' function from class Affine"""
-        x = Affine({1: 10}, 0)
-        y = Affine({1: 10, 2: 5}, 5)
-        test = {1: 10, 2: 5}
-        print(x)
-        print(y)
-        self.assertEqual(x + y, Affine({1: 20, 2: 5}, 5))
-        self.assertEqual(x + x, Affine({1: 20}, 0))
-        self.assertEqual(x + 4, Affine({1: 10}, 4))
-        self.assertEqual(x + 7.536 + y, Affine({1: 20, 2: 5}, 12.536))
+        x = Affine(x0=0, xi={1: 10})
+        y = Affine(x0=5, xi={1: 10, 2: 5})
+        self.assertEqual(x + y, Affine(x0=5, xi={1: 20, 2: 5}))
+        self.assertEqual(x + x, Affine(x0=0, xi={1: 20}))
+        self.assertEqual(x + 4, Affine(x0=4, xi={1: 10}))
+        self.assertEqual(x + 7.536 + y, Affine(x0=12.536, xi={1: 20, 2: 5}))
 
     def test_sub_affine(self):
         """Test 'sub' function from class Affine"""
-        x = Affine({1: 10}, 0)
-        y = Affine({1: 10, 2: 5}, 5)
-        self.assertEqual(x - x, Affine({}, 0))
-        self.assertEqual(x - y, Affine({2: -5}, -5))
+        x = Affine(x0=0, xi={1: 10})
+        y = Affine(x0=5, xi={1: 10, 2: 5})
+        self.assertEqual(x - x, Affine(x0=0, xi={}))
+        self.assertEqual(x - y, Affine(x0=-5, xi={2: -5}))
         self.assertEqual(x + y - y, x)
-        self.assertEqual(x - 4, Affine({1: 10}, -4))
-        self.assertEqual(x - 7.536 - y, Affine({2: -5}, 12.536))
+        self.assertEqual(x - 4, Affine(x0=-4, xi={1: 10}))
+        self.assertEqual(x - 7.536 - y, Affine(x0=12.536, xi={2: -5}))
 
     def test_mult_affine(self):
         """Test 'mult' function from class Affine"""
@@ -106,10 +103,6 @@ class TestAffine(unittest.TestCase):
         y = Affine(20, {2: 5, 5: 7})
         self.assertTrue(Interval(0, sqrt(10) in x.sqrt()))
         self.assertTrue(y.toInterval().sqrt() in y.sqrt())
-
-
-
-
 
 
 if __name__ == "__main__":
