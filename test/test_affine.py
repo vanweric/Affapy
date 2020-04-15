@@ -32,18 +32,18 @@ class TestAffine(unittest.TestCase):
 
     def test_mult_affine(self):
         """Test 'mult' function from class Affine"""
-        x = Affine({1: 10}, 0)
-        y = Affine({1: 10, 2: 5}, 5)
-        self.assertEqual(x * y, Affine({1: 50, 3: 150}, 0))   #TODO: enlever clé de epsilon lorsque valeur vaut 0
-        self.assertEqual(x * x, Affine({2: 100}, 0))
+        x = Affine(xi={1: 10}, x0=0)
+        y = Affine(xi={1: 10, 2: 5}, x0=5)
+        self.assertEqual(x * y, Affine(xi={1: 50, 3: 150}, x0=0))   #TODO: enlever clé de epsilon lorsque valeur vaut 0
+        self.assertEqual(x * x, Affine(xi={2: 100}, x0=0))
         # TODO: pb car la conversion en intervalle donne [-100, 100] pour x²
-        self.assertEqual(y * 4, Affine({1: 40, 2: 20}, 20))
-        self.assertEqual(y * 7.536, Affine({1: 75.36, 2: 37.68}, 37.68))
+        self.assertEqual(y * 4, Affine(xi={1: 40, 2: 20}, x0=20))
+        self.assertEqual(y * 7.536, Affine(xi={1: 75.36, 2: 37.68}, x0=37.68))
 
     def test_contains_affine(self):
         """Test 'contains' function from class Affine"""
-        x = Affine({1: 10}, 0)
-        y = Affine({1: 10, 2: 5}, 5)
+        x = Affine(xi={1: 10}, x0=0)
+        y = Affine(xi={1: 10, 2: 5}, x0=5)
         z = Interval(-7, 5)
         self.assertTrue(x in y)
         self.assertTrue(0 in x)
@@ -53,15 +53,15 @@ class TestAffine(unittest.TestCase):
 
     def test_inv_affine(self):
         """Test 'inv' function from class Affine"""
-        x = Affine({1: 6}, 10)
-        y = Affine({1: -2, 2: 6}, -20)
+        x = Affine(xi={1: 6}, x0=10)
+        y = Affine(xi={1: -2, 2: 6}, x0=-20)
         self.assertTrue(Interval(1/16, 1/4) in x.inv())
         self.assertTrue(Interval(-1/28, -1/12) in y.inv())
 
     def test_truediv_affine(self):
         """Test 'truediv' function from class Affine"""
-        x = Affine({1: 6}, 10)
-        y = Affine({1: -2, 2: 6}, -20)
+        x = Affine(xi={1: 6}, x0=10)
+        y = Affine(xi={1: -2, 2: 6}, x0=-20)
         X = Interval(4, 16)
         Y = Interval(-28, -12)
         self.assertTrue(x / y == x * y.inv())
@@ -69,19 +69,19 @@ class TestAffine(unittest.TestCase):
 
     def test_neq_affine(self):
         """Test 'neq' function from class Affine"""
-        x = Affine({1: 6}, 10)
-        y = Affine({1: -2, 2: 6}, -20)
-        self.assertTrue(-x == Affine({1: -6}, -10))
-        self.assertTrue(-y == Affine({1: 2, 2: -6}, 20))
-        self.assertTrue(x + (-x) == Affine({}, 0))
+        x = Affine(xi={1: 6}, x0=10)
+        y = Affine(xi={1: -2, 2: 6}, x0=-20)
+        self.assertTrue(-x == Affine(xi={1: -6}, x0=-10))
+        self.assertTrue(-y == Affine(xi={1: 2, 2: -6}, x0=20))
+        self.assertTrue(x + (-x) == Affine({}, x0=0))
         self.assertTrue(x + (-y) == x - y)
 
     def test_eq_affine(self):
         """Test 'eq' function from class Affine"""
-        x = Affine({1: 10}, 0)
-        y = Affine({1: 10, 2: 5}, 5)
-        z = Affine({1: 4, 2: 6}, 0)
-        X = Affine({2: 10}, 0)
+        x = Affine(xi={1: 10}, x0=0)
+        y = Affine(xi={1: 10, 2: 5}, x0=5)
+        z = Affine(xi={1: 4, 2: 6}, x0=0)
+        X = Affine(xi={2: 10}, x0=0)
         print('voici x', x)
         self.assertFalse(x == y)
         self.assertFalse(x == z)
@@ -89,18 +89,18 @@ class TestAffine(unittest.TestCase):
 
     def test_ne_affine(self):
         """Test 'ne' function from class Affine"""
-        x = Affine({1: 10}, 0)
-        y = Affine({1: 10, 2: 5}, 5)
-        z = Affine({1: 4, 2: 6}, 0)
-        X = Affine({2: 10}, 0)
+        x = Affine(xi={1: 10}, x0=0)
+        y = Affine(xi={1: 10, 2: 5}, x0=5)
+        z = Affine(xi={1: 4, 2: 6}, x0=0)
+        X = Affine(xi={2: 10}, x0=0)
         self.assertTrue(x != y)
         self.assertTrue(x != z)
         self.assertTrue(x != X)
 
     def test_sqrt_affine(self):
         """Test 'sqrt' function from class Affine"""
-        x = Affine(5, {1: 5})
-        y = Affine(20, {2: 5, 5: 7})
+        x = Affine(x0=5, xi={1: 5})
+        y = Affine(x0=20, xi={2: 5, 5: 7})
         self.assertTrue(Interval(0, sqrt(10) in x.sqrt()))
         self.assertTrue(y.toInterval().sqrt() in y.sqrt())
 

@@ -21,7 +21,7 @@ class Affine:
             self._xi = {Affine._weightCount: fdiv(fsub(inf, sup), 2)}
             Affine._weightCount += 1
             self._interval = AffApy.intervalArithmetic.Interval(inf, sup)
-        elif x0 and xi:
+        elif x0 is not None and xi:
             self._x0 = mp.mpf(x0)
             self._xi = {i: mp.mpf(str(xi[i])) for i in xi}
             self._interval = AffApy.intervalArithmetic.Interval(
@@ -398,9 +398,11 @@ class Affine:
         :rtype: bool
         """
         if isinstance(other, self.__class__):
-            return self.interval in other.interval
-        # if isinstance(other, AffApy.intervalArithmetic.Interval):
-        #     return self.interval in other
+            return other.interval in self.interval
+        if isinstance(other, AffApy.intervalArithmetic.Interval):
+            return other in self.interval
+        if isinstance(other, int or float):
+            return other in self.interval
         raise AffApyError(
             "type error: other must be Affine")
 
@@ -420,3 +422,9 @@ class Affine:
         :rtype: string
         """
         return "Affine({}, {})".format(self.x0, self.xi)
+
+
+if __name__ == '__main__':
+    d1 = {1: 12}
+    d2 = {2: 15, 1: 12}
+    print(d1 == d2)
