@@ -15,13 +15,16 @@ class Affine:
         - Affine(x0=0, xi={})
         If no arguments, x0=0 and xi={}
         """
-        if interval and isinstance(interval, list) and len(interval) == 2:
-            inf, sup = min(interval), max(interval)
+        if interval is not None:
+            if isinstance(interval, list) and len(interval) == 2:
+                inf, sup = min(interval), max(interval)
+            else:
+                inf, sup = interval.inf, interval.sup
             self._x0 = fdiv(fadd(inf, sup), 2)
             self._xi = {Affine._weightCount: fdiv(fsub(inf, sup), 2)}
             Affine._weightCount += 1
             self._interval = AffApy.intervalArithmetic.Interval(inf, sup)
-        elif x0 is not None and xi:
+        elif x0 is not None and xi is not None:
             self._x0 = mp.mpf(x0)
             self._xi = {i: mp.mpf(str(xi[i])) for i in xi}
             self._interval = AffApy.intervalArithmetic.Interval(
