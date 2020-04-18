@@ -389,3 +389,4 @@ class Interval:
         :rtype: Affine
         """
         return AffApy.affineArithmetic.Affine(interval=[self.inf, self.sup])
+
