@@ -51,6 +51,8 @@ class Interval:
             return self.inf <= other.inf and self.sup >= other.sup
         if isinstance(other, int) or isinstance(other, float):
             return self.inf <= other <= self.sup
+        if isinstance(other, AffApy.affineArithmetic.Affine):
+            return self.inf <= other.interval.inf and self.sup >= other.interval.sup
         raise AffApyError("type error")
 
     # Binary operators

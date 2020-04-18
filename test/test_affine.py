@@ -52,8 +52,8 @@ class TestAffine(unittest.TestCase):
         """Test 'inv' function from class Affine"""
         x = Affine(xi={1: 6}, x0=10)
         y = Affine(xi={1: -2, 2: 6}, x0=-20)
-        self.assertTrue(Interval(1/16, 1/4) in x.inv())
-        self.assertTrue(Interval(-1/28, -1/12) in y.inv())
+        self.assertTrue(Interval(1 / 16, 1 / 4) in x.inv())
+        self.assertTrue(Interval(-1 / 28, -1 / 12) in y.inv())
 
     def test_truediv_affine(self):
         """Test 'truediv' function from class Affine"""
@@ -61,7 +61,7 @@ class TestAffine(unittest.TestCase):
         y = Affine(xi={1: -2, 2: 6}, x0=-20)
         X = Interval(4, 16)
         Y = Interval(-28, -12)
-        self.assertEqual(x / y, x * y.inv())
+        self.assertEqual((x / y).interval, (x * y.inv()).interval)
         self.assertTrue(X / Y in x / y)
 
     def test_neq_affine(self):
@@ -70,7 +70,7 @@ class TestAffine(unittest.TestCase):
         y = Affine(xi={1: -2, 2: 6}, x0=-20)
         self.assertTrue(-x == Affine(xi={1: -6}, x0=-10))
         self.assertTrue(-y == Affine(xi={1: 2, 2: -6}, x0=20))
-        self.assertTrue(x + (-x) == Affine({}, x0=0))
+        self.assertTrue(x + (-x) == Affine(xi={}, x0=0))
         self.assertTrue(x + (-y) == x - y)
 
     def test_eq_affine(self):
@@ -97,8 +97,9 @@ class TestAffine(unittest.TestCase):
         """Test 'sqrt' function from class Affine"""
         x = Affine(x0=5, xi={1: 5})
         y = Affine(x0=20, xi={2: 5, 5: 7})
-        self.assertTrue(Interval(0, sqrt(10)) in x.sqrt())
-        self.assertTrue(y.toInterval().sqrt() in y.sqrt())
+        z = Interval(sqrt(8), sqrt(32)+1)
+        self.assertTrue(x.sqrt() in Interval(0, sqrt(10) + 1))
+        self.assertTrue(y.sqrt() in Interval(sqrt(8) - 1, sqrt(32) + 1))
 
 
 if __name__ == "__main__":
