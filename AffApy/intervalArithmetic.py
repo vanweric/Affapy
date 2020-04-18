@@ -126,7 +126,29 @@ class Interval:
         :type n: int
         :rtype: Interval
         """
-        return (self.log()*n).exp()
+        if self.inf < 0 and self.sup > 0:
+            interval = Interval(-self.inf, self.sup)
+            result = (interval.log() * n).exp()
+            if n % 2 != 0:
+                result.inf = -result.inf
+                return result
+            else:
+                maximum = max(result.inf, result.sup)
+                result.inf = 0
+                result.sup = maximum
+                return result
+        if self.sup < 0:
+            interval = Interval(-self.sup, -self.inf)
+            result = (interval.log() * n).exp()
+            if n % 2 != 0:
+                inf = result.inf
+                result.inf = -result.sup
+                result.sup = -inf
+                return result
+            else:
+                return result
+        if self.inf > 0:
+            return (self.log() * n).exp()
 
     # Unary operator
     def __neg__(self):
@@ -343,7 +365,7 @@ class Interval:
         We use the identity sin(x) = cos(pi/2 - x)
         :rtype: Interval
         """
-        return (-self + float(mp.pi/2)).cos()   # TODO supprimer le float
+        return (-self + float(mp.pi / 2)).cos()  # TODO supprimer le float
 
     def tan(self):
         """

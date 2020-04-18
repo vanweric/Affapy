@@ -52,6 +52,7 @@ class TestInterval(unittest.TestCase):
         z = Interval(-1, 1)
 
         self.assertEqual(y ** 2, Interval(9, 16))
+        self.assertEqual(y ** 3, Interval(27, 64))
         self.assertEqual(z ** 2, Interval(0, 1))
         self.assertEqual(x ** 2, Interval(1, 9))
         self.assertEqual(x ** 2 + y ** 2 - x * y, Interval(13, 37))
