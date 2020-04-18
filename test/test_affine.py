@@ -36,6 +36,7 @@ class TestAffine(unittest.TestCase):
         self.assertEqual(x * x, Affine(xi={4: 100}, x0=0))
         self.assertEqual(y * 4, Affine(xi={1: 40, 2: 20}, x0=20))
         self.assertEqual(y * 7.536, Affine(xi={1: 75.36, 2: 37.68}, x0=37.68))
+        self.assertEqual((x + x) * y - y, Affine(x0=-5, xi={1: 90, 2: -5, 5: 300}))
 
     def test_contains_affine(self):
         """Test 'contains' function from class Affine"""
@@ -45,7 +46,7 @@ class TestAffine(unittest.TestCase):
         self.assertTrue(x in y)
         self.assertTrue(0 in x)
         self.assertTrue(z in y)
-        # self.assertFalse(y in z) TODO
+        self.assertFalse(y in z)
         # self.assertFalse(x in 0) TODO
 
     def test_inv_affine(self):
