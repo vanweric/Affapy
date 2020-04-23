@@ -16,7 +16,10 @@ before_script:
 job:test:
   stage: unit_tests
   script:
+    # install AffApy and coverage
     - pip install .
+    - pip install coverage
+    # run the unit tests and report the coverage
     - coverage run --source=. -m unittest discover -v test
     - coverage html
     - coverage report
