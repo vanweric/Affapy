@@ -7,9 +7,9 @@ stages:
 
 # install and activate the virtual env
 before_script:
-  - pip3 install --upgrade pip setuptools
-  - pip3 install virtualenv
-  - virtualenv -p `which python3` .virtualenv/AffApy
+  - pip install --upgrade pip setuptools
+  - pip install virtualenv
+  - virtualenv -p `which python` .virtualenv/AffApy
   - source .virtualenv/AffApy/bin/activate
 
 # template for the unit tests
@@ -44,11 +44,11 @@ job:test-python3.6:
 
 job:test-python3.7:
   extends: .unittest
-  image: python:3.7-stretch
+  image: python:3.7-buster
 
 job:test-python3.8:
   extends: .unittest
-  image: python:3.8-stretch
+  image: python:3.8-buster
 
 
 
