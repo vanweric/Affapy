@@ -20,7 +20,7 @@ job:test:
     - pip install .
     - pip install coverage
     # run the unit tests and report the coverage
-    - coverage run --source=. -m unittest discover -v test
+    - coverage run --source=AffApy,test -m unittest discover -v test
     - coverage html
     - coverage report
   coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
