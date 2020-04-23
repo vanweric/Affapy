@@ -12,8 +12,8 @@ before_script:
   - virtualenv -p `which python3` .virtualenv/AffApy
   - source .virtualenv/AffApy/bin/activate
 
-# Unit tests
-job:test:
+# template for the unit tests
+.unittest:
   stage: unit_tests
   script:
     # install AffApy and coverage
@@ -29,6 +29,27 @@ job:test:
     paths:
       - htmlcov
     expire_in: 1 week
+
+job:test-python2.7:
+  extends: unittest
+  image: python:2.7-stretch
+
+job:test-python3.5:
+  extends: unittest
+  image: python:3.5-stretch
+
+job:test-python3.6:
+  extends: unittest
+  image: python:3.6-stretch
+
+job:test-python3.7:
+  extends: unittest
+  image: python:3.7-stretch
+
+job:test-python3.8:
+  extends: unittest
+  image: python:3.8-stretch
+
 
 
 # generate pdf documentation
