@@ -1,0 +1,48 @@
+image: python:3.7-stretch
+
+stages:
+  - documentation
+  - unit_tests
+
+
+# install and activate the virtual env
+before_script:
+  - pip3 install --upgrade pip setuptools
+  - pip3 install virtualenv
+  - virtualenv -p `which python3` .virtualenv/AffApy
+  - source .virtualenv/AffApy/bin/activate
+
+# Unit tests
+job:test:
+  stage: unit_tests
+  script:
+    - pip install .
+    - coverage run --source=. -m unittest discover -v test
+    - coverage html
+    - coverage report
+  coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
+  artifacts:
+    when: always
+    paths:
+      - htmlcov
+    expire_in: 1 week
+
+
+# generate pdf documentation
+job:PDF:
+  stage: documentation
+  allow_failure: true
+  script:
+    # install minimal LaTeX
+    - apt-get update -qy
+    - apt-get -y install texlive-latex-recommended latexmk texlive-fonts-recommended texlive-science texlive-formats-extra
+    # generate the html and the pdf documentation
+    - pip install .
+    - cd doc/
+    - make html
+    - make latexpdf
+    - cd ..
+  artifacts:
+    paths:
+      - doc/build/latex/affapy.pdf
+      - doc/build/html/*
