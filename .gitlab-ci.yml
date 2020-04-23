@@ -38,7 +38,7 @@ job:PDF:
   script:
     # install minimal LaTeX
     - apt-get update -qy
-    - apt-get -y install texlive-latex-recommended latexmk texlive-fonts-recommended texlive-science texlive-formats-extra
+    - apt-get -y install texlive-latex-recommended latexmk texlive-fonts-recommended texlive-science texlive-formats-extra texlive-lang-european
     # generate the html and the pdf documentation
     - pip install .
     - cd doc/
