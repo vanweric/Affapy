@@ -37,6 +37,7 @@ job:test-python3.8:
 # main tests, with coverages
 job:test-python3.7:
   image: python:3.7-buster
+  stage: unit_tests
   script:
     # install coverage
     - pip install coverage
