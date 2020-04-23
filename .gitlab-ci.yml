@@ -5,19 +5,40 @@ stages:
   - unit_tests
 
 
-# install and activate the virtual env
+# install and activate the virtual env, install AffApy
 before_script:
   - pip install --upgrade pip setuptools
   - pip install virtualenv
   - virtualenv -p `which python` .virtualenv/AffApy
   - source .virtualenv/AffApy/bin/activate
+  - pip install .
+
 
 # template for the unit tests
 .unittest:
   stage: unit_tests
   script:
-    # install AffApy and coverage
-    - pip install .
+    - python -m unittest discover -v test
+
+# Unit tests run for python 3.5 to 3.8 on debian stretch or buster
+# Python 2.7 is not tested, since Python 2.x is no longer supported by the Python Software Fundation
+job:test-python3.5:
+  extends: .unittest
+  image: python:3.5-stretch
+
+job:test-python3.6:
+  extends: .unittest
+  image: python:3.6-stretch
+
+job:test-python3.8:
+  extends: .unittest
+  image: python:3.8-buster
+
+# main tests, with coverages
+job:test-python3.7:
+  image: python:3.7-buster
+  script:
+    # install coverage
     - pip install coverage
     # run the unit tests and report the coverage
     - coverage run --source=AffApy,test -m unittest discover -v test
@@ -30,29 +51,8 @@ before_script:
       - htmlcov
     expire_in: 1 week
 
-job:test-python2.7:
-  extends: .unittest
-  image: python:2.7-stretch
 
-job:test-python3.5:
-  extends: .unittest
-  image: python:3.5-stretch
-
-job:test-python3.6:
-  extends: .unittest
-  image: python:3.6-stretch
-
-job:test-python3.7:
-  extends: .unittest
-  image: python:3.7-buster
-
-job:test-python3.8:
-  extends: .unittest
-  image: python:3.8-buster
-
-
-
-# generate pdf documentation
+# generate the documentation (pdf and html)
 job:PDF:
   stage: documentation
   allow_failure: true
