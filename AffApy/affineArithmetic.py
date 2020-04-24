@@ -8,6 +8,10 @@ class Affine:
     """Representation of an affine form"""
     _weightCount = 1
 
+    def getNewXi():
+        Affine._weightCount += 1
+        return Affine._weightCount - 1
+
     def __init__(self, interval=None, x0=None, xi=None):
         """
         Two ways for init Affine:
@@ -21,8 +25,7 @@ class Affine:
             else:
                 inf, sup = interval.inf, interval.sup
             self._x0 = fdiv(fadd(inf, sup), 2)
-            self._xi = {Affine._weightCount: fdiv(fsub(inf, sup), 2)}
-            Affine._weightCount += 1
+            self._xi = {Affine.getNewXi(): fdiv(fsub(inf, sup), 2)}
             self._interval = AffApy.intervalArithmetic.Interval(inf, sup)
         elif x0 is not None and xi is not None:
             self._x0 = mp.mpf(x0)
@@ -180,8 +183,7 @@ class Affine:
                              fmul(other.xi[i], self.x0))
                 if v != 0:
                     xi[i] = v
-            xi[Affine._weightCount] = fmul(self.rad(), other.rad())
-            Affine._weightCount += 1
+            xi[Affine.getNewXi()] = fmul(self.rad(), other.rad())
             return Affine(x0=x0, xi=xi)
         if isinstance(other, int) or isinstance(other, float):
             x0 = fmul(mp.mpf(str(other)), self.x0)
@@ -205,8 +207,7 @@ class Affine:
         """
         x0 = fadd(fmul(alpha, self.x0), dzeta)
         xi = {i: fmul(alpha, self.xi[i]) for i in self.xi}
-        xi[Affine._weightCount] = delta
-        Affine._weightCount += 1
+        xi[Affine.getNewXi()] = delta
         return Affine(x0=x0, xi=xi)
 
     def inv(self):
@@ -425,9 +426,3 @@ class Affine:
         :rtype: string
         """
         return "Affine({}, {})".format(self.x0, self.xi)
-
-
-if __name__ == '__main__':
-    d1 = {1: 12}
-    d2 = {2: 15, 1: 12}
-    print(d1 == d2)
