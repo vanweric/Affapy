@@ -7,7 +7,13 @@ class precision(ContextDecorator):
     """Manage precision for AffApy Library"""
     _precisionStack = deque()
 
-    def __enter__(self, dec_prec=0, bin_prec=0):
+    def __enter__(self, bin_prec=0, dec_prec=0):
+        """
+        
+        :param bin_prec: int for binary precision of mpmath
+        :param dec_prec: float for decimal precision of mpmath
+        :return:
+        """
         precision._precisionStack.append(mp.dps)
         if dec_prec:
             mp.dps = dec_prec
@@ -24,24 +30,31 @@ class precision(ContextDecorator):
             mp.dps = 0
         return False
 
-    @staticmethod
-    def getActualDecPrecision():
+    # Getter
+    @property
+    def precisionDec(self):
+        """ Return decimal precision """
         return mp.dps
 
-    @staticmethod
-    def getActualBinPrecision():
+    @property
+    def precisionBin(self):
+        """ Return binary precision """
         return mp.prec
 
-    @staticmethod
-    def setActualDecPrecision(dec_prec):
+    # Setter
+    @precisionDec.setter
+    def precisionDec(self, dec_prec):
+        """ Set decimal precision """
         mp.dps = dec_prec
 
-    @staticmethod
-    def setActualBinPrecision(bin_prec):
+    @precisionDec.setter
+    def precisionBin(self, bin_prec):
+        """ Set binary precision """
         mp.prec = bin_prec
 
     @staticmethod
-    def getOlderPrecision():
+    def getOldPrecision():
+        """ Return Older decimal precision """
         if precision._precisionStack:
             return precision._precisionStack[-1]
         else:
