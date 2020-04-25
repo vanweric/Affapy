@@ -1,8 +1,0 @@
-showdoc: majdoc
-	google-chrome build/html/index.html
-
-majdoc: apidoc
-	make html
-
-apidoc:
-	sphinx-apidoc -f -o source ../AffApy

@@ -5,5 +5,6 @@ AffApy
    :maxdepth: 4
 
    affapyError
+   affapyPrecision
    affineArithmetic
    intervalArithmetic

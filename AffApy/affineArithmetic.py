@@ -1,4 +1,8 @@
-"""Affine Arithmetic module"""
+"""Affine Arithmetic module
+
+This module can create affines form and perform operations.
+
+"""
 import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError
 from mpmath import mp, fdiv, fadd, fsub, fsum, fabs, fneg, fmul, sqrt, exp, log
@@ -78,9 +82,17 @@ class Affine:
 
     # Unary operator
     def __neg__(self):
-        """
-        Operator - (unary)
-        :rtype: Affine
+        """Operator - (unary)
+
+        Return the additive inverse of an Affine form
+
+        Returns:
+            Affine: -self
+
+        Examples:
+            >>> print(-Affine([1, 2]))
+            -1.5 + 0.5*eps1
+
         """
         x0 = fneg(self.x0)
         xi = {i: fneg(self.xi[i]) for i in self.xi}
@@ -88,10 +100,23 @@ class Affine:
 
     # Affine operations
     def __add__(self, other):
-        """
-        Operator +
-        :type other: Affine or int or float
-        :rtype: Affine
+        """Operator +
+
+        Add two Affines
+
+        Args:
+            other (Affine or int or float): second operand
+
+        Returns:
+            Affine: self + other
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
+        Examples:
+            >>> print(Affine([0, 1]) + Affine([3, 4]))
+            4.0 + -0.5*eps1 + -0.5*eps2
+
         """
         if isinstance(other, self.__class__):
             x0 = fadd(self.x0, other.x0)
@@ -262,8 +287,8 @@ class Affine:
         :rtype: Affine
         """
         if isinstance(other, self.__class__):
-            return (other * self.log(self)).exp()
-        raise AffApy("only ** between two affine forms")
+            return (other * self.log()).exp()
+        raise AffApyError("only ** between two affine forms")
 
     def __abs__(self):  # TODO
         """
