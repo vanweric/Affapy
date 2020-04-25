@@ -65,7 +65,7 @@ class precision(ContextDecorator):
         """
         mp.dps = dec_prec
 
-    @precisionDec.setter
+    @precisionBin.setter
     def precisionBin(self, bin_prec):
         """
         Set binary precision

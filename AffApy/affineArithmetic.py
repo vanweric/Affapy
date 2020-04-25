@@ -17,11 +17,20 @@ class Affine:
         return Affine._weightCount - 1
 
     def __init__(self, interval=None, x0=None, xi=None):
-        """
-        Two ways for init Affine:
-        - Affine(interval=[inf, sup])
-        - Affine(x0=0, xi={})
-        If no arguments, x0=0 and xi={}
+        """Init an Affine form
+
+        Create an Affine form. Two different ways:
+        Affine(interval=[inf, sup]) or Affine(x0=0, xi={}).
+        If no arguments, x0=0 and xi={}.
+
+        Args:
+            interval (list with length 2): the interval
+            x0 (int or float): the center
+            xi (dict): noise symbols
+
+        Returns:
+            Affine
+
         """
         if interval is not None:
             if isinstance(interval, list) and len(interval) == 2:
@@ -74,9 +83,16 @@ class Affine:
         self._interval = value
 
     def rad(self):
-        """
-        Return the radius of affine form
-        :rtype: int or float
+        """Radius
+
+        Return the radius of affine form.
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            int or float: sum of abs(xi)
+
         """
         return fsum(fabs(self.xi[i]) for i in self.xi)
 
@@ -84,7 +100,10 @@ class Affine:
     def __neg__(self):
         """Operator - (unary)
 
-        Return the additive inverse of an Affine form
+        Return the additive inverse of an Affine form.
+
+        Args:
+            self (Affine): operand
 
         Returns:
             Affine: -self
@@ -102,9 +121,10 @@ class Affine:
     def __add__(self, other):
         """Operator +
 
-        Add two Affines
+        Add two Affines.
 
         Args:
+            self (Affine): first operand
             other (Affine or int or float): second operand
 
         Returns:
