@@ -85,7 +85,7 @@ class Affine:
     def rad(self):
         """Radius
 
-        Return the radius of affine form.
+        Return the radius of affine form
 
         Args:
             self (Affine): operand
@@ -100,7 +100,7 @@ class Affine:
     def __neg__(self):
         """Operator - (unary)
 
-        Return the additive inverse of an Affine form.
+        Return the additive inverse of an Affine form
 
         Args:
             self (Affine): operand
@@ -121,7 +121,7 @@ class Affine:
     def __add__(self, other):
         """Operator +
 
-        Add two Affines.
+        Add two Affines or an Affine form and an integer or float
 
         Args:
             self (Affine): first operand
@@ -159,18 +159,38 @@ class Affine:
         raise AffApyError("type error: other must be Affine, int or float")
 
     def __radd__(self, other):
-        """
-        Reverse operator + : other + self
-        :type other: Affine or int or float
-        :rtype: Affine
+        """Reverse operator +
+
+        Add two Affines or an Affine form and an integer or float
+
+        Args:
+            self (Affine): second operand
+            other (Affine or int or float): first operand
+
+        Returns:
+            Affine: other + self
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         return self + other
 
     def __sub__(self, other):
-        """
-        Operator -
-        :type other: Affine or int or float
-        :rtype: Affine
+        """Operator -
+
+        Substract two Affines or an Affine form and an integer or float
+
+        Args:
+            self (Affine): first operand
+            other (Affine or int or float): second operand
+
+        Returns:
+            Affine: self - other
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         if isinstance(other, self.__class__):
             x0 = fsub(self.x0, other.x0)
@@ -193,18 +213,38 @@ class Affine:
         raise AffApyError("type error: other must be Affine, int or float")
 
     def __rsub__(self, other):
-        """
-        Reverse operator - : other - self
-        :type other: Affine or int or float
-        :rtype: Affine
+        """Reverse operator -
+
+        Substract two Affines or an integer or float and an Affine form
+
+        Args:
+            self (Affine): second operand
+            other (Affine or int or float): first operand
+
+        Returns:
+            Affine: other - self
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         return -self + other
 
     def __mul__(self, other):
-        """
-        Operator *
-        :type other: Affine or int or float
-        :rtype: Affine
+        """Operator *
+
+        Multiply two Affines or an Affine form and integer or float
+
+        Args:
+            self (Affine): first operand
+            other (Affine or int or float): second operand
+
+        Returns:
+            Affine: self * other
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         if isinstance(other, self.__class__):
             x0 = fmul(self.x0, other.x0)
@@ -237,10 +277,20 @@ class Affine:
         raise AffApyError("type error: other must be Affine, int or float")
 
     def __rmul__(self, other):
-        """
-        Reverse operator * : other*self
-        :type other: Affine or int or float
-        :rtype: Affine
+        """Reverse operator *
+
+        Multiply two Affines or an integer or float and an Affine form
+
+        Args:
+            self (Affine): second operand
+            other (Affine or int or float): first operand
+
+        Returns:
+            Affine: other * self
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         return self * other
 
