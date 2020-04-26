@@ -296,9 +296,18 @@ class Affine:
 
     # Non-affine operations
     def affineConstructor(self, alpha, dzeta, delta):
-        """
+        """Affine constructor
+
         Return the affine form for non-affine operations
-        :rtype: Affine
+
+        Args:
+            alpha (mpmath.mpf)
+            dzeta (mpmath.mpf)
+            delta (mpmath.mpf)
+
+        Returns:
+            Affine
+
         """
         x0 = fadd(fmul(alpha, self.x0), dzeta)
         xi = {i: fmul(alpha, self.xi[i]) for i in self.xi}
@@ -306,9 +315,20 @@ class Affine:
         return Affine(x0=x0, xi=xi)
 
     def inv(self):
-        """
-        Inverse of an affine form
-        :rtype: Affine
+        """Inverse of an affine form
+
+        Return the inverse of an Affine form
+
+        Args:
+            self: operand
+
+        Returns:
+            Affine: 1 / self
+
+        Raises:
+            AffApyError: if the interval associated to the affine form
+            contains 0
+
         """
         if 0 not in self.interval:
             inf, sup = self.interval.inf, self.interval.sup
@@ -325,11 +345,21 @@ class Affine:
             "the interval associated to the affine form contains 0")
 
     def __truediv__(self, other):
-        """
-        Operator /
-        We use the identity x/y = x * (1/y)
-        :type other: Affine
-        :rtype: Affine
+        """Operator /
+
+        Divide two Affines or an integer or float and an Affine form.
+        We use the identity x/y = x * (1/y).
+
+        Args:
+            self (Affine): first operand
+            other (Affine or int or float): second operand
+
+        Returns:
+            Affine: self / other
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         if isinstance(other, self.__class__):
             return self * other.inv()
@@ -338,11 +368,21 @@ class Affine:
         raise AffApyError("type error: other must be Affine, int or float")
 
     def __rtruediv__(self, other):
-        """
-        Reverse operator / : other / self
-        We use the identity x/y = x * (1/y)
-        :type other: Affine
-        :rtype: Affine
+        """Reverse operator /
+
+        Divide two Affines or an Affine form and an integer or float.
+        We use the identity x/y = x * (1/y).
+
+        Args:
+            self (Affine): second operand
+            other (Affine or int or float): first operand
+
+        Returns:
+            Affine: other / self
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         if (isinstance(other, self.__class__) or
                 isinstance(other, int) or isinstance(other, float)):
@@ -350,27 +390,49 @@ class Affine:
         raise AffApyError("type error: other must be Affine, int or float")
 
     def __pow__(self, other):   # TODO other type int or float
-        """
-        Operator **
-        We use the identity : x**y = exp(y * log(x))
-        :type other: Affine, int or float
-        :rtype: Affine
+        """Operator **
+
+        Return the power of an Affine with another Affine or an integer
+        or float.
+        We use the identity : x**y = exp(y * log(x)).
+
+        Args:
+            self (Affine): first operand
+            other (Affine or int or float): second operand (power)
+
+        Returns:
+            Affine: self ** other
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         if isinstance(other, self.__class__):
             return (other * self.log()).exp()
         raise AffApyError("only ** between two affine forms")
 
-    def __abs__(self):  # TODO
-        """
-        Return the absolute value of an affine form
-        :rtype: Affine
-        """
-        pass
+    # def __abs__(self):  # TODO
+    #     """
+    #     Return the absolute value of an affine form
+    #     :rtype: Affine
+    #     """
+    #     pass
 
     def sqrt(self):
-        """
+        """Function sqrt
+
         Return the square root of an affine form
-        :rtype: Affine
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: sqrt(self)
+
+        Raises:
+            AffApyError: the interval associated to the affine form
+            must be >= 0
+
         """
         if self.interval >= 0:
             a, b = self.interval.inf, self.interval.sup
@@ -384,9 +446,16 @@ class Affine:
             "the interval associated to the affine form must be >= 0")
 
     def exp(self):
-        """
+        """Function exp
+
         Return the exponential of an affine form
-        :rtype: Affine
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: exp(self)
+
         """
         a, b = self.interval.inf, self.interval.sup
         ea, eb = exp(a), exp(b)
@@ -398,9 +467,19 @@ class Affine:
         return self.affineConstructor(alpha, dzeta, delta)
 
     def log(self):
-        """
+        """Function log
+
         Return the logarithm of an affine form
-        :rtype: Affine
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: log(self)
+
+        Raises:
+            AffApyError: the interval associated to the affine form must be > 0
+
         """
         if self.interval > 0:
             a, b = self.interval.inf, self.interval.sup
@@ -417,84 +496,154 @@ class Affine:
 
     # Trigo
     def sin(self):  # TODO et toutes les fonctions d'après seront définies
-        """
+        """Function sin
+
         Return the sinus of an affine form
-        :rtype: Affine
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: sin(self)
+
         """
         pass
 
     def cos(self):
-        """
-        Return the cosinus of an affine form
-        We use the identity cos(x) = sin(x + PI/2)
-        :rtype: Affine
+        """Function cos
+
+        Return the cosinus of an affine form.
+        We use the identity cos(x) = sin(x + PI/2).
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: cos(self)
+
         """
         x = self + mp.mpf(mp.pi / 2)
         return x.sin()
 
     def tan(self):
-        """
-        Return the tangent of an affine form
-        We use the identity tan(x) = sin(x)/cos(x)
-        :rtype: Affine
+        """Function tan
+
+        Return the tangent of an affine form.
+        We use the identity tan(x) = sin(x)/cos(x).
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: tan(self)
+
         """
         return self.sin() / self.cos()
 
     def cotan(self):
-        """
-        Return the cotangent of an affine form
-        We use the identity cotan(x) = cos(x)/sin(x)
-        :rtype: Affine
+        """Function cotan
+
+        Return the cotangent of an affine form.
+        We use the identity cotan(x) = cos(x)/sin(x).
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: cotan(self)
+
         """
         return self.cos() / self.sin()
 
     def cosh(self):
-        """
-        Return the hyperbolic cosine of an affine form
-        We use the identity cosh(x) = (exp(x) + exp(-x))/2
-        :rtype: Affine
+        """Function cosh
+
+        Return the hyperbolic cosine of an affine form.
+        We use the identity cosh(x) = (exp(x) + exp(-x))/2.
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: cosh(self)
+
         """
         return (self.exp() + (-self).exp()) * 0.5
 
     def sinh(self):
-        """
-        Return the hyperbolic sine of an affine form
-        We use the identity sinh(x) = (exp(x) - exp(-x))/2
-        :rtype: Affine
+        """Function sinh
+
+        Return the hyperbolic sine of an affine form.
+        We use the identity sinh(x) = (exp(x) - exp(-x))/2.
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: sinh(self)
+
         """
         return (self.exp() - (-self).exp()) * 0.5
 
     def tanh(self):
-        """
-        Return the hyperbolic sine of an affine form
+        """Function tanh
+
+        Return the hyperbolic tangeant of an affine form.
         We use the identity tanh(x) = sinh(x)/cosh(x)
-        :rtype: Affine
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: tanh(self)
+
         """
         return self.sinh() / self.cosh()
 
     # Comparison operators
     def __eq__(self, other):
-        """
-        Operator ==
-        :type other: Affine
-        :rtype: bool
+        """Operator ==
+
+        Compare two Affine forms
+
+        Args:
+            self (Affine): first operand
+            other (Affine): second operand
+
+        Returns:
+            bool: self == other
+
         """
         return self.x0 == other.x0 and self.xi == other.xi
 
     def __ne__(self, other):
-        """
-        Operator !=
-        :type other: Affine
-        :rtype: bool
+        """Operator !=
+
+        Negative comparison of two Affine forms
+
+        Args:
+            self (Affine): first operand
+            other (Affine): second operand
+
+        Returns:
+            bool: self != other
+
         """
         return self.x0 != other.x0 or self.xi != other.xi
 
     # Inclusion
     def __contains__(self, other):
-        """
-        Operator in
-        :type other: Affine
-        :rtype: bool
+        """Operator in
+
+        Return True if the interval of self is in the interval of other.
+
+        Args:
+            self (Affine): first operand
+            other (Affine): second operand
+
+        Returns:
+            bool: self in other
+
         """
         if isinstance(other, self.__class__):
             return other.interval in self.interval
@@ -507,17 +656,35 @@ class Affine:
 
     # Formats
     def __str__(self):
-        """
+        """String format
+
         Make the string format
-        :rtype: string
+
+        Args:
+            self (Affine): arg
+
+        Returns:
+            string: sum of noise symbols
+
+        Examples:
+            >>> print(Affine([1, 2]))
+            1.5 - 0.5*eps1
+
         """
         return " + ".join(
             [str(self.x0)] +
             ["".join([str(self.xi[i]), "*eps", str(i)]) for i in self.xi])
 
     def __repr__(self):
-        """
+        """Repr format
+
         Make the repr format
-        :rtype: string
+
+        Args:
+            self (Affine): arg
+
+        Returns:
+            string: format
+
         """
         return "Affine({}, {})".format(self.x0, self.xi)
