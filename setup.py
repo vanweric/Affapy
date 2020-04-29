@@ -16,7 +16,7 @@ setuptools.setup(
     ],
     author_email=[
         "ruxue.zeng@etu.sorbonne-universite.fr",
-        "quentin.deschamps1@etu.sorbonne-universite.fr",
+        "quentin.deschamps.1@etu.sorbonne-universite.fr",
         "florian.guily@etu.sorbonne-universite.fr",
         "tristan.michel1@etu.sorbonne-universite.fr"
     ],
