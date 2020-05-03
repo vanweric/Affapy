@@ -23,3 +23,11 @@ if __name__ == "__main__":
     print("Binary precision before function:", mp.prec)
     test_prec_precision()
     print("Binary precision after function:", mp.prec)
+
+    print("Decimal precision before with statement:", mp.dps)
+    with precision(dps=20):
+        print("Decimal precision during with statement:", mp.dps)
+        print("Pi =", mp.pi)
+        print("Exit with")
+
+    print("Decimal precision after with statement:", mp.dps)
