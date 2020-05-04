@@ -1,24 +1,7 @@
 """Example 1"""
 from AffApy.affineArithmetic import Affine
-from AffApy.affapyPrecision import precision
 from mpmath import mp
 
-
-@precision(dec_prec=5)
-def functionTest():
-    print("This is a test function for the precision module.")
-    print("Here the decimal precision is %i and the binary one is %i".format(precision.getActualDecPrecision(),
-                                                                             precision.getActualBinPrecision()))
-
-
-# Precision
-mp.dps = 10
-print("Decimal places:", mp.dps)
-print("Binary precision:", mp.prec)
-
-functionTest()
-with precision(dec_prec=10):
-    functionTest()
 
 x = Affine(x0=mp.pi, xi={1: mp.e})
 # print(x.__repr__())

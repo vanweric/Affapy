@@ -1,4 +1,8 @@
-"""Affine Arithmetic module"""
+"""Affine Arithmetic module
+
+This module can create affines form and perform operations.
+
+"""
 import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError
 from mpmath import mp, fdiv, fadd, fsub, fsum, fabs, fneg, fmul, sqrt, exp, log
@@ -8,12 +12,25 @@ class Affine:
     """Representation of an affine form"""
     _weightCount = 1
 
+    def getNewXi():
+        Affine._weightCount += 1
+        return Affine._weightCount - 1
+
     def __init__(self, interval=None, x0=None, xi=None):
-        """
-        Two ways for init Affine:
-        - Affine(interval=[inf, sup])
-        - Affine(x0=0, xi={})
-        If no arguments, x0=0 and xi={}
+        """Init an Affine form
+
+        Create an Affine form. Two different ways:
+        Affine(interval=[inf, sup]) or Affine(x0=0, xi={}).
+        If no arguments, x0=0 and xi={}.
+
+        Args:
+            interval (list with length 2): the interval
+            x0 (int or float): the center
+            xi (dict): noise symbols
+
+        Returns:
+            Affine
+
         """
         if interval is not None:
             if isinstance(interval, list) and len(interval) == 2:
@@ -21,8 +38,7 @@ class Affine:
             else:
                 inf, sup = interval.inf, interval.sup
             self._x0 = fdiv(fadd(inf, sup), 2)
-            self._xi = {Affine._weightCount: fdiv(fsub(inf, sup), 2)}
-            Affine._weightCount += 1
+            self._xi = {Affine.getNewXi(): fdiv(fsub(inf, sup), 2)}
             self._interval = AffApy.intervalArithmetic.Interval(inf, sup)
         elif x0 is not None and xi is not None:
             self._x0 = mp.mpf(x0)
@@ -67,17 +83,35 @@ class Affine:
         self._interval = value
 
     def rad(self):
-        """
+        """Radius
+
         Return the radius of affine form
-        :rtype: int or float
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            int or float: sum of abs(xi)
+
         """
         return fsum(fabs(self.xi[i]) for i in self.xi)
 
     # Unary operator
     def __neg__(self):
-        """
-        Operator - (unary)
-        :rtype: Affine
+        """Operator - (unary)
+
+        Return the additive inverse of an Affine form
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: -self
+
+        Examples:
+            >>> print(-Affine([1, 2]))
+            -1.5 + 0.5*eps1
+
         """
         x0 = fneg(self.x0)
         xi = {i: fneg(self.xi[i]) for i in self.xi}
@@ -85,10 +119,24 @@ class Affine:
 
     # Affine operations
     def __add__(self, other):
-        """
-        Operator +
-        :type other: Affine or int or float
-        :rtype: Affine
+        """Operator +
+
+        Add two Affines or an Affine form and an integer or float
+
+        Args:
+            self (Affine): first operand
+            other (Affine or int or float): second operand
+
+        Returns:
+            Affine: self + other
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
+        Examples:
+            >>> print(Affine([0, 1]) + Affine([3, 4]))
+            4.0 + -0.5*eps1 + -0.5*eps2
+
         """
         if isinstance(other, self.__class__):
             x0 = fadd(self.x0, other.x0)
@@ -111,18 +159,38 @@ class Affine:
         raise AffApyError("type error: other must be Affine, int or float")
 
     def __radd__(self, other):
-        """
-        Reverse operator + : other + self
-        :type other: Affine or int or float
-        :rtype: Affine
+        """Reverse operator +
+
+        Add two Affines or an Affine form and an integer or float
+
+        Args:
+            self (Affine): second operand
+            other (Affine or int or float): first operand
+
+        Returns:
+            Affine: other + self
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         return self + other
 
     def __sub__(self, other):
-        """
-        Operator -
-        :type other: Affine or int or float
-        :rtype: Affine
+        """Operator -
+
+        Substract two Affines or an Affine form and an integer or float
+
+        Args:
+            self (Affine): first operand
+            other (Affine or int or float): second operand
+
+        Returns:
+            Affine: self - other
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         if isinstance(other, self.__class__):
             x0 = fsub(self.x0, other.x0)
@@ -145,18 +213,38 @@ class Affine:
         raise AffApyError("type error: other must be Affine, int or float")
 
     def __rsub__(self, other):
-        """
-        Reverse operator - : other - self
-        :type other: Affine or int or float
-        :rtype: Affine
+        """Reverse operator -
+
+        Substract two Affines or an integer or float and an Affine form
+
+        Args:
+            self (Affine): second operand
+            other (Affine or int or float): first operand
+
+        Returns:
+            Affine: other - self
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         return -self + other
 
     def __mul__(self, other):
-        """
-        Operator *
-        :type other: Affine or int or float
-        :rtype: Affine
+        """Operator *
+
+        Multiply two Affines or an Affine form and integer or float
+
+        Args:
+            self (Affine): first operand
+            other (Affine or int or float): second operand
+
+        Returns:
+            Affine: self * other
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         if isinstance(other, self.__class__):
             x0 = fmul(self.x0, other.x0)
@@ -180,8 +268,7 @@ class Affine:
                              fmul(other.xi[i], self.x0))
                 if v != 0:
                     xi[i] = v
-            xi[Affine._weightCount] = fmul(self.rad(), other.rad())
-            Affine._weightCount += 1
+            xi[Affine.getNewXi()] = fmul(self.rad(), other.rad())
             return Affine(x0=x0, xi=xi)
         if isinstance(other, int) or isinstance(other, float):
             x0 = fmul(mp.mpf(str(other)), self.x0)
@@ -190,29 +277,58 @@ class Affine:
         raise AffApyError("type error: other must be Affine, int or float")
 
     def __rmul__(self, other):
-        """
-        Reverse operator * : other*self
-        :type other: Affine or int or float
-        :rtype: Affine
+        """Reverse operator *
+
+        Multiply two Affines or an integer or float and an Affine form
+
+        Args:
+            self (Affine): second operand
+            other (Affine or int or float): first operand
+
+        Returns:
+            Affine: other * self
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         return self * other
 
     # Non-affine operations
     def affineConstructor(self, alpha, dzeta, delta):
-        """
+        """Affine constructor
+
         Return the affine form for non-affine operations
-        :rtype: Affine
+
+        Args:
+            alpha (mpmath.mpf)
+            dzeta (mpmath.mpf)
+            delta (mpmath.mpf)
+
+        Returns:
+            Affine
+
         """
         x0 = fadd(fmul(alpha, self.x0), dzeta)
         xi = {i: fmul(alpha, self.xi[i]) for i in self.xi}
-        xi[Affine._weightCount] = delta
-        Affine._weightCount += 1
+        xi[Affine.getNewXi()] = delta
         return Affine(x0=x0, xi=xi)
 
     def inv(self):
-        """
-        Inverse of an affine form
-        :rtype: Affine
+        """Inverse of an affine form
+
+        Return the inverse of an Affine form
+
+        Args:
+            self: operand
+
+        Returns:
+            Affine: 1 / self
+
+        Raises:
+            AffApyError: if the interval associated to the affine form
+            contains 0
+
         """
         if 0 not in self.interval:
             inf, sup = self.interval.inf, self.interval.sup
@@ -229,11 +345,21 @@ class Affine:
             "the interval associated to the affine form contains 0")
 
     def __truediv__(self, other):
-        """
-        Operator /
-        We use the identity x/y = x * (1/y)
-        :type other: Affine
-        :rtype: Affine
+        """Operator /
+
+        Divide two Affines or an integer or float and an Affine form.
+        We use the identity x/y = x * (1/y).
+
+        Args:
+            self (Affine): first operand
+            other (Affine or int or float): second operand
+
+        Returns:
+            Affine: self / other
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         if isinstance(other, self.__class__):
             return self * other.inv()
@@ -242,11 +368,21 @@ class Affine:
         raise AffApyError("type error: other must be Affine, int or float")
 
     def __rtruediv__(self, other):
-        """
-        Reverse operator / : other / self
-        We use the identity x/y = x * (1/y)
-        :type other: Affine
-        :rtype: Affine
+        """Reverse operator /
+
+        Divide two Affines or an Affine form and an integer or float.
+        We use the identity x/y = x * (1/y).
+
+        Args:
+            self (Affine): second operand
+            other (Affine or int or float): first operand
+
+        Returns:
+            Affine: other / self
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         if (isinstance(other, self.__class__) or
                 isinstance(other, int) or isinstance(other, float)):
@@ -254,27 +390,49 @@ class Affine:
         raise AffApyError("type error: other must be Affine, int or float")
 
     def __pow__(self, other):   # TODO other type int or float
-        """
-        Operator **
-        We use the identity : x**y = exp(y * log(x))
-        :type other: Affine, int or float
-        :rtype: Affine
+        """Operator **
+
+        Return the power of an Affine with another Affine or an integer
+        or float.
+        We use the identity : x**y = exp(y * log(x)).
+
+        Args:
+            self (Affine): first operand
+            other (Affine or int or float): second operand (power)
+
+        Returns:
+            Affine: self ** other
+
+        Raises:
+            AffApyError: if other is not Affine, int or float
+
         """
         if isinstance(other, self.__class__):
-            return (other * self.log(self)).exp()
-        raise AffApy("only ** between two affine forms")
+            return (other * self.log()).exp()
+        raise AffApyError("only ** between two affine forms")
 
-    def __abs__(self):  # TODO
-        """
-        Return the absolute value of an affine form
-        :rtype: Affine
-        """
-        pass
+    # def __abs__(self):  # TODO
+    #     """
+    #     Return the absolute value of an affine form
+    #     :rtype: Affine
+    #     """
+    #     pass
 
     def sqrt(self):
-        """
+        """Function sqrt
+
         Return the square root of an affine form
-        :rtype: Affine
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: sqrt(self)
+
+        Raises:
+            AffApyError: the interval associated to the affine form
+            must be >= 0
+
         """
         if self.interval >= 0:
             a, b = self.interval.inf, self.interval.sup
@@ -288,9 +446,16 @@ class Affine:
             "the interval associated to the affine form must be >= 0")
 
     def exp(self):
-        """
+        """Function exp
+
         Return the exponential of an affine form
-        :rtype: Affine
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: exp(self)
+
         """
         a, b = self.interval.inf, self.interval.sup
         ea, eb = exp(a), exp(b)
@@ -302,9 +467,19 @@ class Affine:
         return self.affineConstructor(alpha, dzeta, delta)
 
     def log(self):
-        """
+        """Function log
+
         Return the logarithm of an affine form
-        :rtype: Affine
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: log(self)
+
+        Raises:
+            AffApyError: the interval associated to the affine form must be > 0
+
         """
         if self.interval > 0:
             a, b = self.interval.inf, self.interval.sup
@@ -321,84 +496,154 @@ class Affine:
 
     # Trigo
     def sin(self):  # TODO et toutes les fonctions d'après seront définies
-        """
+        """Function sin
+
         Return the sinus of an affine form
-        :rtype: Affine
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: sin(self)
+
         """
         pass
 
     def cos(self):
-        """
-        Return the cosinus of an affine form
-        We use the identity cos(x) = sin(x + PI/2)
-        :rtype: Affine
+        """Function cos
+
+        Return the cosinus of an affine form.
+        We use the identity cos(x) = sin(x + PI/2).
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: cos(self)
+
         """
         x = self + mp.mpf(mp.pi / 2)
         return x.sin()
 
     def tan(self):
-        """
-        Return the tangent of an affine form
-        We use the identity tan(x) = sin(x)/cos(x)
-        :rtype: Affine
+        """Function tan
+
+        Return the tangent of an affine form.
+        We use the identity tan(x) = sin(x)/cos(x).
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: tan(self)
+
         """
         return self.sin() / self.cos()
 
     def cotan(self):
-        """
-        Return the cotangent of an affine form
-        We use the identity cotan(x) = cos(x)/sin(x)
-        :rtype: Affine
+        """Function cotan
+
+        Return the cotangent of an affine form.
+        We use the identity cotan(x) = cos(x)/sin(x).
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: cotan(self)
+
         """
         return self.cos() / self.sin()
 
     def cosh(self):
-        """
-        Return the hyperbolic cosine of an affine form
-        We use the identity cosh(x) = (exp(x) + exp(-x))/2
-        :rtype: Affine
+        """Function cosh
+
+        Return the hyperbolic cosine of an affine form.
+        We use the identity cosh(x) = (exp(x) + exp(-x))/2.
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: cosh(self)
+
         """
         return (self.exp() + (-self).exp()) * 0.5
 
     def sinh(self):
-        """
-        Return the hyperbolic sine of an affine form
-        We use the identity sinh(x) = (exp(x) - exp(-x))/2
-        :rtype: Affine
+        """Function sinh
+
+        Return the hyperbolic sine of an affine form.
+        We use the identity sinh(x) = (exp(x) - exp(-x))/2.
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: sinh(self)
+
         """
         return (self.exp() - (-self).exp()) * 0.5
 
     def tanh(self):
-        """
-        Return the hyperbolic sine of an affine form
+        """Function tanh
+
+        Return the hyperbolic tangeant of an affine form.
         We use the identity tanh(x) = sinh(x)/cosh(x)
-        :rtype: Affine
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: tanh(self)
+
         """
         return self.sinh() / self.cosh()
 
     # Comparison operators
     def __eq__(self, other):
-        """
-        Operator ==
-        :type other: Affine
-        :rtype: bool
+        """Operator ==
+
+        Compare two Affine forms
+
+        Args:
+            self (Affine): first operand
+            other (Affine): second operand
+
+        Returns:
+            bool: self == other
+
         """
         return self.x0 == other.x0 and self.xi == other.xi
 
     def __ne__(self, other):
-        """
-        Operator !=
-        :type other: Affine
-        :rtype: bool
+        """Operator !=
+
+        Negative comparison of two Affine forms
+
+        Args:
+            self (Affine): first operand
+            other (Affine): second operand
+
+        Returns:
+            bool: self != other
+
         """
         return self.x0 != other.x0 or self.xi != other.xi
 
     # Inclusion
     def __contains__(self, other):
-        """
-        Operator in
-        :type other: Affine
-        :rtype: bool
+        """Operator in
+
+        Return True if the interval of self is in the interval of other.
+
+        Args:
+            self (Affine): first operand
+            other (Affine): second operand
+
+        Returns:
+            bool: self in other
+
         """
         if isinstance(other, self.__class__):
             return other.interval in self.interval
@@ -411,23 +656,35 @@ class Affine:
 
     # Formats
     def __str__(self):
-        """
+        """String format
+
         Make the string format
-        :rtype: string
+
+        Args:
+            self (Affine): arg
+
+        Returns:
+            string: sum of noise symbols
+
+        Examples:
+            >>> print(Affine([1, 2]))
+            1.5 - 0.5*eps1
+
         """
         return " + ".join(
             [str(self.x0)] +
             ["".join([str(self.xi[i]), "*eps", str(i)]) for i in self.xi])
 
     def __repr__(self):
-        """
+        """Repr format
+
         Make the repr format
-        :rtype: string
+
+        Args:
+            self (Affine): arg
+
+        Returns:
+            string: format
+
         """
         return "Affine({}, {})".format(self.x0, self.xi)
-
-
-if __name__ == '__main__':
-    d1 = {1: 12}
-    d2 = {2: 15, 1: 12}
-    print(d1 == d2)
