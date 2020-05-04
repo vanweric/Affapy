@@ -1,0 +1,14 @@
+digraph "packages_AffApy" {
+charset="utf-8"
+rankdir=BT
+"0" [label="AffApy", shape="box"];
+"1" [label="AffApy.affapyError", shape="box"];
+"2" [label="AffApy.affapyPrecision", shape="box"];
+"3" [label="AffApy.affineArithmetic", shape="box"];
+"4" [label="AffApy.intervalArithmetic", shape="box"];
+"2" -> "1" [arrowhead="open", arrowtail="none"];
+"3" -> "1" [arrowhead="open", arrowtail="none"];
+"3" -> "4" [arrowhead="open", arrowtail="none"];
+"4" -> "1" [arrowhead="open", arrowtail="none"];
+"4" -> "3" [arrowhead="open", arrowtail="none"];
+}
