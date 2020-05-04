@@ -5,63 +5,77 @@ from AffApy.affapyError import AffApyError
 
 class precision(ContextDecorator):
     """Manage precision for AffApy library"""
-    def __init__(self, dps=None, prec=None):
+    def __init__(self, dec_precision=None, bin_precision=None):
         """
         Init the context manager for precision.
-        You need to mention dps or prec. Both is useless.
+        You need to mention dec_prec or bin_prec. Both is useless.
 
         Args:
-            dps (int): decimal precision of mpmath
-            prec (int): binary precision of mpmath
+            dec_precision (int): decimal precision of mpmath
+            bin_precision (int): binary precision of mpmath
 
         """
-        self._dps = dps
-        self._prec = prec
-        self._old_dps = None
-        self._old_prec = None
+        self._dec = dec_precision
+        self._bin = bin_precision
+        self._old_dec = None
+        self._old_bin = None
 
     # Getter
     @property
-    def dps(self):
-        """Get dps"""
-        return self._dps
+    def dec_precision(self):
+        """Get decimal precision"""
+        return self._dec
 
     @property
-    def prec(self):
-        """Get prec"""
-        return self._prec
+    def bin_precision(self):
+        """Get binary precision"""
+        return self._bin
 
     @property
-    def old_dps(self):
-        """Get old dps"""
-        return self._old_dps
+    def old_dec_precision(self):
+        """Get old decimal precision"""
+        return self._old_dec
 
     @property
-    def old_prec(self):
-        """Get old prec"""
-        return self._old_prec
+    def old_bin_precision(self):
+        """Get old binary precision"""
+        return self._old_bin
 
     # Setter
-    @dps.setter
-    def dps(self, value):
-        """Set dps"""
-        self._dps = value
+    @dec_precision.setter
+    def dec_precision(self, value):
+        """Set decimal precision"""
+        self._dec = value
+        mp.dps = self._dec
 
-    @prec.setter
-    def prec(self, value):
-        """Set prec"""
-        self._prec = value
+    @bin_precision.setter
+    def bin_precision(self, value):
+        """Set binary precision"""
+        self._bin = value
+        mp.prec = self._bin
 
-    @old_dps.setter
-    def old_dps(self, value):
-        """Set old dps"""
-        self._old_dps = value
+    @old_dec_precision.setter
+    def old_dec_precision(self, value):
+        """Set old decimal value"""
+        self._old_dec = value
 
-    @old_prec.setter
-    def old_prec(self, value):
-        """Set old prec"""
-        self._old_prec = value
+    @old_bin_precision.setter
+    def old_bin_precision(self, value):
+        """Set old binary value"""
+        self._old_bin = value
 
+    # Static Method - If you want to modify directly the precision
+    @staticmethod
+    def set_dec_precision(dec_precision):
+        """Set decimal precision outside precision class"""
+        mp.dps = dec_precision
+
+    @staticmethod
+    def set_bin_precision(bin_precision):
+        """Set binary precision outside precision class"""
+        mp.prec = bin_precision
+
+    # functions for with statement
     def __enter__(self):
         """
         Set the mpmath precision for a portion of code
@@ -70,11 +84,11 @@ class precision(ContextDecorator):
             AffApyError: No precision mentionned
 
         """
-        self.old_dps, self.old_prec = mp.dps, mp.prec
-        if self.dps is not None:
-            mp.dps = self.dps
-        elif self.prec is not None:
-            mp.prec = self.prec
+        self.old_dec_precision, self.old_bin_precision = mp.dps, mp.prec
+        if self.dec_precision is not None:
+            mp.dps = self.dec_precision
+        elif self.bin_precision is not None:
+            mp.prec = self.bin_precision
         else:
             raise AffApyError("No precision mentionned")
 
@@ -86,9 +100,9 @@ class precision(ContextDecorator):
             AffApyError: No precision saved
 
         """
-        if self.dps is not None:
-            mp.dps = self.old_dps
-        elif self.prec is not None:
-            mp.prec = self.old_prec
+        if self.dec_precision is not None:
+            mp.dps = self.old_dec_precision
+        elif self.bin_precision is not None:
+            mp.prec = self.old_bin_precision
         else:
             raise AffApyError("No precision saved")
