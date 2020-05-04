@@ -1,0 +1,8 @@
+digraph "classes_AffApy" {
+charset="utf-8"
+rankdir=BT
+"0" [fontcolor="red", label="{AffApyError|\l|}", shape="record"];
+"1" [label="{Affine|interval : Interval\lx0 : mpf\lxi : dict of mpf\l|affineConstructor(alpha, dzeta, delta)\lcos()\lcosh()\lcotan()\lexp()\lgetNewXi()\linv()\llog()\lrad()\lsin()\lsinh()\lsqrt()\ltan()\ltanh()\l}", shape="record"];
+"3" [label="{Interval|inf : mpf\lsup : mpf\l|cos()\lcotan()\lexp()\llog()\lmiddle()\lminTrigo()\lradius()\lsin()\lsqrt()\ltan()\ltoAffine()\l}", shape="record"];
+"4" [label="{precision|dps : int\lold_dps : int\lold_prec : int\lprec : int\l|}", shape="record"];
+}
