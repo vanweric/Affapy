@@ -25,7 +25,8 @@ class TestInterval(unittest.TestCase):
         z = Interval(-mp.pi, mp.pi)
         self.assertTrue(Interval(mp.phi + mp.euler, mp.pi + mp.e) in x + y)
         self.assertTrue(Interval(mp.phi + 4, mp.pi + 4) in x + 4)
-        self.assertTrue(Interval(mp.phi + mp.euler - mp.pi, mp.pi + mp.e + mp.pi) in x + y + z)
+        self.assertTrue(Interval(
+            mp.phi + mp.euler - mp.pi, mp.pi + mp.e + mp.pi) in x + y + z)
 
     @precision(dec_precision=50)
     def test_sub_interval(self):
@@ -43,7 +44,8 @@ class TestInterval(unittest.TestCase):
         z = Interval(-mp.pi, mp.pi)
         self.assertTrue(Interval(mp.phi - mp.euler, mp.pi - mp.e) in x - y)
         self.assertTrue(Interval(mp.phi - 2, mp.pi - 2) in x - 2)
-        self.assertTrue(Interval(mp.phi - mp.euler + mp.pi, mp.pi - mp.e - mp.pi) in x - y - z)
+        self.assertTrue(Interval(
+            mp.phi - mp.euler + mp.pi, mp.pi - mp.e - mp.pi) in x - y - z)
         self.assertTrue(Interval(0, 0) in x - x)
 
     @precision(dec_precision=50)
@@ -58,8 +60,16 @@ class TestInterval(unittest.TestCase):
         x = Interval(mp.phi, mp.pi)
         y = Interval(mp.euler, mp.e)
         z = Interval(-mp.pi, mp.pi)
-        self.assertTrue(Interval(mp.phi * mp.euler, mp.pi * mp.e) in x * y)
-        self.assertTrue(Interval(- mp.pi * mp.phi + mp.euler, mp.pi * mp.pi + mp.e) in z * (x + y))
+        self.assertTrue(Interval(
+            min(mp.phi*mp.euler, mp.phi*mp.e, mp.pi*mp.euler, mp.pi*mp.e),
+            max(mp.phi*mp.euler, mp.phi*mp.e, mp.pi*mp.euler, mp.pi*mp.e))
+            in x * y)
+        self.assertTrue(Interval(
+            min(-mp.pi*(mp.phi + mp.euler), -mp.pi*(mp.pi + mp.e),
+                mp.pi*(mp.phi + mp.euler), mp.pi*(mp.pi + mp.e)),
+            max(-mp.pi*(mp.phi + mp.euler), -mp.pi*(mp.pi + mp.e),
+                mp.pi*(mp.phi + mp.euler), mp.pi*(mp.pi + mp.e)))
+            in z * (x + y))
 
     @precision(dec_precision=50)
     def test_truediv_interval(self):  # TODO: test interval/interval contains 0
