@@ -16,6 +16,25 @@ class Affine:
         Affine._weightCount += 1
         return Affine._weightCount - 1
 
+    def roundedSub(self, x, y):
+        """choose the right rounding depending on whether the result is positive or negative"""
+        if x < y:
+            return fsub(x, y, rounding='d')
+        else:
+            return fsub(x, y, rounding='u')
+
+    def roundedAdd(self, x, y):
+        if x + y < 0:
+            return fadd(x, y, rounding='d')
+        else:
+            return fadd(x, y, rounding='u')
+
+    def roundedMul(self, x, y):
+        if mp.sign(x) != mp.sign(y):
+            return fmul(x, y, rounded='d')
+        else:
+            return fmul(x, y, rounded='u')
+
     def __init__(self, interval=None, x0=None, xi=None):
         """Init an Affine form
 
@@ -39,14 +58,14 @@ class Affine:
                 inf, sup = interval.inf, interval.sup
             self._x0 = fdiv(fadd(inf, sup, rounding='n'), 2, rounding='n')
             self._xi = {Affine.getNewXi(): fdiv(
-                fsub(inf, sup, rounding='u'), 2, rounding='u')}
+                fsub(inf, sup, rounding='d'), 2, rounding='d')}
             self._interval = AffApy.intervalArithmetic.Interval(inf, sup)
         elif x0 is not None and xi is not None:
             self._x0 = mp.mpf(x0, rounding='n')
-            self._xi = {i: mp.mpf(str(xi[i]), rounding='u') for i in xi}
+            self._xi = {i: mp.mpf(str(xi[i])) for i in xi}
             self._interval = AffApy.intervalArithmetic.Interval(
-                fadd(self._x0, self.rad(), rounding='u'),
-                fsub(self._x0, self.rad(), rounding='d'))
+                Affine.roundedAdd(self, self._x0, self.rad()),
+                Affine.roundedSub(self, self._x0, self.rad()))
         else:
             self._x0 = mp.mpf('0')
             self._xi = {}
@@ -145,7 +164,7 @@ class Affine:
             xi = {}
             for i in self.xi:
                 if i in other.xi:
-                    val = fadd(self.xi[i], other.xi[i], rounding='u')
+                    val = Affine.roundedAdd(self, self.xi[i], other.xi[i])
                     if val != 0:
                         xi[i] = val
                 else:
@@ -199,14 +218,17 @@ class Affine:
             xi = {}
             for i in self.xi:
                 if i in other.xi:
-                    val = fsub(self.xi[i], other.xi[i], rounding='u')
+                    val = Affine.roundedSub(self, self.xi[i], other.xi[i])
                     if val != 0:
                         xi[i] = val
                 else:
                     xi[i] = self.xi[i]
             for i in other.xi:
                 if i not in self.xi:
-                    xi[i] = fneg(other.xi[i])
+                    if other.xi[i] < 0:
+                        xi[i] = fneg(other.xi[i], rounding='u')
+                    else:
+                        xi[i] = fneg(other.xi[i], rounding='d')
             return Affine(x0=x0, xi=xi)
         if isinstance(other, int) or isinstance(other, float):
             x0 = fsub(self.x0, mp.mpf(str(other)), rounding='n')
@@ -262,20 +284,19 @@ class Affine:
             for i in range(keyMax + 1):
                 v = 0
                 if i in self.xi and i not in other.xi:
-                    v = fmul(self.xi[i], other.x0, rounding='u')
+                    v = Affine.roundedMul(self, self.xi[i], other.x0)
                 elif i not in self.xi and i in other.xi:
-                    v = fmul(other.xi[i], self.x0, rounding='u')
+                    v = Affine.roundedMul(self, other.xi[i], self.x0)
                 elif i in self.xi and i in other.xi:
-                    v = fadd(fmul(self.xi[i], other.x0, rounding='u'),
-                             fmul(other.xi[i], self.x0, rounding='u'),
-                             rounding='u')
+                    v = Affine.roundedAdd(self, Affine.roundedMul(self, self.xi[i], other.x0),
+                                          Affine.roundedMul(self, other.xi[i], self.x0))
                 if v != 0:
                     xi[i] = v
-            xi[Affine.getNewXi()] = fmul(self.rad(), other.rad(), rounding='u')
+            xi[Affine.getNewXi()] = Affine.roundedMul(self, self.rad(), other.rad())
             return Affine(x0=x0, xi=xi)
         if isinstance(other, int) or isinstance(other, float):
             x0 = fmul(mp.mpf(str(other)), self.x0)
-            xi = {i: fmul(mp.mpf(str(other)), self.xi[i]) for i in self.xi}
+            xi = {i: Affine.roundedMul(self, mp.mpf(str(other)), self.xi[i]) for i in self.xi}
             return Affine(x0=x0, xi=xi)
         raise AffApyError("type error: other must be Affine, int or float")
 
@@ -313,7 +334,7 @@ class Affine:
 
         """
         x0 = fadd(fmul(alpha, self.x0), dzeta)
-        xi = {i: fmul(alpha, self.xi[i], rounding='u') for i in self.xi}
+        xi = {i: Affine.roundedMul(self, alpha, self.xi[i]) for i in self.xi}
         xi[Affine.getNewXi()] = delta
         return Affine(x0=x0, xi=xi)
 
@@ -338,7 +359,7 @@ class Affine:
             a, b = min(abs(inf), abs(sup)), max(abs(inf), abs(sup))
             alpha = fdiv(fneg(1), fmul(b, b))
             i = AffApy.intervalArithmetic.Interval(fsub(fdiv(1, a),
-                                                   fmul(alpha, a)),
+                                                        fmul(alpha, a)),
                                                    fdiv(2, b))
             dzeta = i.middle()
             if inf < 0:
