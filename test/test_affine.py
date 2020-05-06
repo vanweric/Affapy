@@ -2,21 +2,22 @@
 
 from AffApy.affineArithmetic import Affine
 from AffApy.intervalArithmetic import Interval
+from AffApy.affapyPrecision import precision
 import unittest
-from mpmath import sqrt
+from mpmath import mp
 
 
 class TestAffine(unittest.TestCase):
     """Test case used to test functions from class Affine"""
 
+    @precision(dec_precision=50)
     def test_add_affine(self):
         """Test 'add' function from class Affine"""
-        x = Affine(x0=0, xi={1: 10})
-        y = Affine(x0=5, xi={1: 10, 2: 5})
-        self.assertEqual(x + y, Affine(x0=5, xi={1: 20, 2: 5}))
-        self.assertEqual(x + x, Affine(x0=0, xi={1: 20}))
-        self.assertEqual(x + 4, Affine(x0=4, xi={1: 10}))
-        self.assertEqual(x + 7.536 + y, Affine(x0=12.536, xi={1: 20, 2: 5}))
+        x = Affine(x0=-mp.pi, xi={1: mp.e})
+        y = Affine(x0=mp.pi, xi={1: mp.phi, 2: mp.e})
+        self.assertTrue(Affine(x0=0, xi={1: mp.e + mp.phi, 2: mp.e}) in x + y)
+        self.assertTrue(Affine(x0=-2*mp.pi, xi={1: 2*mp.e}) in x + x)
+        self.assertTrue(Affine(x0=-mp.pi + 4, xi={1: mp.e}) in x + 4)
 
     def test_sub_affine(self):
         """Test 'sub' function from class Affine"""
@@ -98,9 +99,9 @@ class TestAffine(unittest.TestCase):
         """Test 'sqrt' function from class Affine"""
         x = Affine(x0=5, xi={1: 5})
         y = Affine(x0=20, xi={2: 5, 5: 7})
-        z = Interval(sqrt(8), sqrt(32)+1)
-        self.assertTrue(x.sqrt() in Interval(0, sqrt(10) + 1))
-        self.assertTrue(y.sqrt() in Interval(sqrt(8) - 1, sqrt(32) + 1))
+        z = Interval(mp.sqrt(8), mp.sqrt(32)+1)
+        self.assertTrue(x.sqrt() in Interval(0, mp.sqrt(10) + 1))
+        self.assertTrue(y.sqrt() in Interval(mp.sqrt(8) - 1, mp.sqrt(32) + 1))
 
 
 if __name__ == "__main__":

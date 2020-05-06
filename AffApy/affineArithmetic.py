@@ -38,15 +38,17 @@ class Affine:
             else:
                 inf, sup = interval.inf, interval.sup
             self._x0 = fdiv(fadd(inf, sup, rounding='n'), 2, rounding='n')
-            self._xi = {Affine.getNewXi(): fdiv(fsub(inf, sup, rounding='u'), 2, rounding='u')}
+            self._xi = {Affine.getNewXi(): fdiv(
+                fsub(inf, sup, rounding='u'), 2, rounding='u')}
             self._interval = AffApy.intervalArithmetic.Interval(inf, sup)
         elif x0 is not None and xi is not None:
             self._x0 = mp.mpf(x0, rounding='n')
             self._xi = {i: mp.mpf(str(xi[i]), rounding='u') for i in xi}
             self._interval = AffApy.intervalArithmetic.Interval(
-                fadd(self._x0, self.rad(), rounding='u'), fsub(self._x0, self.rad(), rounding='d'))
+                fadd(self._x0, self.rad(), rounding='u'),
+                fsub(self._x0, self.rad(), rounding='d'))
         else:
-            self._x0 = mp.mpf(0)
+            self._x0 = mp.mpf('0')
             self._xi = {}
             self._interval = AffApy.intervalArithmetic.Interval(0, 0)
 
@@ -265,7 +267,8 @@ class Affine:
                     v = fmul(other.xi[i], self.x0, rounding='u')
                 elif i in self.xi and i in other.xi:
                     v = fadd(fmul(self.xi[i], other.x0, rounding='u'),
-                             fmul(other.xi[i], self.x0, rounding='u'), rounding='u')
+                             fmul(other.xi[i], self.x0, rounding='u'),
+                             rounding='u')
                 if v != 0:
                     xi[i] = v
             xi[Affine.getNewXi()] = fmul(self.rad(), other.rad(), rounding='u')
@@ -335,7 +338,8 @@ class Affine:
             a, b = min(abs(inf), abs(sup)), max(abs(inf), abs(sup))
             alpha = fdiv(fneg(1), fmul(b, b))
             i = AffApy.intervalArithmetic.Interval(fsub(fdiv(1, a),
-                                                        fmul(alpha, a)), fdiv(2, b))
+                                                   fmul(alpha, a)),
+                                                   fdiv(2, b))
             dzeta = i.middle()
             if inf < 0:
                 dzeta = fneg(dzeta)
