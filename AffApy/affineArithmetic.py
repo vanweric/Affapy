@@ -153,7 +153,7 @@ class Affine:
                     xi[i] = other.xi[i]
             return Affine(x0=x0, xi=xi)
         if isinstance(other, int) or isinstance(other, float):
-            x0 = fadd(self.x0, mp.mpf(str(other), rounding='u'), rounding='u')
+            x0 = fadd(self.x0, mp.mpf(str(other), rounding='n'), rounding='n')
             xi = self.xi.copy()
             return Affine(x0=x0, xi=xi)
         raise AffApyError("type error: other must be Affine, int or float")
