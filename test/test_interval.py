@@ -61,15 +61,15 @@ class TestInterval(unittest.TestCase):
         y = Interval(mp.euler, mp.e)
         z = Interval(-mp.pi, mp.pi)
         self.assertTrue(Interval(
-            min(mp.phi*mp.euler, mp.phi*mp.e, mp.pi*mp.euler, mp.pi*mp.e),
-            max(mp.phi*mp.euler, mp.phi*mp.e, mp.pi*mp.euler, mp.pi*mp.e))
-            in x * y)
+            min(mp.phi * mp.euler, mp.phi * mp.e, mp.pi * mp.euler, mp.pi * mp.e),
+            max(mp.phi * mp.euler, mp.phi * mp.e, mp.pi * mp.euler, mp.pi * mp.e))
+                        in x * y)
         self.assertTrue(Interval(
-            min(-mp.pi*(mp.phi + mp.euler), -mp.pi*(mp.pi + mp.e),
-                mp.pi*(mp.phi + mp.euler), mp.pi*(mp.pi + mp.e)),
-            max(-mp.pi*(mp.phi + mp.euler), -mp.pi*(mp.pi + mp.e),
-                mp.pi*(mp.phi + mp.euler), mp.pi*(mp.pi + mp.e)))
-            in z * (x + y))
+            min(-mp.pi * (mp.phi + mp.euler), -mp.pi * (mp.pi + mp.e),
+                mp.pi * (mp.phi + mp.euler), mp.pi * (mp.pi + mp.e)),
+            max(-mp.pi * (mp.phi + mp.euler), -mp.pi * (mp.pi + mp.e),
+                mp.pi * (mp.phi + mp.euler), mp.pi * (mp.pi + mp.e)))
+                        in z * (x + y))
 
     @precision(dec_precision=50)
     def test_truediv_interval(self):  # TODO: test interval/interval contains 0
@@ -84,8 +84,10 @@ class TestInterval(unittest.TestCase):
         x = Interval(mp.phi, mp.pi)
         y = Interval(mp.euler, mp.e)
         z = Interval(-mp.e, -mp.euler)
-        self.assertTrue(Interval(mp.phi / mp.e, mp.pi / mp.euler) in x / y)
-        self.assertTrue(x / z in Interval(- mp.pi / mp.euler, -mp.phi / mp.e))
+        self.assertTrue(Interval(min(mp.phi / mp.euler, mp.phi / mp.e, mp.pi / mp.euler, mp.pi / mp.e),
+                                 max(mp.phi / mp.euler, mp.phi / mp.e, mp.pi / mp.euler, mp.pi / mp.e)) in x / y)
+        self.assertTrue(x / z in Interval(min(-mp.phi / mp.e, -mp.phi / mp.euler, -mp.pi / mp.euler, -mp.pi / mp.e),
+                                          max(-mp.phi / mp.euler, -mp.phi / mp.e, -mp.pi / mp.euler, -mp.pi / mp.e)))
 
     @precision(dec_precision=50)
     def test_pow_interval(self):
@@ -224,10 +226,9 @@ class TestInterval(unittest.TestCase):
         self.assertTrue(Interval(mpf(sqrt(1)), mpf(sqrt(10))) in y.sqrt())
 
         x = Interval(0, mp.pi)
-        y = Interval(mp.phi, 3*mp.pi)
+        y = Interval(mp.phi, 3 * mp.pi)
         self.assertTrue(Interval(0, sqrt(mp.pi)) in x.sqrt())
-        self.assertTrue(Interval(sqrt(mp.phi), sqrt(3*mp.pi)) in y.sqrt())
-
+        self.assertTrue(Interval(sqrt(mp.phi), sqrt(3 * mp.pi)) in y.sqrt())
 
     @precision(dec_precision=50)
     def test_sin_interval(self):
@@ -242,7 +243,7 @@ class TestInterval(unittest.TestCase):
         self.assertEqual(y.sin(), (-y + float(mp.pi / 2)).cos())
         self.assertTrue(z.sin() in Interval(-1, 1))
         self.assertEqual(x1.sin(), (-x1 + float(mp.pi / 2)).cos())
-        self.assertTrue(Interval(-1, sin(pi/3)) in y1.sin())
+        self.assertTrue(Interval(-1, sin(pi / 3)) in y1.sin())
         self.assertTrue(z1.sin() in Interval(-1, 1))
 
     @precision(dec_precision=50)
@@ -254,7 +255,7 @@ class TestInterval(unittest.TestCase):
         x1 = Interval(3 * pi / 2, 2 * pi)
         y1 = Interval(4 * pi / 3, 2 * pi + pi / 3)
         z1 = Interval(3 * pi / 2, 4 * pi)
-        self.assertTrue(x.cos() in Interval(cos(pi),cos(pi / 2)))
+        self.assertTrue(x.cos() in Interval(cos(pi), cos(pi / 2)))
         self.assertTrue(Interval(-1, cos(pi / 3)) in y.cos())
         self.assertEqual(z.cos(), Interval(-1, 1))
         self.assertEqual(x1.cos(), Interval(cos(3 * pi / 2), cos(2 * pi)))
