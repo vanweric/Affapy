@@ -444,7 +444,7 @@ class Interval:
             float: sup - inf
 
         """
-        return fsub(self.sup, self.inf)
+        return fsub(self.sup, self.inf, rounding='u')
 
     def middle(self):
         """Middle
@@ -458,7 +458,7 @@ class Interval:
             float: (inf + sup) / 2
 
         """
-        return fdiv(fadd(self.inf, self.sup), 2)
+        return fdiv(fadd(self.inf, self.sup, rounding='n'), 2, rounding='n')
 
     def log(self):
         """Function log
