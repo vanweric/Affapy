@@ -13,12 +13,20 @@ class TestAffine(unittest.TestCase):
     @precision(dec_precision=50)
     def test_add_affine(self):
         """Test 'add' function from class Affine"""
+        x = Affine(x0=0, xi={1: 10})
+        y = Affine(x0=5, xi={1: 10, 2: 5})
+        self.assertEqual(x + y, Affine(x0=5, xi={1: 20, 2: 5}))
+        self.assertEqual(x + x, Affine(x0=0, xi={1: 20}))
+        self.assertEqual(x + 4, Affine(x0=4, xi={1: 10}))
+        # self.assertTrue(Affine(x0=12.536, xi={1: 20, 2: 5}) in x + 7.536 + y)
+
         x = Affine(x0=-mp.pi, xi={1: mp.e})
         y = Affine(x0=mp.pi, xi={1: mp.phi, 2: mp.e})
         self.assertTrue(Affine(x0=0, xi={1: mp.e + mp.phi, 2: mp.e}) in x + y)
-        self.assertTrue(Affine(x0=-2*mp.pi, xi={1: 2*mp.e}) in x + x)
+        self.assertTrue(Affine(x0=-2 * mp.pi, xi={1: 2 * mp.e}) in x + x)
         self.assertTrue(Affine(x0=-mp.pi + 4, xi={1: mp.e}) in x + 4)
 
+    @precision(dec_precision=50)
     def test_sub_affine(self):
         """Test 'sub' function from class Affine"""
         x = Affine(x0=0, xi={1: 10})
@@ -27,8 +35,15 @@ class TestAffine(unittest.TestCase):
         self.assertEqual(x - y, Affine(x0=-5, xi={2: -5}))
         self.assertEqual(x + y - y, x)
         self.assertEqual(x - 4, Affine(x0=-4, xi={1: 10}))
-        self.assertEqual(x - 7.536 - y, Affine(x0=-12.536, xi={2: -5}))
+        # self.assertTrue(Affine(x0=-12.536, xi={2: -5}) in x - 7.536 - y)
 
+        x = Affine(x0=mp.pi, xi={1: mp.e})
+        y = Affine(x0=mp.pi, xi={1: mp.phi, 2: mp.e})
+        self.assertTrue(Affine(x0=0, xi={1: mp.e - mp.phi, 2: -mp.e}) in x - y)
+        self.assertTrue(Affine(x0=0, xi={}) in x - x)
+        self.assertTrue(Affine(x0=mp.pi - 4, xi={1: mp.e}) in x - 4)
+
+    @precision(dec_precision=50)
     def test_mul_affine(self):
         """Test 'mul' function from class Affine"""
         x = Affine(xi={1: 10}, x0=0)
@@ -36,9 +51,21 @@ class TestAffine(unittest.TestCase):
         self.assertEqual(x * y, Affine(xi={1: 50, 3: 150}, x0=0))
         self.assertEqual(x * x, Affine(xi={4: 100}, x0=0))
         self.assertEqual(y * 4, Affine(xi={1: 40, 2: 20}, x0=20))
-        self.assertEqual(y * 7.536, Affine(xi={1: 75.36, 2: 37.68}, x0=37.68))
+        # self.assertEqual(y * 7.536, Affine(xi={1: 75.36, 2: 37.68}, x0=37.68))
         self.assertEqual((x + x) * y - y, Affine(x0=-5, xi={1: 90, 2: -5, 5: 300}))
 
+        x = Affine(x0=mp.pi, xi={1: mp.e})
+        y = Affine(x0=mp.pi, xi={1: mp.phi, 2: mp.e})
+        self.assertTrue(Affine(x0=mp.pi * mp.pi, xi={1: mp.pi * (mp.phi + mp.e) - mp.phi,
+                                                     2: mp.pi * mp.e,
+                                                     6: mp.e * mp.phi + mp.e * mp.e}) in x * y)
+        self.assertTrue(Affine(x0=mp.pi * mp.pi, xi={1: 2 * mp.pi * mp.e}) in x * x)
+        self.assertTrue(Affine(x0=mp.pi * 4, xi={1: mp.phi, 2: mp.e}) in y * 4)
+        self.assertTrue(Affine(x0=2 * mp.pi ** 2 - mp.pi, xi={1: 2 * mp.pi * mp.phi + 2 * mp.pi * mp.e - mp.phi,
+                                                              2: 2 * mp.pi * mp.e - mp.e,
+                                                              7: mp.e * mp.phi + mp.e ** 2}) in (x + x) * y - y)
+
+    @precision(dec_precision=50)
     def test_contains_affine(self):
         """Test 'contains' function from class Affine"""
         x = Affine(xi={1: 10}, x0=0)
@@ -50,6 +77,7 @@ class TestAffine(unittest.TestCase):
         self.assertFalse(y in z)
         # self.assertFalse(x in 0) TODO
 
+    @precision(dec_precision=50)
     def test_inv_affine(self):
         """Test 'inv' function from class Affine"""
         x = Affine(xi={1: 6}, x0=10)
@@ -57,6 +85,7 @@ class TestAffine(unittest.TestCase):
         self.assertTrue(Interval(1 / 16, 1 / 4) in x.inv())
         self.assertTrue(Interval(-1 / 28, -1 / 12) in y.inv())
 
+    @precision(dec_precision=50)
     def test_truediv_affine(self):
         """Test 'truediv' function from class Affine"""
         x = Affine(xi={1: 6}, x0=10)
@@ -95,13 +124,18 @@ class TestAffine(unittest.TestCase):
         self.assertTrue(x != z)
         self.assertTrue(x != X)
 
+    @precision(dec_precision=50)
     def test_sqrt_affine(self):
         """Test 'sqrt' function from class Affine"""
         x = Affine(x0=5, xi={1: 5})
         y = Affine(x0=20, xi={2: 5, 5: 7})
-        z = Interval(mp.sqrt(8), mp.sqrt(32)+1)
-        self.assertTrue(x.sqrt() in Interval(0, mp.sqrt(10) + 1))
-        self.assertTrue(y.sqrt() in Interval(mp.sqrt(8) - 1, mp.sqrt(32) + 1))
+        z = Interval(mp.sqrt(8), mp.sqrt(32) + 1)
+        print("sqrt(x) =", Interval(0, mp.sqrt(10)))
+        print("réponse calculé = ", x.sqrt().interval)
+        print("sqrt(y) = ", Interval(mp.sqrt(8), mp.sqrt(32)))
+        print("réponse calculé = ", y.sqrt().interval)
+        self.assertTrue(Interval(0, mp.sqrt(10)) in x.sqrt())
+        self.assertTrue(Interval(mp.sqrt(8), mp.sqrt(32)) in y.sqrt())
 
 
 if __name__ == "__main__":
