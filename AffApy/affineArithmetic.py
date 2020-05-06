@@ -96,7 +96,7 @@ class Affine:
             int or float: sum of abs(xi)
 
         """
-        return fsum(fabs(self.xi[i]) for i in self.xi)
+        return fsum(self.xi.values(), absolute=True)
 
     # Unary operator
     def __neg__(self):
