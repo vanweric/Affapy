@@ -1,11 +1,13 @@
 uml:
-	pyreverse -o dot -p AffApy -A -S ../../AffApy
+	pyreverse -o dot -p AffApy -A -S -f OTHER ../../AffApy
 
-png:
-	dot -Tpng uml.dot -o uml.png
+png: uml
+	dot -Tpng classes_AffApy.dot -o uml.png
+	@make clear
 
-pdf:
-	dot -Tpdf uml.dot -o uml.pdf
+pdf: uml
+	dot -Tpdf classes_AffApy.dot -o uml.pdf
+	@make clear
 
 clear:
 	rm classes_AffApy.dot packages_AffApy.dot
