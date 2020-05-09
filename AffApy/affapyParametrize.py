@@ -8,8 +8,6 @@ from AffApy.affapyPrecision import precision
 
 class parametrize:
     """Manage parameters for AffApy library"""
-    _args: list
-    _parameters: Dict[str, object]
 
     def __init__(self, **args):
         """
@@ -35,7 +33,7 @@ class parametrize:
             if type(values) not in [list, set, tuple, dict]:
                 transformed_values = [values]
             elif type(values) is dict:
-                transformed_values = [str(values).replace(":", "=").replace("'", "").replace("{", "").replace("}", "")]
+                transformed_values = [str(values).replace(":", "=").replace("'", "").strip("{}")]
             else:
                 transformed_values = values
             for value in transformed_values:
@@ -65,7 +63,10 @@ class parametrize:
             @functools.wraps(func)
             def f(*args, **kwargs):
                 for (key, value) in self.args:
-                    param = eval(key + "(" + str(value) + ")")
+                    if isinstance(value, str) and "=" not in value:
+                        param = eval(key + "('" + str(value) + "')")
+                    else:
+                        param = eval(key + "(" + str(value) + ")")
                     with param:
                         func(*args, **kwargs)
 

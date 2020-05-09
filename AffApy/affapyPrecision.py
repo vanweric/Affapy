@@ -6,10 +6,6 @@ from AffApy.affapyError import AffApyError
 
 class precision(ContextDecorator):
     """Manage precision for AffApy library"""
-    _dec: int
-    _bin: int
-    _old_dec: int
-    _old_bin: int
 
     def __init__(self, dec_precision: int = None, bin_precision: int = None):
         """
