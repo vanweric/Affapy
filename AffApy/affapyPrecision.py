@@ -16,6 +16,9 @@ class precision(ContextDecorator):
             dec_precision (int): decimal precision of mpmath
             bin_precision (int): binary precision of mpmath
 
+        Raises:
+            AffApyError: Invalid value for precision
+
         """
         if isinstance(dec_precision, int) or isinstance(bin_precision, int):
             self._dec = dec_precision
@@ -31,7 +34,9 @@ class precision(ContextDecorator):
         """
         Get decimal precision
 
-        :rtype int
+        Returns:
+            int
+
         """
         return self._dec
 
@@ -40,7 +45,9 @@ class precision(ContextDecorator):
         """
         Get binary precision
 
-        :rtype int
+        Returns:
+            int
+
         """
         return self._bin
 
@@ -66,8 +73,10 @@ class precision(ContextDecorator):
     def dec_precision(self, dec_precision: int):
         """
         Set decimal precision
-        
-        :type dec_precision: int
+
+        Args:
+            dec_precision (int)
+
         """
         self._dec = dec_precision
         mp.dps = self._dec
@@ -77,7 +86,9 @@ class precision(ContextDecorator):
         """
         Set binary precision
 
-        :type bin_precision: int
+        Args:
+            bin_precision (int)
+
         """
         self._bin = bin_precision
         mp.prec = self._bin
@@ -87,7 +98,9 @@ class precision(ContextDecorator):
         """
         Set old decimal value
 
-        :type dec_precision: int
+        Args:
+            dec_precision (int)
+
         """
         self._old_dec = dec_precision
 
@@ -96,7 +109,9 @@ class precision(ContextDecorator):
         """
         Set old binary value
 
-        :type bin_precision: int
+        Args:
+            bin_precision (int)
+
         """
         self._old_bin = bin_precision
 
@@ -105,8 +120,10 @@ class precision(ContextDecorator):
     def set_dec_precision(dec_precision: int):
         """
         Set decimal precision outside precision class
-        
-        :type dec_precision: int
+
+        Args:
+            dec_precision (int)
+
         """
         mp.dps = dec_precision
 
@@ -115,7 +132,8 @@ class precision(ContextDecorator):
         """
         Set binary precision outside precision class
 
-        :type bin_precision: int
+        Args:
+            bin_precision (int)
         """
         mp.prec = bin_precision
 
