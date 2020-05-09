@@ -52,6 +52,19 @@ class Interval:
         """Set the sup"""
         self._sup = value
 
+    def straddles_zero(self):
+        """
+        Return True if the interval straddles 0, False if not
+
+        Args:
+            self (Interval): operand
+
+        Returns:
+            bool: 0 in self
+
+        """
+        return 0 in self
+
     # Inclusion
     def __contains__(self, other):
         """Operator in
