@@ -5,7 +5,8 @@ This module can create affines form and perform operations.
 """
 import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError
-from mpmath import mp, fdiv, fadd, fsub, fsum, fneg, fmul, fabs, sqrt, exp, log
+from mpmath import (
+    mp, fdiv, fadd, fsub, fsum, fneg, fmul, fabs, sqrt, exp, log, sin)
 
 
 class Affine:
@@ -573,19 +574,49 @@ class Affine:
             "the interval associated to the affine form must be > 0")
 
     # Trigo
-    def sin(self):  # TODO et toutes les fonctions d'après seront définies
+    def sin(self, npts=8):
         """Function sin
 
-        Return the sinus of an affine form
+        Return the sinus of an affine form.
+        It uses the least squares.
 
         Args:
             self (Affine): operand
+            npts (int): number of points for the linear regression
+            approximation
 
         Returns:
             Affine: sin(self)
 
         """
-        pass
+        w = self.interval.radius()
+        a, b = self.interval.inf, self.interval.sup
+        if w >= 2*mp.pi:
+            return Affine(interval=[-1, 1])
+        # Case of the least squares
+        x, y = [a], [sin(a)]
+        pas = w / (npts - 1)
+        for i in range(1, npts - 1):
+            x.append(x[i-1] + pas)
+            y.append(sin(x[i]))
+        x.append(b)
+        y.append(sin(b))
+        # Calculation of xm and ym, averages of x and y
+        xm, ym = fsum(x) / npts, fsum(y) / npts
+        # Calculation of alpha and dzeta
+        temp2 = 0
+        alpha = 0
+        for xi, yi in zip(x, y):
+            temp1 = xi - xm
+            alpha += yi * temp1
+            temp2 += temp1 * temp1
+        alpha = alpha / temp2
+        dzeta = ym - alpha * xm
+        # Calculation of the residues
+        r = [fabs(yi - (dzeta + alpha * xi)) for xi, yi in zip(x, y)]
+        # The error delta is the maximum of the residues (in absolute values)
+        delta = max(r)
+        return self.affineConstructor(alpha, dzeta, delta)
 
     def cos(self):
         """Function cos
@@ -600,8 +631,7 @@ class Affine:
             Affine: cos(self)
 
         """
-        x = self + mp.mpf(mp.pi / 2)
-        return x.sin()
+        return (self + float(mp.pi / 2)).sin()
 
     def tan(self):
         """Function tan
