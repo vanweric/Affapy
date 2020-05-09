@@ -5,7 +5,7 @@ This module can create affines form and perform operations.
 """
 import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError
-from mpmath import mp, fdiv, fadd, fsub, fsum, fabs, fneg, fmul, sqrt, exp, log
+from mpmath import mp, fdiv, fadd, fsub, fsum, fneg, fmul, sqrt, exp, log
 
 
 class Affine:
