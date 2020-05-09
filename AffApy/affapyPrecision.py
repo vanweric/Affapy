@@ -55,7 +55,9 @@ class precision(ContextDecorator):
     def old_dec_precision(self):
         """Get old decimal precision
 
-        :rtype int
+        Returns:
+            int
+
         """
         return self._old_dec
 
@@ -64,7 +66,9 @@ class precision(ContextDecorator):
         """
         Get old binary precision
 
-        :rtype int
+        Returns:
+            int
+
         """
         return self._old_bin
 

@@ -15,7 +15,7 @@ class parametrize:
         Args:
             args (dict) : Dictionary of parameters to set in this context
 
-        Warnings:
+        Warns:
             AffApyWarning: Parameter does not exist
             AffApyWarning: Invalid value for parameter
 
@@ -58,7 +58,7 @@ class parametrize:
         Args:
             func: function to be decorated
 
-        Warnings:
+        Warns:
             AffApyWarning: No valid parameters
 
         """
@@ -119,7 +119,7 @@ class parametrize:
         """
         Set a list of parameter for a portion of code
 
-        Warnings:
+        Warns:
             AffApyWarning: Several values for parameter
 
         Raises:
