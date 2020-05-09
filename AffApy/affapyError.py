@@ -1,5 +1,4 @@
 """Error module"""
-import warnings
 
 
 class AffApyError(Exception):
@@ -8,8 +7,5 @@ class AffApyError(Exception):
 
 
 class AffApyWarning(UserWarning):
+    """Manage warnings"""
     pass
-
-
-if __name__ == "__main__":
-    warnings.warn('Message warning', AffApyWarning)
