@@ -5,7 +5,7 @@ This module can create affines form and perform operations.
 """
 import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError
-from mpmath import mp, fdiv, fadd, fsub, fsum, fneg, fmul, sqrt, exp, log
+from mpmath import mp, fdiv, fadd, fsub, fsum, fneg, fmul, fabs, sqrt, exp, log
 
 
 class Affine:
@@ -116,6 +116,32 @@ class Affine:
 
         """
         return fsum(self.xi.values(), absolute=True)
+
+    def straddles_zero(self):
+        """
+        Return True if the affine form straddles 0, False if not
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            bool: 0 in self
+
+        """
+        return self.interval.straddles_zero()
+
+    def strictly_neg(self):
+        """
+        Return True if the affine is strictly negative, False if not
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            bool: 0 in self
+
+        """
+        return self.interval < 0
 
     # Unary operator
     def __neg__(self):
@@ -356,8 +382,8 @@ class Affine:
         """
         if 0 not in self.interval:
             inf, sup = self.interval.inf, self.interval.sup
-            a, b = min(abs(inf), abs(sup)), max(abs(inf), abs(sup))
-            alpha = fdiv(fneg(1), fmul(b, b))
+            a, b = min(fabs(inf), fabs(sup)), max(fabs(inf), fabs(sup))
+            alpha = fdiv(-1, fmul(b, b))
             i = AffApy.intervalArithmetic.Interval(fsub(fdiv(1, a),
                                                         fmul(alpha, a)),
                                                    fdiv(2, b))
@@ -414,34 +440,61 @@ class Affine:
             return other * self.inv()
         raise AffApyError("type error: other must be Affine, int or float")
 
-    def __pow__(self, other):  # TODO other type int or float
+    def sqr(self):
+        """
+        Return the square of the affine form
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: self ** 2
+
+        """
+        return self * self
+
+    def __pow__(self, exp):
         """Operator **
 
-        Return the power of an Affine with another Affine or an integer
-        or float.
-        We use the identity : x**y = exp(y * log(x)).
+        Return the power of an Affine with another Affine or an integer.
+        With Affine, we use the identity : x**y = exp(y * log(x)).
 
         Args:
             self (Affine): first operand
-            other (Affine or int or float): second operand (power)
+            exp (Affine or int): second operand (exponent)
 
         Returns:
-            Affine: self ** other
+            Affine: self ** exp
 
         Raises:
-            AffApyError: if other is not Affine, int or float
+            AffApyError: if exp is not Affine or int
 
         """
-        if isinstance(other, self.__class__):
-            return (other * self.log()).exp()
-        raise AffApyError("only ** between two affine forms")
+        if isinstance(exp, int):
+            ret = 1
+            for _ in range(exp):
+                ret *= self
+            return ret
+        elif isinstance(exp, self.__class__):
+            return (exp * self.log()).exp()
+        raise AffApyError("type error: exp must be Affine or int")
 
-    # def __abs__(self):  # TODO
-    #     """
-    #     Return the absolute value of an affine form
-    #     :rtype: Affine
-    #     """
-    #     pass
+    def __abs__(self):
+        """
+        Return the absolute value of an affine form
+        Args:
+            self (Affine): operand
+
+        Returns:
+            Affine: abs(self)
+        """
+        if self.strictly_neg():
+            return -self
+        if self.straddles_zero():
+            x0 = fabs(self.x0 / 2)
+            xi = {i: fdiv(self.xi[i], 2) for i in self.xi}
+            return Affine(x0=x0, xi=xi)
+        return self.copy()
 
     def sqrt(self):
         """Function sqrt
@@ -513,7 +566,7 @@ class Affine:
             xs = fdiv(1, alpha)
             ys = fadd(fmul(alpha, fsub(xs, a)), la)
             maxdelta = fsub(log(xs), ys)
-            dzeta = fadd(fmul(alpha, fneg(xs)), fdiv(fadd(log(xs), ys), 2))
+            dzeta = fdiv(fmul(alpha, fneg(xs)), fdiv(fadd(log(xs), ys), 2))
             delta = fdiv(maxdelta, 2)
             return self.affineConstructor(alpha, dzeta, delta)
         raise AffApyError(
@@ -698,7 +751,7 @@ class Affine:
         """
         return " + ".join(
             [str(self.x0)] +
-            ["".join([str(self.xi[i]), "*eps", str(i)]) for i in self.xi])
+            ["".join([str(self.xi[i]), "e", str(i)]) for i in self.xi])
 
     def __repr__(self):
         """Repr format
@@ -713,3 +766,30 @@ class Affine:
 
         """
         return "Affine({}, {})".format(self.x0, self.xi)
+
+    def copy(self):
+        """
+        Copy the affine form
+
+        Args:
+            self (Affine): arg
+
+        Returns:
+            Affine: self copy
+
+        """
+        return Affine(x0=self.x0, xi=self.xi.copy())
+
+    def convert(self):
+        """
+        Convert an affine form to an interval representation
+
+        Args:
+            self (Affine): arg
+
+        Returns:
+            Interval: interval of self
+
+        """
+        return AffApy.intervalArithmetic.Interval(self.x0 - self.rad(),
+                                                  self.x0 + self.rad())
