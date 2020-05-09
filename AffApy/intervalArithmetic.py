@@ -107,6 +107,24 @@ class Interval:
             return Interval(inf, sup)
         raise AffApyError("type error : other must be Interval, int or float")
 
+    def __radd__(self, other):
+        """Reverse operator +
+
+        Add two Intervals or an Interval and an integer or float
+
+        Args:
+            self (Interval): second operand
+            other (Interval or int or float): first operand
+
+        Returns:
+            Interval: other + self
+
+        Raises:
+            AffApyError: if other is not Interval, int or float
+
+        """
+        return self + other
+
     def __sub__(self, other):
         """Operator -
 
@@ -133,6 +151,24 @@ class Interval:
             sup = fsub(self.sup, mp.mpf(other), rounding='u')
             return Interval(inf, sup)
         raise AffApyError("type error : other must be Interval, int or float")
+
+    def __rsub__(self, other):
+        """Reverse operator -
+
+        Substract two Intervals or an Interval and an integer or float
+
+        Args:
+            self (Interval): second operand
+            other (Interval or int or float): first operand
+
+        Returns:
+            Interval: other - self
+
+        Raises:
+            AffApyError: if other is not Interval, int or float
+
+        """
+        return -self + other
 
     def __mul__(self, other):
         """Operator *
@@ -162,6 +198,24 @@ class Interval:
             return Interval(fmul(mp.mpf(other), self.inf, rounding='d'),
                             fmul(mp.mpf(other), self.sup, rounding='u'))
         raise AffApyError("type error : other must be Interval, int or float")
+
+    def __rmul__(self, other):
+        """Reverse operator *
+
+        Multiply two Intervals or an Interval and an integer or float
+
+        Args:
+            self (Interval): second operand
+            other (Interval or int or float): first operand
+
+        Returns:
+            Interval: other * self
+
+        Raises:
+            AffApyError: if other is not Interval, int or float
+
+        """
+        return self * other
 
     def __truediv__(self, other):  # TRAITER LES CAS INFINIS ?
         """Operator /
