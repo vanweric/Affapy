@@ -32,18 +32,23 @@ if __name__ == "__main__":
         print("\tDecimal precision during with statement:", mp.dps)
         print("\tPi =", mp.pi)
 
-        print("\n\tDecimal precision during with statement before function:", mp.dps)
+        print("\n\tDecimal precision during with statement before function:",
+              mp.dps)
         test_dps_precision()
-        print("\tDecimal precision during with statement after function:", mp.dps, "\n")
+        print("\tDecimal precision during with statement after function:",
+              mp.dps, "\n")
 
         print("\tDecimal precision before second with statement:", mp.dps)
         with precision(dec_precision=30):
-            print("\t\tDecimal precision during second with statement:", mp.dps)
+            print("\t\tDecimal precision during second with statement:",
+                  mp.dps)
             print("\t\tPi =", mp.pi)
 
-            print("\n\t\tDecimal precision during second with statement before function:", mp.dps)
+            print("\n\t\tDecimal precision during second with statement before function:",
+                  mp.dps)
             test_dps_precision()
-            print("\t\tDecimal precision during second with statement after function:", mp.dps)
+            print("\t\tDecimal precision during second with statement after function:",
+                  mp.dps)
             print("\t\tExit second with")
 
         print("\tDecimal precision after second with statement:", mp.dps)

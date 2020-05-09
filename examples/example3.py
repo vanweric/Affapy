@@ -5,7 +5,7 @@ from mpmath import mp
 
 
 print("== Interval ==")
-with precision(dps=20):
+with precision(dec_precision=20):
     x = Interval(-mp.pi, mp.pi)
     print("x =", x)
     y = Interval(0, mp.e)
@@ -16,7 +16,7 @@ with precision(dps=20):
     print("exp(x) =", x.exp())
 
 print("== Affine ==")
-with precision(dps=30):
+with precision(dec_precision=30):
     x = Affine(interval=[-mp.pi, mp.pi])
     print("x =", x)
     y = Affine(interval=[0, mp.e])

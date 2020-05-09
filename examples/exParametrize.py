@@ -3,7 +3,8 @@ from AffApy.affapyParametrize import parametrize
 from mpmath import mp
 
 
-@parametrize(precision={"dec_precision": 10, "bin_precision": 20}, test_1=1, test_2=2)
+@parametrize(precision={"dec_precision": 10, "bin_precision": 20},
+             test_1=1, test_2=2)
 def test_parametrize():
     print("Decimal precision during function:", mp.dps)
     print("\tPi =", mp.pi)
