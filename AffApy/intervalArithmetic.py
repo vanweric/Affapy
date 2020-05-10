@@ -473,9 +473,9 @@ class Interval:
         pi_fois_3 = fmul(3, mp.pi)
         if inf <= mp.pi:
             if sup <= mp.pi:
-                return Interval(cos(sup, rounding='d'), cos(inf, rounding='u'))
+                return Interval(cos(sup, rounding='u'), cos(inf, rounding='d'))
             if mp.pi < sup <= pi_fois_2:
-                return Interval(-1, max(cos(inf, rounding='u'),
+                return Interval(-1, max(cos(inf, rounding='d'),
                                         cos(sup, rounding='u')))
             return Interval(-1, 1)
         if mp.pi < inf <= pi_fois_2:
