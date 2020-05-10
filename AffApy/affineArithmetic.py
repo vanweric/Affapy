@@ -5,6 +5,7 @@ This module can create affines form and perform operations.
 """
 import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError
+import mpmath
 from mpmath import (
     mp, fdiv, fadd, fsub, fsum, fneg, fmul, fabs, sqrt, exp, log, sin)
 
@@ -13,6 +14,7 @@ class Affine:
     """Representation of an affine form"""
     _weightCount = 1
 
+    @staticmethod
     def getNewXi():
         Affine._weightCount += 1
         return Affine._weightCount - 1
@@ -44,19 +46,24 @@ class Affine:
         If no arguments, x0=0 and xi={}.
 
         Args:
-            interval (list with length 2): the interval
-            x0 (int or float): the center
-            xi (dict): noise symbols
+            interval (list or tuple with length 2 or Interval): the interval
+            x0 (int or float or mpf): the center
+            xi (dict of mpf values): noise symbols
 
         Returns:
             Affine
 
+        Raises:
+            AffApyError: if interval is not list, tuple or Interval
+
         """
         if interval is not None:
-            if isinstance(interval, list) and len(interval) == 2:
+            if isinstance(interval, (list, tuple)) and len(interval) == 2:
                 inf, sup = min(interval), max(interval)
-            else:
+            elif isinstance(interval, AffApy.intervalArithmetic.Interval):
                 inf, sup = interval.inf, interval.sup
+            else:
+                raise AffApyError("interval must be list, tuple or Interval")
             self._x0 = fdiv(fadd(inf, sup, rounding='n'), 2, rounding='n')
             self._xi = {Affine.getNewXi(): fdiv(
                 fsub(inf, sup, rounding='d'), 2, rounding='d')}
@@ -480,6 +487,7 @@ class Affine:
             return (exp * self.log()).exp()
         raise AffApyError("type error: exp must be Affine or int")
 
+    # Functions
     def __abs__(self):
         """
         Return the absolute value of an affine form
