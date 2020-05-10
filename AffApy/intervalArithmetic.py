@@ -66,7 +66,7 @@ class Interval:
             mpf: sup - inf
 
         """
-        return self.sup - self.inf
+        return fsub(self.sup, self.inf)
 
     def mid(self):
         """Middle
@@ -272,8 +272,8 @@ class Interval:
         if isinstance(other, self.__class__):
             c, d = other.inf, other.sup
             if 0 not in other:
-                return self * Interval(fdiv(1, d, rounding='d'),
-                                       fdiv(1, c, rounding='u'))
+                return self * Interval(fdiv(1, d, rounding='u'),
+                                       fdiv(1, c, rounding='d'))
             raise AffApyError("division by 0")
         if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
             if other != 0:
@@ -446,13 +446,13 @@ class Interval:
         pi_fois_2 = fmul(2, mp.pi)
         a = fmod(inf, pi_fois_2)
         if inf < 0:
-            a = fneg(a)
+            a = fneg(a, rounding='d')
         if fsub(sup, inf) >= pi_fois_2:
-            b = fadd(a, pi_fois_2)
+            b = fadd(a, pi_fois_2, rounding='u')
         else:
             b = fmod(sup, pi_fois_2)
             if b <= a:
-                b = fadd(b, pi_fois_2)
+                b = fadd(b, pi_fois_2, rounding='u')
         return Interval(a, b)
 
     def cos(self):
@@ -467,7 +467,8 @@ class Interval:
             Interval: cos(self)
 
         """
-        inf, sup = self.minTrigo().inf, self.minTrigo().sup
+        interMinTrigo = self.minTrigo()
+        inf, sup = interMinTrigo.inf, interMinTrigo.sup
         pi_fois_2 = fmul(2, mp.pi)
         pi_fois_3 = fmul(3, mp.pi)
         if inf <= mp.pi:
@@ -476,16 +477,14 @@ class Interval:
             if mp.pi < sup <= pi_fois_2:
                 return Interval(-1, max(cos(inf, rounding='u'),
                                         cos(sup, rounding='u')))
-            if sup > pi_fois_2:
-                return Interval(-1, 1)
+            return Interval(-1, 1)
         if mp.pi < inf <= pi_fois_2:
             if sup <= pi_fois_2:
                 return Interval(cos(inf, rounding='d'), cos(sup, rounding='u'))
             if pi_fois_2 < sup <= pi_fois_3:
                 return Interval(min(cos(inf, rounding='d'),
                                     cos(sup, rounding='u')), 1)
-            if sup >= pi_fois_3:
-                return Interval(-1, 1)
+            return Interval(-1, 1)
 
     def sin(self):
         """Function sin

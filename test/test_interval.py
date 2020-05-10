@@ -3,7 +3,7 @@
 from AffApy.intervalArithmetic import Interval
 from AffApy.affapyPrecision import precision
 import unittest
-from mpmath import sqrt, log, exp, pi, sin, cos, mpf, fdiv, mp, workdps
+from mpmath import sqrt, log, exp, pi, sin, cos, mpf, mp, workdps
 from math import ceil, floor
 
 
@@ -57,19 +57,18 @@ class TestInterval(unittest.TestCase):
         self.assertEqual(x * y, Interval(3, 8))
         self.assertEqual(z * (x + y), Interval(-6, 6))
 
-        x = Interval(mp.phi, mp.pi)
-        y = Interval(mp.euler, mp.e)
-        z = Interval(-mp.pi, mp.pi)
+        a, b = mp.phi, mp.pi
+        c, d = mp.euler, mp.e
+        x = Interval(a, b)
+        y = Interval(c, d)
+        self.assertTrue(Interval(min(a*c, a*d, b*c, b*d),
+                                 max(a*c, a*d, b*c, b*d)) in x * y)
+        e, f = -mp.pi, mp.pi
+        z = Interval(e, f)
         self.assertTrue(Interval(
-            min(mp.phi * mp.euler, mp.phi * mp.e, mp.pi * mp.euler, mp.pi * mp.e),
-            max(mp.phi * mp.euler, mp.phi * mp.e, mp.pi * mp.euler, mp.pi * mp.e))
-                        in x * y)
-        self.assertTrue(Interval(
-            min(-mp.pi * (mp.phi + mp.euler), -mp.pi * (mp.pi + mp.e),
-                mp.pi * (mp.phi + mp.euler), mp.pi * (mp.pi + mp.e)),
-            max(-mp.pi * (mp.phi + mp.euler), -mp.pi * (mp.pi + mp.e),
-                mp.pi * (mp.phi + mp.euler), mp.pi * (mp.pi + mp.e)))
-                        in z * (x + y))
+            min(e * (a + c), e * (b + d), f * (a + c), f * (b + d)),
+            max(e * (a + c), e * (b + d), f * (a + c), f * (b + d)))
+            in z * (x + y))
 
     @precision(dec_precision=50)
     def test_truediv_interval(self):  # TODO: test interval/interval contains 0
@@ -77,17 +76,18 @@ class TestInterval(unittest.TestCase):
         x = Interval(1, 2)
         y = Interval(3, 4)
         z = Interval(-5, -1)
-        self.assertEqual(x / y, Interval(fdiv(1, 4, rounding='d'),
-                                         fdiv(2, 3, rounding='u')))
-        self.assertTrue(Interval(-2, -1 / 5) in x / z)
+        self.assertTrue(Interval(1/4, 2/3) in x / y)
+        self.assertTrue(Interval(-2, -1/5) in x / z)
 
-        x = Interval(mp.phi, mp.pi)
-        y = Interval(mp.euler, mp.e)
-        z = Interval(-mp.e, -mp.euler)
-        self.assertTrue(Interval(min(mp.phi / mp.euler, mp.phi / mp.e, mp.pi / mp.euler, mp.pi / mp.e),
-                                 max(mp.phi / mp.euler, mp.phi / mp.e, mp.pi / mp.euler, mp.pi / mp.e)) in x / y)
-        self.assertTrue(Interval(min(-mp.phi / mp.e, -mp.phi / mp.euler, -mp.pi / mp.euler, -mp.pi / mp.e),
-                                          max(-mp.phi / mp.euler, -mp.phi / mp.e, -mp.pi / mp.euler, -mp.pi / mp.e)) in x / z)
+        a, b = mp.phi, mp.pi
+        c, d = mp.euler, mp.e
+        x = Interval(a, b)
+        y = Interval(c, d)
+        self.assertTrue(Interval(min(a/d, a/c, b/d, b/c),
+                                 max(a/d, a/c, b/d, b/c)) in x / y)
+        z = Interval(-d, -c)
+        self.assertTrue(Interval(min(-a/d, -a/c, -b/d, -b/c),
+                                 max(-a/d, -a/c, -b/d, -b/c)) in x / z)
 
     @precision(dec_precision=50)
     def test_pow_interval(self):
