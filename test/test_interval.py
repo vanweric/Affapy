@@ -99,7 +99,7 @@ class TestInterval(unittest.TestCase):
         self.assertEqual(y ** 2, Interval(9, 16))
         with workdps(2):
             self.assertTrue(Interval(27, 64) in y ** 3)
-            self.assertEqual(z ** 2, Interval(0, 1))
+            self.assertEqual(z ** 2, Interval(-1, 1))
             self.assertTrue(x ** 2 in Interval(1, 9))
             self.assertTrue(Interval(13, 37) in x ** 2 + y ** 2 - x * y)
 
@@ -177,16 +177,16 @@ class TestInterval(unittest.TestCase):
     def test_radius_interval(self):
         """Test 'radius' function from class Interval"""
         x = Interval(-3, 1)
-        y = Interval(3.5, 6.7)
-        self.assertEqual(x.radius(), 4)
-        self.assertEqual(y.radius(), 3.2)
+        y = Interval(3, 4)
+        self.assertEqual(x.radius(), 2)
+        self.assertEqual(y.radius(), 0.5)
 
-    def test_middle_interval(self):
-        """Test 'middle' function from class Interval"""
+    def test_mid_interval(self):
+        """Test 'mid' function from class Interval"""
         x = Interval(-3, 1)
         y = Interval(3, 4)
-        self.assertEqual(x.middle(), -1)
-        self.assertEqual(y.middle(), 3.5)
+        self.assertEqual(x.mid(), -1)
+        self.assertEqual(y.mid(), 3.5)
 
     @precision(dec_precision=50)
     def test_log_interval(self):
