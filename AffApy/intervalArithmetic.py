@@ -111,33 +111,6 @@ class Interval:
         """
         return self.inf <= 0 and self.sup >= 0
 
-    # Inclusion
-    def __contains__(self, other):
-        """Operator in
-
-        Return True if other, who is Interval, or int, or float or mpf, is
-        in self, who is an Interval.
-
-        Args:
-            self (Interval): second operand
-            other (Interval or Affine or int or float or mpf): first operand
-
-        Returns:
-            bool: other in self
-
-        Raises:
-            AffApyError: if other is not Interval, int, float, Affine, mpf
-
-        """
-        if isinstance(other, self.__class__):
-            return self.inf <= other.inf and self.sup >= other.sup
-        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
-            return self.inf <= other <= self.sup
-        if isinstance(other, AffApy.affineArithmetic.Affine):
-            return (self.inf <= other.interval.inf
-                    and self.sup >= other.interval.sup)
-        raise AffApyError("other must be Interval, int, float, Affine, mpf")
-
     # Binary operators
     def __add__(self, other):
         """Operator +
@@ -669,6 +642,33 @@ class Interval:
         if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
             return self.sup < other
         raise AffApyError("other must be Interval, int, float, mpf")
+
+    # Inclusion
+    def __contains__(self, other):
+        """Operator in
+
+        Return True if other, who is Interval, or int, or float or mpf, is
+        in self, who is an Interval.
+
+        Args:
+            self (Interval): second operand
+            other (Interval or Affine or int or float or mpf): first operand
+
+        Returns:
+            bool: other in self
+
+        Raises:
+            AffApyError: if other is not Interval, int, float, Affine, mpf
+
+        """
+        if isinstance(other, self.__class__):
+            return self.inf <= other.inf and self.sup >= other.sup
+        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
+            return self.inf <= other <= self.sup
+        if isinstance(other, AffApy.affineArithmetic.Affine):
+            return (self.inf <= other.interval.inf
+                    and self.sup >= other.interval.sup)
+        raise AffApyError("other must be Interval, int, float, Affine, mpf")
 
     # Formats
     def __str__(self):
