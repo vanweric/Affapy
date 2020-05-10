@@ -388,7 +388,7 @@ class Affine:
             i = AffApy.intervalArithmetic.Interval(fsub(fdiv(1, a),
                                                         fmul(alpha, a)),
                                                    fdiv(2, b))
-            dzeta = i.middle()
+            dzeta = i.mid()
             if inf < 0:
                 dzeta = fneg(dzeta)
             delta = i.radius()
