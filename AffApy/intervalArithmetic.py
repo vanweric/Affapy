@@ -63,7 +63,7 @@ class Interval:
             bool: 0 in self
 
         """
-        return 0 in self
+        return self.inf <= 0 and self.sup >= 0
 
     # Inclusion
     def __contains__(self, other):
@@ -499,6 +499,20 @@ class Interval:
                         ceil(self.sup, rounding='u'))
 
     # Methods
+    def width(self):
+        """Width
+
+        Return the width of an Interval
+
+        Args:
+            self (Interval): arg
+
+        Returns:
+            mpf: sup - inf
+
+        """
+        return self.sup - self.inf
+
     def mid(self):
         """Middle
 

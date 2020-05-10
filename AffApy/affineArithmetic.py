@@ -589,7 +589,7 @@ class Affine:
             Affine: sin(self)
 
         """
-        w = self.interval.radius()
+        w = self.interval.width()
         a, b = self.interval.inf, self.interval.sup
         if w >= 2*mp.pi:
             return Affine(interval=[-1, 1])
