@@ -20,7 +20,9 @@ class Affine:
         return Affine._weightCount - 1
 
     def roundedSub(self, x, y):
-        """choose the right rounding depending on whether the result is positive or negative"""
+        """
+        Choose the right rounding depending on whether
+        the result is positive or negative"""
         if x < y:
             return fsub(x, y, rounding='d')
         else:
@@ -114,20 +116,20 @@ class Affine:
     def rad(self):
         """Radius
 
-        Return the radius of affine form
+        Return the radius of affine form.
 
         Args:
             self (Affine): operand
 
         Returns:
-            int or float: sum of abs(xi)
+            mpf: sum of abs(xi)
 
         """
         return fsum(self.xi.values(), absolute=True)
 
     def straddles_zero(self):
         """
-        Return True if the affine form straddles 0, False if not
+        Return True if the affine form straddles 0, False if not.
 
         Args:
             self (Affine): operand
@@ -140,7 +142,7 @@ class Affine:
 
     def strictly_neg(self):
         """
-        Return True if the affine is strictly negative, False if not
+        Return True if the affine is strictly negative, False if not.
 
         Args:
             self (Affine): operand
@@ -155,7 +157,7 @@ class Affine:
     def __neg__(self):
         """Operator - (unary)
 
-        Return the additive inverse of an Affine form
+        Return the additive inverse of an Affine form.
 
         Args:
             self (Affine): operand
@@ -176,17 +178,17 @@ class Affine:
     def __add__(self, other):
         """Operator +
 
-        Add two Affines or an Affine form and an integer or float
+        Add two Affines or an Affine form and an integer or float or mpf.
 
         Args:
             self (Affine): first operand
-            other (Affine or int or float): second operand
+            other (Affine or int or float or mpf): second operand
 
         Returns:
             Affine: self + other
 
         Raises:
-            AffApyError: if other is not Affine, int or float
+            AffApyError: if other is not Affine, int, float, mpf
 
         Examples:
             >>> print(Affine([0, 1]) + Affine([3, 4]))
@@ -207,26 +209,26 @@ class Affine:
                 if i not in self.xi:
                     xi[i] = other.xi[i]
             return Affine(x0=x0, xi=xi)
-        if isinstance(other, int) or isinstance(other, float):
+        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
             x0 = fadd(self.x0, mp.mpf(str(other), rounding='n'), rounding='n')
             xi = self.xi.copy()
             return Affine(x0=x0, xi=xi)
-        raise AffApyError("type error: other must be Affine, int or float")
+        raise AffApyError("other must be Affine, int, float, mpf")
 
     def __radd__(self, other):
         """Reverse operator +
 
-        Add two Affines or an Affine form and an integer or float
+        Add two Affines or an Affine form and an integer or float or mpf.
 
         Args:
             self (Affine): second operand
-            other (Affine or int or float): first operand
+            other (Affine or int or float or mpf): first operand
 
         Returns:
             Affine: other + self
 
         Raises:
-            AffApyError: if other is not Affine, int or float
+            AffApyError: if other is not Affine, int, float, mpf
 
         """
         return self + other
@@ -234,7 +236,7 @@ class Affine:
     def __sub__(self, other):
         """Operator -
 
-        Substract two Affines or an Affine form and an integer or float
+        Substract two Affines or an Affine form and an integer or float or mpf.
 
         Args:
             self (Affine): first operand
@@ -244,7 +246,7 @@ class Affine:
             Affine: self - other
 
         Raises:
-            AffApyError: if other is not Affine, int or float
+            AffApyError: if other is not Affine, int, float, mpf
 
         """
         if isinstance(other, self.__class__):
@@ -264,26 +266,26 @@ class Affine:
                     else:
                         xi[i] = fneg(other.xi[i], rounding='d')
             return Affine(x0=x0, xi=xi)
-        if isinstance(other, int) or isinstance(other, float):
+        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
             x0 = fsub(self.x0, mp.mpf(str(other)), rounding='n')
             xi = self.xi.copy()
             return Affine(x0=x0, xi=xi)
-        raise AffApyError("type error: other must be Affine, int or float")
+        raise AffApyError("other must be Affine, int, float, mpf")
 
     def __rsub__(self, other):
         """Reverse operator -
 
-        Substract two Affines or an integer or float and an Affine form
+        Substract two Affines or an integer or float or mpf and an Affine form.
 
         Args:
             self (Affine): second operand
-            other (Affine or int or float): first operand
+            other (Affine or int or float or mpf): first operand
 
         Returns:
             Affine: other - self
 
         Raises:
-            AffApyError: if other is not Affine, int or float
+            AffApyError: if other is not Affine, int, float, mpf
 
         """
         return -self + other
@@ -291,17 +293,17 @@ class Affine:
     def __mul__(self, other):
         """Operator *
 
-        Multiply two Affines or an Affine form and integer or float
+        Multiply two Affines or an Affine form and integer or float or mpf.
 
         Args:
             self (Affine): first operand
-            other (Affine or int or float): second operand
+            other (Affine or int or float or mpf): second operand
 
         Returns:
             Affine: self * other
 
         Raises:
-            AffApyError: if other is not Affine, int or float
+            AffApyError: if other is not Affine, int, float, mpf
 
         """
         if isinstance(other, self.__class__):
@@ -322,32 +324,37 @@ class Affine:
                 elif i not in self.xi and i in other.xi:
                     v = Affine.roundedMul(self, other.xi[i], self.x0)
                 elif i in self.xi and i in other.xi:
-                    v = Affine.roundedAdd(self, Affine.roundedMul(self, self.xi[i], other.x0),
-                                          Affine.roundedMul(self, other.xi[i], self.x0))
+                    v = Affine.roundedAdd(self,
+                                          Affine.roundedMul(self, self.xi[i],
+                                                            other.x0),
+                                          Affine.roundedMul(self, other.xi[i],
+                                                            self.x0))
                 if v != 0:
                     xi[i] = v
-            xi[Affine.getNewXi()] = Affine.roundedMul(self, self.rad(), other.rad())
+            xi[Affine.getNewXi()] = Affine.roundedMul(self, self.rad(),
+                                                      other.rad())
             return Affine(x0=x0, xi=xi)
-        if isinstance(other, int) or isinstance(other, float):
+        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
             x0 = fmul(mp.mpf(str(other)), self.x0)
-            xi = {i: Affine.roundedMul(self, mp.mpf(str(other)), self.xi[i]) for i in self.xi}
+            xi = {i: Affine.roundedMul(self, mp.mpf(str(other)),
+                                       self.xi[i]) for i in self.xi}
             return Affine(x0=x0, xi=xi)
-        raise AffApyError("type error: other must be Affine, int or float")
+        raise AffApyError("other must be Affine, int, float, mpf")
 
     def __rmul__(self, other):
         """Reverse operator *
 
-        Multiply two Affines or an integer or float and an Affine form
+        Multiply two Affines or an integer or float or mpf and an Affine form.
 
         Args:
             self (Affine): second operand
-            other (Affine or int or float): first operand
+            other (Affine or int or float or mpf): first operand
 
         Returns:
             Affine: other * self
 
         Raises:
-            AffApyError: if other is not Affine, int or float
+            AffApyError: if other is not Affine, int, float, mpf
 
         """
         return self * other
@@ -356,7 +363,7 @@ class Affine:
     def affineConstructor(self, alpha, dzeta, delta):
         """Affine constructor
 
-        Return the affine form for non-affine operations
+        Return the affine form for non-affine operations.
 
         Args:
             alpha (mpmath.mpf)
@@ -375,7 +382,7 @@ class Affine:
     def inv(self):
         """Inverse of an affine form
 
-        Return the inverse of an Affine form
+        Return the inverse of an Affine form.
 
         Args:
             self: operand
@@ -406,25 +413,25 @@ class Affine:
     def __truediv__(self, other):
         """Operator /
 
-        Divide two Affines or an integer or float and an Affine form.
+        Divide two Affines or an integer or float or mpf and an Affine form.
         We use the identity x/y = x * (1/y).
 
         Args:
             self (Affine): first operand
-            other (Affine or int or float): second operand
+            other (Affine or int or float or mpf): second operand
 
         Returns:
             Affine: self / other
 
         Raises:
-            AffApyError: if other is not Affine, int or float
+            AffApyError: if other is not Affine, int, float, mpf
 
         """
         if isinstance(other, self.__class__):
             return self * other.inv()
-        if isinstance(other, int) or isinstance(other, float):
+        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
             return self * fdiv(1, other)
-        raise AffApyError("type error: other must be Affine, int or float")
+        raise AffApyError("other must be Affine, int, float, mpf")
 
     def __rtruediv__(self, other):
         """Reverse operator /
@@ -450,7 +457,7 @@ class Affine:
 
     def sqr(self):
         """
-        Return the square of the affine form
+        Return the square of the affine form.
 
         Args:
             self (Affine): operand
@@ -490,7 +497,7 @@ class Affine:
     # Functions
     def __abs__(self):
         """
-        Return the absolute value of an affine form
+        Return the absolute value of an affine form.
         Args:
             self (Affine): operand
 
@@ -508,7 +515,7 @@ class Affine:
     def sqrt(self):
         """Function sqrt
 
-        Return the square root of an affine form
+        Return the square root of an affine form.
 
         Args:
             self (Affine): operand
@@ -535,7 +542,7 @@ class Affine:
     def exp(self):
         """Function exp
 
-        Return the exponential of an affine form
+        Return the exponential of an affine form.
 
         Args:
             self (Affine): operand
@@ -556,7 +563,7 @@ class Affine:
     def log(self):
         """Function log
 
-        Return the logarithm of an affine form
+        Return the logarithm of an affine form.
 
         Args:
             self (Affine): operand
@@ -720,7 +727,7 @@ class Affine:
     def __eq__(self, other):
         """Operator ==
 
-        Compare two Affine forms
+        Compare two Affine forms.
 
         Args:
             self (Affine): first operand
@@ -735,7 +742,7 @@ class Affine:
     def __ne__(self, other):
         """Operator !=
 
-        Negative comparison of two Affine forms
+        Negative comparison of two Affine forms.
 
         Args:
             self (Affine): first operand
@@ -760,21 +767,23 @@ class Affine:
         Returns:
             bool: self in other
 
+        Raises:
+            AffApyError: if other is not Affine, Interval, int, float, mpf
+
         """
         if isinstance(other, self.__class__):
             return other.interval in self.interval
         if isinstance(other, AffApy.intervalArithmetic.Interval):
             return other in self.interval
-        if isinstance(other, int or float):
+        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
             return other in self.interval
-        raise AffApyError(
-            "type error: other must be Affine")
+        raise AffApyError("other must be Affine, Interval, int, float, mpf")
 
     # Formats
     def __str__(self):
         """String format
 
-        Make the string format
+        Make the string format.
 
         Args:
             self (Affine): arg
@@ -784,7 +793,7 @@ class Affine:
 
         Examples:
             >>> print(Affine([1, 2]))
-            1.5 - 0.5*eps1
+            1.5 - 0.5*e1
 
         """
         return " + ".join(
@@ -794,7 +803,7 @@ class Affine:
     def __repr__(self):
         """Repr format
 
-        Make the repr format
+        Make the repr format.
 
         Args:
             self (Affine): arg
@@ -807,7 +816,7 @@ class Affine:
 
     def copy(self):
         """
-        Copy the affine form
+        Copy the affine form.
 
         Args:
             self (Affine): arg
@@ -820,7 +829,7 @@ class Affine:
 
     def convert(self):
         """
-        Convert an affine form to an interval representation
+        Convert an affine form to an interval representation.
 
         Args:
             self (Affine): arg

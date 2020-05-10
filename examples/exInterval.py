@@ -5,13 +5,13 @@ from mpmath import mp
 # Conversion
 x = Interval(-mp.pi, mp.e)
 print("x interval:", x)
-a = x.toAffine()
+a = x.convert()
 print("x affine form:", a)
 y = a.interval
 print("x interval:", y)
 
 i = Interval(1, 2)
-aff = i.toAffine()
+aff = i.convert()
 print("aff =", aff)
 print("interval aff = ", aff.interval)
 print("sqrt(aff) =", aff.sqrt())

@@ -77,7 +77,7 @@ class Interval:
             self (Interval): arg
 
         Returns:
-            float: (inf + sup) / 2
+            mpf: (inf + sup) / 2
 
         """
         return fdiv(fadd(self.inf, self.sup), 2)
