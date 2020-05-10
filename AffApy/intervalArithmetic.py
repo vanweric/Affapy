@@ -499,21 +499,7 @@ class Interval:
                         ceil(self.sup, rounding='u'))
 
     # Methods
-    def radius(self):
-        """Radius
-
-        Return the radius of an Interval
-
-        Args:
-            self (Interval): arg
-
-        Returns:
-            float: sup - inf
-
-        """
-        return fsub(self.sup, self.inf, rounding='u')
-
-    def middle(self):
+    def mid(self):
         """Middle
 
         Return the middle of an Interval
@@ -525,7 +511,23 @@ class Interval:
             float: (inf + sup) / 2
 
         """
-        return fdiv(fadd(self.inf, self.sup, rounding='n'), 2, rounding='n')
+        return fdiv(fadd(self.inf, self.sup), 2)
+
+    def radius(self):
+        """Radius
+
+        Return the radius of an Interval
+
+        Args:
+            self (Interval): arg
+
+        Returns:
+            mpf: max(m - inf, sup - m) where m is middle
+
+        """
+        m = self.mid()
+        return max(fsub(m, self.inf, rounding='u'),
+                   fsub(self.sup, m, rounding='u'))
 
     def log(self):
         """Function log
