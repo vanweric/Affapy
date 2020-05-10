@@ -500,7 +500,7 @@ class Interval:
             Interval: sin(self)
 
         """
-        return (-self + float(mp.pi / 2)).cos()  # TODO supprimer le float
+        return (-self + mp.pi / 2).cos()
 
     def tan(self):
         """Function tan
