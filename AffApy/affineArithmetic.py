@@ -10,6 +10,31 @@ from mpmath import (
     mp, fdiv, fadd, fsub, fsum, fneg, fmul, fabs, sqrt, exp, log, sin)
 
 
+class rounded:
+    """Manage rounded operations"""
+    @staticmethod
+    def sub(x, y):
+        """
+        Choose the right rounding depending on whether
+        the result is positive or negative
+        """
+        if x < y:
+            return fsub(x, y, rounding='d')
+        return fsub(x, y, rounding='u')
+
+    @staticmethod
+    def add(x, y):
+        if x + y < 0:
+            return fadd(x, y, rounding='d')
+        return fadd(x, y, rounding='u')
+
+    @staticmethod
+    def mul(x, y):
+        if mp.sign(x) != mp.sign(y):
+            return fmul(x, y, rounding='d')
+        return fmul(x, y, rounding='u')
+
+
 class Affine:
     """Representation of an affine form"""
     _weightCount = 1
@@ -18,27 +43,6 @@ class Affine:
     def getNewXi():
         Affine._weightCount += 1
         return Affine._weightCount - 1
-
-    def roundedSub(self, x, y):
-        """
-        Choose the right rounding depending on whether
-        the result is positive or negative"""
-        if x < y:
-            return fsub(x, y, rounding='d')
-        else:
-            return fsub(x, y, rounding='u')
-
-    def roundedAdd(self, x, y):
-        if x + y < 0:
-            return fadd(x, y, rounding='d')
-        else:
-            return fadd(x, y, rounding='u')
-
-    def roundedMul(self, x, y):
-        if mp.sign(x) != mp.sign(y):
-            return fmul(x, y, rounded='d')
-        else:
-            return fmul(x, y, rounded='u')
 
     def __init__(self, interval=None, x0=None, xi=None):
         """Init an Affine form
@@ -74,8 +78,8 @@ class Affine:
             self._x0 = mp.mpf(x0, rounding='n')
             self._xi = {i: mp.mpf(str(xi[i])) for i in xi}
             self._interval = AffApy.intervalArithmetic.Interval(
-                Affine.roundedAdd(self, self._x0, self.rad()),
-                Affine.roundedSub(self, self._x0, self.rad()))
+                rounded.add(self._x0, self.rad()),
+                rounded.sub(self._x0, self.rad()))
         else:
             self._x0 = mp.mpf('0')
             self._xi = {}
@@ -167,7 +171,7 @@ class Affine:
 
         Examples:
             >>> print(-Affine([1, 2]))
-            -1.5 + 0.5*eps1
+            -1.5 + 0.5e1
 
         """
         x0 = fneg(self.x0)
@@ -192,7 +196,7 @@ class Affine:
 
         Examples:
             >>> print(Affine([0, 1]) + Affine([3, 4]))
-            4.0 + -0.5*eps1 + -0.5*eps2
+            4.0 + -0.5e1 + -0.5e2
 
         """
         if isinstance(other, self.__class__):
@@ -200,7 +204,7 @@ class Affine:
             xi = {}
             for i in self.xi:
                 if i in other.xi:
-                    val = Affine.roundedAdd(self, self.xi[i], other.xi[i])
+                    val = rounded.add(self.xi[i], other.xi[i])
                     if val != 0:
                         xi[i] = val
                 else:
@@ -254,7 +258,7 @@ class Affine:
             xi = {}
             for i in self.xi:
                 if i in other.xi:
-                    val = Affine.roundedSub(self, self.xi[i], other.xi[i])
+                    val = rounded.sub(self.xi[i], other.xi[i])
                     if val != 0:
                         xi[i] = val
                 else:
@@ -320,24 +324,20 @@ class Affine:
             for i in range(keyMax + 1):
                 v = 0
                 if i in self.xi and i not in other.xi:
-                    v = Affine.roundedMul(self, self.xi[i], other.x0)
+                    v = rounded.mul(self.xi[i], other.x0)
                 elif i not in self.xi and i in other.xi:
-                    v = Affine.roundedMul(self, other.xi[i], self.x0)
+                    v = rounded.mul(other.xi[i], self.x0)
                 elif i in self.xi and i in other.xi:
-                    v = Affine.roundedAdd(self,
-                                          Affine.roundedMul(self, self.xi[i],
-                                                            other.x0),
-                                          Affine.roundedMul(self, other.xi[i],
-                                                            self.x0))
+                    v = rounded.add(rounded.mul(self.xi[i], other.x0),
+                                    rounded.mul(other.xi[i], self.x0))
                 if v != 0:
                     xi[i] = v
-            xi[Affine.getNewXi()] = Affine.roundedMul(self, self.rad(),
-                                                      other.rad())
+            xi[Affine.getNewXi()] = rounded.mul(self.rad(), other.rad())
             return Affine(x0=x0, xi=xi)
         if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
             x0 = fmul(mp.mpf(str(other)), self.x0)
-            xi = {i: Affine.roundedMul(self, mp.mpf(str(other)),
-                                       self.xi[i]) for i in self.xi}
+            xi = {i: rounded.mul(mp.mpf(str(other)),
+                                 self.xi[i]) for i in self.xi}
             return Affine(x0=x0, xi=xi)
         raise AffApyError("other must be Affine, int, float, mpf")
 
@@ -375,7 +375,7 @@ class Affine:
 
         """
         x0 = fadd(fmul(alpha, self.x0), dzeta)
-        xi = {i: Affine.roundedMul(self, alpha, self.xi[i]) for i in self.xi}
+        xi = {i: rounded.mul(alpha, self.xi[i]) for i in self.xi}
         xi[Affine.getNewXi()] = delta
         return Affine(x0=x0, xi=xi)
 
@@ -436,24 +436,24 @@ class Affine:
     def __rtruediv__(self, other):
         """Reverse operator /
 
-        Divide two Affines or an Affine form and an integer or float.
+        Divide two Affines or an Affine form and an integer or float or mpf.
         We use the identity x/y = x * (1/y).
 
         Args:
             self (Affine): second operand
-            other (Affine or int or float): first operand
+            other (Affine or int or float or mpf): first operand
 
         Returns:
             Affine: other / self
 
         Raises:
-            AffApyError: if other is not Affine, int or float
+            AffApyError: if other is not Affine, int, float, mpf
 
         """
         if (isinstance(other, self.__class__) or
-                isinstance(other, int) or isinstance(other, float)):
+                isinstance(other, (int, float, mpmath.ctx_mp_python.mpf))):
             return other * self.inv()
-        raise AffApyError("type error: other must be Affine, int or float")
+        raise AffApyError("other must be Affine, int, float, mpf")
 
     def sqr(self):
         """
@@ -646,7 +646,7 @@ class Affine:
             Affine: cos(self)
 
         """
-        return (self + float(mp.pi / 2)).sin()
+        return (self + mp.pi / 2).sin()
 
     def tan(self):
         """Function tan
