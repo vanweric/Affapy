@@ -3,6 +3,7 @@ import warnings
 from typing import Dict
 
 from AffApy.affapyError import AffApyError, AffApyWarning
+from AffApy.affapyPrecision import precision
 
 
 class parametrize:
