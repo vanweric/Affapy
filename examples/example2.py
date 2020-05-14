@@ -43,22 +43,23 @@ if __name__ == "__main__":
         x1_a = lbound1 + i * width1
         x1_b = x1_a + width1
         itv1 = Interval(x1_a, x1_b)
-        u1 = itv1
+        u1 = Affine(itv1)
 
         # x2
         x2_a = lbound2 + i * width2
         x2_b = x2_a + width2
         itv2 = Interval(x2_a, x2_b)
-        u2 = itv2
+        u2 = Affine(itv2)
 
         v = eval_fct(u1, u2)
 
-        ydelta = v.radius()
-        y = v.middle()
+        ydelta = v.rad()
+        y = v.x0
 
     tstop1 = time()
 
     total1 = (tstop1 - tstart1) / 100
+    print(f"AA: ydelta = {ydelta}, y = {y}")
 
     # IA
     tstart2 = time()
@@ -67,21 +68,22 @@ if __name__ == "__main__":
         # x1
         x1_a = lbound1 + i * width1
         x1_b = x1_a + width1
-        m1 = Affine([x1_a, x1_b])
+        m1 = Interval(x1_a, x1_b)
 
         # x2
         x2_a = lbound2 + i * width2
         x2_b = x2_a + width2
-        m2 = Affine([x2_a, x2_b])
+        m2 = Interval(x2_a, x2_b)
 
         n = eval_fct(m1, m2)
 
-        y = n.x0
-        ydelta = n.interval.sup - y
+        y = n.mid()
+        ydelta = n.sup - y
 
     tstop2 = time()
 
     total2 = (tstop2 - tstart2) / 100
+    print(f"IA: ydelta = {ydelta}, y = {y}")
 
     print("AA:", total1, "s")
     print("IA:", total2, "s")
