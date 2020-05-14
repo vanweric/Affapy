@@ -12,6 +12,7 @@ from mpmath import (
 
 class rounded:
     """Manage rounded operations"""
+
     @staticmethod
     def sub(x, y):
         """
@@ -34,10 +35,16 @@ class rounded:
             return fmul(x, y, rounding='d')
         return fmul(x, y, rounding='u')
 
+    @staticmethod
+    def div(x, y):
+        if mp.sign(x) != mp.sign(y):
+            return fdiv(x, y, rounding='d')
+        return fdiv(x, y, rounding='u')
+
 
 class Affine:
     """Representation of an affine form"""
-    _weightCount = 1
+    _weightCount = 3
 
     @staticmethod
     def getNewXi():
@@ -530,11 +537,11 @@ class Affine:
         """
         if self.interval >= 0:
             a, b = self.interval.inf, self.interval.sup
-            t = fadd(sqrt(a), sqrt(b))
-            alpha = fdiv(1, t)
-            dzeta = fadd(fdiv(t, 8), fdiv(fmul(0.5, sqrt(fmul(a, b))), t))
-            rdelta = fsub(sqrt(b), sqrt(a))
-            delta = fdiv(fmul(rdelta, rdelta), fmul(8, t))
+            t = fadd(sqrt(a), sqrt(b), rounding='d')
+            alpha = fdiv(1, t, rounding='n')
+            dzeta = fadd(fdiv(t, 8, rounding='n'), fmul(0.5, fdiv(sqrt(fmul(a, b, rounding='n')), t, rounding='n'), rounding='n'), rounding='n')
+            rdelta = fsub(sqrt(b), sqrt(a), rounding='u')
+            delta = fdiv(fmul(rdelta, rdelta, rounding='u'), fmul(8, t, rounding='d'), rounding='u')
             return self.affineConstructor(alpha, dzeta, delta)
         raise AffApyError(
             "the interval associated to the affine form must be >= 0")
@@ -606,13 +613,13 @@ class Affine:
         """
         w = self.interval.width()
         a, b = self.interval.inf, self.interval.sup
-        if w >= 2*mp.pi:
+        if w >= 2 * mp.pi:
             return Affine(interval=[-1, 1])
         # Case of the least squares
         x, y = [a], [sin(a)]
         pas = w / (npts - 1)
         for i in range(1, npts - 1):
-            x.append(x[i-1] + pas)
+            x.append(x[i - 1] + pas)
             y.append(sin(x[i]))
         x.append(b)
         y.append(sin(b))

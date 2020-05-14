@@ -134,8 +134,8 @@ class TestAffine(unittest.TestCase):
         print("réponse calculé = ", x.sqrt().interval)
         print("sqrt(y) = ", Interval(mp.sqrt(8), mp.sqrt(32)))
         print("réponse calculé = ", y.sqrt().interval)
-        self.assertTrue(Interval(0, mp.sqrt(10)) in x.sqrt())
-        self.assertTrue(Interval(mp.sqrt(8), mp.sqrt(32)) in y.sqrt())
+        self.assertTrue(Interval(0, mp.sqrt(10)) in x.sqrt().interval)
+        self.assertTrue(Interval(mp.sqrt(8), mp.sqrt(32)) in y.sqrt().interval)
 
 
 if __name__ == "__main__":
