@@ -2,6 +2,33 @@
 
 This module can create affines form and perform operations.
 
+Affine Arithmetic (AA) has been developed to overcome the error explosion problem of standard Interval Arithmetic.
+This method represents a quantity x as an affine form x', which is a first degree polynomial:
+
+            x' = x0 + x1e1 + x2e2 + · · · + xnen
+
+The xi coefficient are finite floating-point numbers.
+x0 is the central value of the affine form x' and xi are it's partial deviation.
+The ei coefficients are real values called noise symbol. Their values are unknown between [0,1].
+This representation enables a better tracking of the different quantities inside the affine form.
+
+For example, the quantitie [0, 10] can be represented as the following affine form:
+
+        A = [0, 10] = 5 + 5e1   where x0 = 1 and x1 = 5
+
+But we could also represent it like this :
+
+        B = [0, 10] = 5 + 3e1 + 2e2     where x0 = 5, x1 = 3 and x2 = 2
+
+Both form represent the same quantity but they are handling differently the storage of internal quantities.
+They will behave differently during operation:
+
+        A - A = 0,  no surprises here  (1)
+
+        A - B = 0 + 2e1 - 2e2 = [0, 4]  (2)
+
+Example (2) illustrate this behaviour. Even though A and B represent the same quantity, they manage their quantity
+differently, they are therefore not equal.
 """
 import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError
@@ -381,7 +408,7 @@ class Affine:
             Affine
 
         """
-        x0 = fadd(fmul(alpha, self.x0), dzeta)
+        x0 = fadd(fmul(alpha, self.x0, rounding='n'), dzeta, rounding='n')
         xi = {i: rounded.mul(alpha, self.xi[i]) for i in self.xi}
         xi[Affine.getNewXi()] = delta
         return Affine(x0=x0, xi=xi)
