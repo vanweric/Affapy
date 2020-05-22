@@ -1,4 +1,6 @@
-"""Example 1: A simple example of using the lib"""
+"""
+**Example 1**: A simple example of using the lib
+"""
 from AffApy.intervalArithmetic import Interval
 from AffApy.affineArithmetic import Affine
 

@@ -1,4 +1,4 @@
-"""Example: Interval module"""
+"""Basic usage of Interval module"""
 from AffApy.intervalArithmetic import Interval
 
 # Init

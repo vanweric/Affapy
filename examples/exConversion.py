@@ -1,4 +1,4 @@
-"""Example: Conversion between IA and AA"""
+"""Conversion between IA and AA"""
 from AffApy.intervalArithmetic import Interval
 from AffApy.affineArithmetic import Affine
 

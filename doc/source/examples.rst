@@ -2,12 +2,7 @@ Examples
 ========
 
 This is the list of the different examples that shows how to use the library.
-
-.. automodule:: exAffine
-
-.. automodule:: exInterval
-
-.. automodule:: exConversion
+These examples are inspired by the *libaffa* library which is a C++ Affine Arithmetic library.
 
 .. automodule:: example1
 
@@ -18,5 +13,3 @@ This is the list of the different examples that shows how to use the library.
 .. automodule:: example4
 
 .. automodule:: example5
-
-.. automodule:: exPrecision1

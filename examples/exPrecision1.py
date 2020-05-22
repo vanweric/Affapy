@@ -1,3 +1,4 @@
+"""Use of precision module"""
 from AffApy.affapyPrecision import precision
 from AffApy.intervalArithmetic import Interval
 from AffApy.affineArithmetic import Affine

@@ -1,10 +1,11 @@
 """
-Example 5: Comparison AA vs IA
+**Example 5**: Comparison AA vs IA
 
-Usage:
-- lbound: lower bound of the interval (default: 0)
-- ubound: upper bound of the interval (default: 5)
-- boxn: number of boxes (default: 60)
+Arguments:
+
+* lbound: lower bound of the interval (default: 0)
+* ubound: upper bound of the interval (default: 5)
+* boxn: number of boxes (default: 60)
 
 """
 from AffApy.intervalArithmetic import Interval

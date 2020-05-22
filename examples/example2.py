@@ -1,4 +1,15 @@
-"""Example 2: Time performances between AA and IA model"""
+"""
+**Example 2**: Time performances between AA and IA model
+
+Arguments:
+
+* lbound1: lower bound of the interval 1
+* ubound1: upper bound of the interval 1
+* lbound2: lower bound of the interval 2
+* ubound2: upper bound of the interval 2
+* boxn: number of boxes
+
+"""
 from AffApy.intervalArithmetic import Interval
 from AffApy.affineArithmetic import Affine
 from time import time

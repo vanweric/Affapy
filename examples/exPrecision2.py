@@ -1,3 +1,4 @@
+"""Use of precision module 2"""
 from AffApy.affapyPrecision import precision
 from mpmath import mp
 
