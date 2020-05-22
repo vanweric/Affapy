@@ -1,7 +1,7 @@
 Installation
 ============
 
-To install the *AffApy* library, you just need to launch in a terminal the command:
+You can install latest release of the *AffApy* library with pip3:
 
 .. code-block:: bash
 

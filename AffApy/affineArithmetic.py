@@ -64,7 +64,15 @@ from mpmath import (
 
 
 class Affine:
-    """Representation of an affine form."""
+    """
+    Representation of an affine form.
+    An instance of the class **Affine** is composed of three fields:
+
+    * **interval**: the interval associated to the affine form
+    * **x0**: the center
+    * **xi**: the dictionnary of noise symbols
+
+    """
     _weightCount = 1
 
     @staticmethod
@@ -85,7 +93,7 @@ class Affine:
         If no arguments, x0=0 and xi={}.
 
         The first method is easier to use. To convert an interval
-        into an affine form, there is the formula:
+        [a, b] into an affine form, there is the formula:
 
         .. math ::
             \\hat{x} = x_0 + x_1\\epsilon_1
@@ -93,9 +101,8 @@ class Affine:
         with:
 
         .. math ::
-            x_0 = \\frac{x_{inf} + x_{sup}}{2} ,
-            x_1 = \\frac{x_{inf} - x_{sup}}{2}
-
+            x_0 = \\frac{a + b}{2} ,
+            x_1 = \\frac{a - b}{2}
 
         To convert an affine form into an interval X:
 
@@ -119,6 +126,7 @@ class Affine:
             AffApyError: interval must be list, tuple or Interval
 
         Examples:
+            >>> from AffApy.affineArithmetic import Affine
             >>> Affine([1, 3])
             Affine(2.0, {5: mpf('-1.0')})
             mpf('1.0')

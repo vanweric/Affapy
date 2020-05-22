@@ -11,7 +11,7 @@ from mpmath import (mp, fadd, fsub, fmul, fdiv, fneg, fabs, floor, ceil,
 class Interval:
     """
     Representation of an interval.
-    An instance of the class Interval is composed of two fields:
+    An instance of the class **Interval** is composed of two fields:
 
     * **inf**: the infimum
     * **sup**: the supremum
@@ -32,6 +32,7 @@ class Interval:
             Interval: interval
 
         Examples:
+            >>> from AffApy.intervalArithmetic import Interval
             >>> x = Interval(1, 2)
             >>> print(x)
             [1.0, 2.0]
