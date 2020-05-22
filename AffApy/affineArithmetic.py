@@ -527,7 +527,8 @@ class Affine:
             a, b = min(fabs(inf), fabs(sup)), max(fabs(inf), fabs(sup))
             alpha = -1 / b**2
             i = AffApy.intervalArithmetic.Interval(
-                fsub(fdiv(1, a), fmul(alpha, a), rounding='d'),
+                fsub(fdiv(1, a, rounding='d'), fmul(alpha, a, rounding='d'),
+                     rounding='d'),
                 fdiv(2, b, rounding='u'))
             dzeta = i.mid()
             if inf < 0:

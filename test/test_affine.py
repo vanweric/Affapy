@@ -48,22 +48,27 @@ class TestAffine(unittest.TestCase):
         """Test 'mul' function from class Affine"""
         x = Affine(xi={1: 10}, x0=0)
         y = Affine(xi={1: 10, 2: 5}, x0=5)
-        self.assertEqual(x * y, Affine(xi={1: 50, 3: 150}, x0=0))
-        self.assertEqual(x * x, Affine(xi={4: 100}, x0=0))
-        self.assertEqual(y * 4, Affine(xi={1: 40, 2: 20}, x0=20))
-        # self.assertEqual(y * 7.536, Affine(xi={1: 75.36, 2: 37.68}, x0=37.68))
-        self.assertEqual((x + x) * y - y, Affine(x0=-5, xi={1: 90, 2: -5, 5: 300}))
+        self.assertTrue(Affine(xi={1: 50, 3: 150}, x0=0) in x * y)
+        self.assertTrue(Affine(xi={4: 100}, x0=0) in x * x)
+        self.assertTrue(Affine(xi={1: 40, 2: 20}, x0=20) in y * 4)
+        self.assertTrue(
+            Affine(x0=-5, xi={1: 90, 2: -5, 5: 300}) in (x + x) * y - y)
 
         x = Affine(x0=mp.pi, xi={1: mp.e})
         y = Affine(x0=mp.pi, xi={1: mp.phi, 2: mp.e})
-        self.assertTrue(Affine(x0=mp.pi * mp.pi, xi={1: mp.pi * (mp.phi + mp.e) - mp.phi,
-                                                     2: mp.pi * mp.e,
-                                                     6: mp.e * mp.phi + mp.e * mp.e}) in x * y)
-        self.assertTrue(Affine(x0=mp.pi * mp.pi, xi={1: 2 * mp.pi * mp.e}) in x * x)
-        self.assertTrue(Affine(x0=mp.pi * 4, xi={1: mp.phi, 2: mp.e}) in y * 4)
-        self.assertTrue(Affine(x0=2 * mp.pi ** 2 - mp.pi, xi={1: 2 * mp.pi * mp.phi + 2 * mp.pi * mp.e - mp.phi,
-                                                              2: 2 * mp.pi * mp.e - mp.e,
-                                                              7: mp.e * mp.phi + mp.e ** 2}) in (x + x) * y - y)
+        self.assertTrue(
+            Affine(x0=mp.pi * mp.pi,
+                   xi={1: mp.pi * (mp.phi + mp.e) - mp.phi, 2: mp.pi * mp.e,
+                       6: mp.e * mp.phi + mp.e * mp.e}) in x * y)
+        self.assertTrue(
+            Affine(x0=mp.pi * mp.pi, xi={1: 2 * mp.pi * mp.e}) in x * x)
+        self.assertTrue(
+            Affine(x0=mp.pi * 4, xi={1: mp.phi, 2: mp.e}) in y * 4)
+        self.assertTrue(
+            Affine(x0=2 * mp.pi ** 2 - mp.pi,
+                   xi={1: 2 * mp.pi * mp.phi + 2 * mp.pi * mp.e - mp.phi,
+                       2: 2 * mp.pi * mp.e - mp.e,
+                       7: mp.e * mp.phi + mp.e ** 2}) in (x + x) * y - y)
 
     @precision(dec_precision=50)
     def test_contains_affine(self):
@@ -82,6 +87,8 @@ class TestAffine(unittest.TestCase):
         """Test 'inv' function from class Affine"""
         x = Affine(xi={1: 6}, x0=10)
         y = Affine(xi={1: -2, 2: 6}, x0=-20)
+        print(Interval(1 / 16, 1 / 4), '\n')
+        print(x.inv().interval, '\n')
         self.assertTrue(Interval(1 / 16, 1 / 4) in x.inv())
         self.assertTrue(Interval(-1 / 28, -1 / 12) in y.inv())
 
@@ -129,11 +136,6 @@ class TestAffine(unittest.TestCase):
         """Test 'sqrt' function from class Affine"""
         x = Affine(x0=5, xi={1: 5})
         y = Affine(x0=20, xi={2: 5, 5: 7})
-        z = Interval(mp.sqrt(8), mp.sqrt(32) + 1)
-        print("sqrt(x) =", Interval(0, mp.sqrt(10)))
-        print("réponse calculé = ", x.sqrt().interval)
-        print("sqrt(y) = ", Interval(mp.sqrt(8), mp.sqrt(32)))
-        print("réponse calculé = ", y.sqrt().interval)
         self.assertTrue(Interval(0, mp.sqrt(10)) in x.sqrt().interval)
         self.assertTrue(Interval(mp.sqrt(8), mp.sqrt(32)) in y.sqrt().interval)
 
