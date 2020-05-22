@@ -390,7 +390,7 @@ class Affine:
         """
         **Reverse operator -**
 
-        Substract two affine forms or an integer or
+        Subtract two affine forms or an integer or
         float or mpf and an affine form.
         See the sub operator for more details.
 
@@ -998,7 +998,7 @@ class Affine:
         """
         **Operator ==**
 
-        Compare two Affine forms.
+        Compare two affine forms.
 
         Args:
             self (Affine): first operand
@@ -1019,7 +1019,7 @@ class Affine:
         """
         **Operator !=**
 
-        Negative comparison of two Affine forms.
+        Negative comparison of two affine forms.
 
         Args:
             self (Affine): first operand
@@ -1128,7 +1128,7 @@ class Affine:
             self (Affine): arg
 
         Returns:
-            Interval: interval of self
+            Interval: interval associated to the affine form
 
         """
         return self.interval.copy()

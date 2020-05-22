@@ -1,4 +1,6 @@
-"""Interval Arithmetic module"""
+"""
+This module can create intervals and perform operations.
+"""
 import AffApy.affineArithmetic
 from AffApy.affapyError import AffApyError
 import mpmath
@@ -7,11 +9,17 @@ from mpmath import (mp, fadd, fsub, fmul, fdiv, fneg, fabs, floor, ceil,
 
 
 class Interval:
-    """Representation of an interval"""
+    """
+    Representation of an interval.
+    An instance of the class Interval is composed of two fields:
+
+    * **inf**: the infimum
+    * **sup**: the supremum
+
+    """
 
     def __init__(self, inf, sup):
-        """Init an Interval
-
+        """
         Create an interval. It is composed of two fields :
         the infimum and the supremum. If inf > sup, then the init function
         reorganize the two values.
@@ -21,7 +29,12 @@ class Interval:
             sup (int or float or string): supremum
 
         Returns:
-            Interval
+            Interval: interval
+
+        Examples:
+            >>> x = Interval(1, 2)
+            >>> print(x)
+            [1.0, 2.0]
 
         """
         if inf < sup:
@@ -34,30 +47,34 @@ class Interval:
     # Getter
     @property
     def inf(self):
-        """Return the inf"""
+        """Return the inf."""
         return self._inf
 
     @property
     def sup(self):
-        """Return the sup"""
+        """Return the sup."""
         return self._sup
 
     # Setter
     @inf.setter
     def inf(self, value):
-        """Set the inf"""
+        """Set the inf."""
         self._inf = value
 
     @sup.setter
     def sup(self, value):
-        """Set the sup"""
+        """Set the sup."""
         self._sup = value
 
     # Methods
     def width(self):
-        """Width
+        """
+        **Width**
 
-        Return the width of an Interval.
+        Return the width of an interval:
+
+        .. math ::
+            width([a, b]) = b - a
 
         Args:
             self (Interval): arg
@@ -65,13 +82,21 @@ class Interval:
         Returns:
             mpf: sup - inf
 
+        Examples:
+            >>> Interval(1, 2).width()
+            mpf('1.0')
+
         """
         return fsub(self.sup, self.inf, rounding='u')
 
     def mid(self):
-        """Middle
+        """
+        **Middle**
 
-        Return the middle of an Interval.
+        Return the middle of an interval:
+
+        .. math ::
+            middle([a, b]) = \\frac{a + b}{2}
 
         Args:
             self (Interval): arg
@@ -79,19 +104,31 @@ class Interval:
         Returns:
             mpf: (inf + sup) / 2
 
+        Examples:
+            >>> Interval(1, 2).mid()
+            mpf('1.5')
+
         """
         return (self.inf + self.sup) / 2
 
     def radius(self):
-        """Radius
+        """
+        **Radius**
 
-        Return the radius of an Interval.
+        Return the radius of an interval:
+
+        .. math ::
+            radius([a, b]) = \\frac{width([a, b])}{2}
 
         Args:
             self (Interval): arg
 
         Returns:
             mpf: width / 2
+
+        Examples:
+            >>> Interval(1, 2).radius()
+            mpf('0.5')
 
         """
         return self.width() / 2
@@ -111,10 +148,18 @@ class Interval:
 
     # Binary operators
     def __add__(self, other):
-        """Operator +
+        """
+        **Operator +**
 
-        Add two Intervals or an Interval and an integer or float or mpf.
-        It adds infimums and supremums.
+        Add two intervals:
+
+        .. math ::
+            [a, b] + [c, d] = [a + c, b + d]
+
+        Or add an interval and an integer or float or mpf:
+
+        .. math ::
+            [a, b] + k = [a + k, b + k]
 
         Args:
             self (Interval): first operand
@@ -124,7 +169,14 @@ class Interval:
             Interval: self + other
 
         Raises:
-            AffApyError: if other is not Interval, int, float, mpf
+            AffApyError: other must be Interval, int, float, mpf
+
+        Examples:
+            >>> Interval(1, 2) + Interval(3, 4)
+            Interval(4.0, 6.0)
+            >>> Interval(1, 2) + 2
+            Interval(3.0, 4.0)
+
 
         """
         if isinstance(other, self.__class__):
@@ -138,9 +190,11 @@ class Interval:
         raise AffApyError("other must be Interval, int, float, mpf")
 
     def __radd__(self, other):
-        """Reverse operator +
+        """
+        **Reverse operator +**
 
-        Add two Intervals or an Interval and an integer or float or mpf.
+        Add two intervals or an interval and an integer or float or mpf.
+        See the add operator for more details.
 
         Args:
             self (Interval): second operand
@@ -150,16 +204,28 @@ class Interval:
             Interval: other + self
 
         Raises:
-            AffApyError: if other is not Interval, int, float, mpf
+            AffApyError: other must be Interval, int, float, mpf
+
+        Examples:
+            >>> 2 + Interval(1, 2)
+            Interval(3.0, 4.0)
 
         """
         return self + other
 
     def __sub__(self, other):
-        """Operator -
+        """
+        **Operator -**
 
-        Substract two Intervals or an Interval and an integer or float or mpf.
-        It substracts infimums and supremums.
+        Subtract two intervals:
+
+        .. math ::
+            [a, b] - [c, d] = [a - c, b - d]
+
+        Or subtract an interval and an integer or float or mpf:
+
+        .. math ::
+            [a, b] - k = [a - k, b - k]
 
         Args:
             self (Interval): first operand
@@ -169,7 +235,13 @@ class Interval:
             Interval: self - other
 
         Raises:
-            AffApyError: if other is not Interval, int, float, mpf
+            AffApyError: other must be Interval, int, float, mpf
+
+        Examples:
+            >>> Interval(1, 2) - Interval(3, 4)
+            Interval(-3.0, -1.0)
+            >>> Interval(1, 2) - 3
+            Interval(-2.0, -1.0)
 
         """
         if isinstance(other, self.__class__):
@@ -183,9 +255,11 @@ class Interval:
         raise AffApyError("other must be Interval, int, float, mpf")
 
     def __rsub__(self, other):
-        """Reverse operator -
+        """
+        **Reverse operator -**
 
-        Substract two Intervals or an Interval and an integer or float or mpf.
+        Subtract two intervals or an interval and an integer or float or mpf.
+        See the sub operator for more details.
 
         Args:
             self (Interval): second operand
@@ -195,15 +269,29 @@ class Interval:
             Interval: other - self
 
         Raises:
-            AffApyError: if other is not Interval, int, float, mpf
+            AffApyError: other must be Interval, int, float, mpf
+
+        Examples:
+            >>> 1 - Interval(2, 3)
+            Interval(-2.0, -1.0)
 
         """
         return -self + other
 
     def __mul__(self, other):
-        """Operator *
+        """
+        **Operator ***
 
-        Multiply two Intervals or an Interval and an integer or float or mpf.
+        Multiply two intervals:
+
+        .. math ::
+            [a, b].[c, d] =
+            [min\\{a.c, a.d, b.c, b.d\\}, max\\{a.c, a.d, b.c, b.d\\}]
+
+        Or multiply an interval and an integer or float or mpf:
+
+        .. math ::
+            [a, b].k = [a.k, b.k]
 
         Args:
             self (Interval): first operand
@@ -213,7 +301,13 @@ class Interval:
             Interval: self * other
 
         Raises:
-            AffApyError: if other is not Interval, int, float, mpf
+            AffApyError: other must be Interval, int, float, mpf
+
+        Examples:
+            >>> Interval(1, 2) * Interval(3, 4)
+            Interval(3.0, 8.0)
+            >>> Interval(1, 2) * 3
+            Interval(3.0, 6.0)
 
         """
         if isinstance(other, self.__class__):
@@ -232,7 +326,8 @@ class Interval:
     def __rmul__(self, other):
         """Reverse operator *
 
-        Multiply two Intervals or an Interval and an integer or float or mpf.
+        Multiply two intervals or an interval and an integer or float or mpf.
+        See the mul operator for more details.
 
         Args:
             self (Interval): second operand
@@ -242,17 +337,25 @@ class Interval:
             Interval: other * self
 
         Raises:
-            AffApyError: if other is not Interval, int, float, mpf
+            AffApyError: other must be Interval, int, float, mpf
 
         """
         return self * other
 
     def __truediv__(self, other):
-        """Operator /
+        """
+        **Operator /**
 
-        Divide two Intervals or an Interval and an integer or float or mpf.
-        Between two intervals, it uses the identity :
-        [a, b] / [c, d] = [a, b] * [1/d, 1/c].
+        Divide two intervals:
+
+        .. math ::
+            [a, b] / [c, d] = [a, b].[1/d, 1/c]
+
+        or an interval and an integer or float or mpf:
+
+        .. math ::
+            [a, b] / k = \\frac{1}{k}.[a, b]
+
         It is possible only if other does not contains 0.
 
         Args:
@@ -264,7 +367,16 @@ class Interval:
 
         Raises:
             AffApyError: division by 0
-            AffApyError: if other is not Interval, int, float, mpf
+            AffApyError: other must be Interval, int, float, mpf
+
+        Examples:
+            >>> Interval(1, 2) / Interval(3, 4)
+            Interval(0.25, 0.666666666666667)
+            >>> Interval(1, 2) / 2
+            Interval(0.5, 1.0)
+            >>> Interval(1, 2) / Interval(-1, 1)
+            ...
+            AffApy.affapyError.AffApyError: division by 0
 
         """
         if isinstance(other, self.__class__):
@@ -275,25 +387,35 @@ class Interval:
             raise AffApyError("division by 0")
         if isinstance(other, (int, float, mpmath.mpf)):
             if other != 0:
-                return fdiv(1, other) * self
+                return (1 / other) * self
             raise AffApyError("division by 0")
         raise AffApyError("other must be Interval, int, float, mpf")
 
     def __pow__(self, n):
-        """Operator **
+        """
+        **Operator ****
 
-        Return the power of an Interval with another Interval or an integer.
-        With Interval, we use the identity : x**n = exp(n * log(x)).
+        Return the power of an interval with another interval or an integer.
+        With an interval, it uses the identity:
+
+        .. math ::
+            x^n = exp(n.log(x))
 
         Args:
             self (Interval): first operand
             n (Interval or int): second operand (exponent)
 
         Returns:
-            Affine: self ** n
+            Interval: self ** n
 
         Raises:
-            AffApyError: if n is not Interval or int
+            AffApyError: type error: n must be Interval or int
+
+        Examples:
+            >>> Interval(1, 2) ** Interval(3, 4)
+            Interval(1.0, 16.0)
+            >>> Interval(1, 2) ** 3
+            Interval(1.0, 8.0)
 
         """
         if isinstance(n, int):
@@ -319,9 +441,13 @@ class Interval:
 
     # Unary operator
     def __neg__(self):
-        """Operator - (unary)
+        """
+        **Operator - (unary)**
 
-        Return the additive inverse of an Interval.
+        Return the additive inverse of an interval:
+
+        .. math ::
+            -[a, b] = [-b, -a]
 
         Args:
             self (Interval): operand
@@ -329,15 +455,25 @@ class Interval:
         Returns:
             Interval: -self
 
+        Examples:
+            >>> -Interval(1, 2)
+            Interval(-2.0, -1.0)
+
         """
         return Interval(fneg(self.sup, rounding='d'),
                         fneg(self.inf, rounding='u'))
 
     # Precision
     def __floor__(self):
-        """Function floor
+        """
+        **Function floor**
 
-        Return the floor of an Interval.
+        Return the floor of an interval:
+
+        .. math ::
+            floor([a, b]) = [floor(a), floor(b)]
+
+        You need to import floor from the math library.
 
         Args:
             self (Interval): arg
@@ -345,14 +481,25 @@ class Interval:
         Returns:
             Interval: [floor(inf), floor(sup)]
 
+        Examples:
+            >>> from math import floor
+            >>> floor(Interval(1.4, 2.5))
+            Interval(1.0, 2.0)
+
         """
         return Interval(floor(self.inf, rounding='d'),
                         floor(self.sup, rounding='u'))
 
     def __ceil__(self):
-        """Function ceil
+        """
+        **Function ceil**
 
-        Return the ceil of an Interval.
+        Return the ceil of an interval:
+
+        .. math ::
+            ceil([a, b]) = [ceil(a), ceil(b)]
+
+        You need to import ceil from the math library.
 
         Args:
             self (Interval): arg
@@ -360,15 +507,37 @@ class Interval:
         Returns:
             Interval: [ceil(inf), ceil(sup)]
 
+        Examples:
+            >>> from math import ceil
+            >>> ceil(Interval(1.4, 2.5))
+            Interval(2.0, 3.0)
+
         """
         return Interval(ceil(self.inf, rounding='d'),
                         ceil(self.sup, rounding='u'))
 
     # Functions
     def __abs__(self):
-        """Function abs
+        """
+        **Function abs**
 
-        Return the absolute value of an Interval.
+        Return the absolute value of an interval.
+        Three possibilities:
+
+        1. If [a, b] < 0:
+
+        .. math ::
+            abs([a, b]) = [-b, -a]
+
+        2. If [a, b] > 0:
+
+        .. math ::
+            abs([a, b]) = [a, b]
+
+        3. If 0 in [a, b]:
+
+        .. math ::
+            abs([a, b]) = [0, max\\{abs(a), abs(b)\\}]
 
         Args:
             self (Interval): operand
@@ -376,19 +545,32 @@ class Interval:
         Returns:
             Interval: abs(self)
 
+        Examples:
+            >>> abs(Interval(-2, -1))
+            Interval(1.0, 2.0)
+            >>> abs(Interval(1, 2))
+            Interval(1.0, 2.0)
+            >>> abs(Interval(-2, 1))
+            Interval(0.0, 2.0)
+
         """
         if self < 0:
-            return Interval(fabs(self.sup),
-                            fabs(self.inf))
+            return Interval(-self.sup, -self.inf)
         if 0 in self:
             return Interval(0, max(fabs(self.inf),
                                    fabs(self.sup)))
         return self.copy()
 
     def log(self):
-        """Function log
+        """
+        **Function log**
 
-        Return the logarithm of an Interval.
+        Return the logarithm of an interval:
+
+        .. math ::
+            log([a, b]) = [log(a), log(b)]
+
+        It is possible only if a > 0.
 
         Args:
             self (Interval): operand
@@ -397,7 +579,14 @@ class Interval:
             Interval: log(self)
 
         Raises:
-            AffApyError: the interval must be > 0
+            AffApyError: inf must be > 0
+
+        Examples:
+            >>> Interval(1, 2).log()
+            Interval(0.0, 0.693147180559945)
+            >>> Interval(-1, 2).log()
+            ...
+            AffApy.affapyError.AffApyError: inf must be > 0
 
         """
         if self.inf > 0:
@@ -406,9 +595,13 @@ class Interval:
         raise AffApyError("inf must be > 0")
 
     def exp(self):
-        """Function exp
+        """
+        **Function exp**
 
-        Return the exponential of an Interval.
+        Return the exponential of an interval:
+
+        .. math ::
+            exp([a, b]) = [exp(a), exp(b)]
 
         Args:
             self (Interval): operand
@@ -416,14 +609,24 @@ class Interval:
         Returns:
             Interval: exp(self)
 
+        Examples:
+            >>> Interval(1, 2).exp()
+            Interval(2.71828182845905, 7.38905609893065)
+
         """
         return Interval(exp(self.inf, rounding='d'),
                         exp(self.sup, rounding='u'))
 
     def sqrt(self):
-        """Function log
+        """
+        **Function sqrt**
 
-        Return the square root of an Interval.
+        Return the square root of an interval:
+
+        .. math ::
+            \\sqrt{[a, b]} = [\\sqrt{a}, \\sqrt{b}]
+
+        It is possible only if a >= 0.
 
         Args:
             self (Interval): operand
@@ -432,7 +635,14 @@ class Interval:
             Interval: sqrt(self)
 
         Raises:
-            AffApyError: the interval must be >= 0
+            AffApyError: inf must be >= 0
+
+        Examples:
+            >>> Interval(1, 2).sqrt()
+            Interval(1.0, 1.4142135623731)
+            >>> Interval(-1, 2).sqrt()
+            ...
+            AffApy.affapyError.AffApyError: inf must be >= 0
 
         """
         if self.inf >= 0:
@@ -442,9 +652,8 @@ class Interval:
 
     # Trigo
     def minTrigo(self):
-        """Function minTrigo
-
-        Return the minimal 2pi periodic interval of an Interval.
+        """
+        Return the minimal 2pi periodic interval of an interval.
 
         Args:
             self (Interval): operand
@@ -453,22 +662,22 @@ class Interval:
             Interval: minimal 2pi periodic interval
         """
         inf, sup = self.inf, self.sup
-        pi_fois_2 = fmul(2, mp.pi)
-        a = fmod(inf, pi_fois_2)
+        a = fmod(inf, 2*mp.pi)
         if inf < 0:
             a = fneg(a, rounding='d')
-        if fsub(sup, inf) >= pi_fois_2:
-            b = fadd(a, pi_fois_2, rounding='u')
+        if fsub(sup, inf) >= 2*mp.pi:
+            b = fadd(a, 2*mp.pi, rounding='u')
         else:
-            b = fmod(sup, pi_fois_2)
+            b = fmod(sup, 2*mp.pi)
             if b <= a:
-                b = fadd(b, pi_fois_2, rounding='u')
+                b = fadd(b, 2*mp.pi, rounding='u')
         return Interval(a, b)
 
     def cos(self):
-        """Function cos
+        """
+        **Function cos**
 
-        Return the cosinus of an Interval.
+        Return the cosinus of an interval.
 
         Args:
             self (Interval): operand
@@ -476,31 +685,37 @@ class Interval:
         Returns:
             Interval: cos(self)
 
+        Examples:
+            >>> Interval(1, 2).cos()
+            Interval(-0.416146836547142, 0.54030230586814)
+
         """
         interMinTrigo = self.minTrigo()
         inf, sup = interMinTrigo.inf, interMinTrigo.sup
-        pi_fois_2 = fmul(2, mp.pi)
-        pi_fois_3 = fmul(3, mp.pi)
         if inf <= mp.pi:
             if sup <= mp.pi:
-                return Interval(cos(sup, rounding='u'), cos(inf, rounding='d'))
-            if mp.pi < sup <= pi_fois_2:
-                return Interval(-1, max(cos(inf, rounding='d'),
+                return Interval(cos(sup, rounding='d'), cos(inf, rounding='u'))
+            if mp.pi < sup <= 2*mp.pi:
+                return Interval(-1, max(cos(inf, rounding='u'),
                                         cos(sup, rounding='u')))
             return Interval(-1, 1)
-        if mp.pi < inf <= pi_fois_2:
-            if sup <= pi_fois_2:
+        if mp.pi < inf <= 2*mp.pi:
+            if sup <= 2*mp.pi:
                 return Interval(cos(inf, rounding='d'), cos(sup, rounding='u'))
-            if pi_fois_2 < sup <= pi_fois_3:
+            if 2*mp.pi < sup <= 3*mp.pi:
                 return Interval(min(cos(inf, rounding='d'),
                                     cos(sup, rounding='u')), 1)
             return Interval(-1, 1)
 
     def sin(self):
-        """Function sin
+        """
+        **Function sin**
 
-        Return the sinus of an Interval.
-        We use the identity sin(x) = cos(pi/2 - x).
+        Return the sinus of an interval.
+        It uses the identity:
+
+        .. math ::
+            sin(x) = cos\\left(\\frac{\\pi}{2} - x\\right)
 
         Args:
             self (Interval): operand
@@ -512,10 +727,14 @@ class Interval:
         return (-self + mp.pi / 2).cos()
 
     def tan(self):
-        """Function tan
+        """
+        **Function tan**
 
-        Return the tangent of an Interval.
-        We use the identity tan(x) = sin(x)/cos(x).
+        Return the tangent of an interval.
+        It uses the identity:
+
+        .. math ::
+            tan(x) = \\frac{sin(x)}{cos(x)}
 
         Args:
             self (Interval): operand
@@ -527,10 +746,14 @@ class Interval:
         return self.sin() / self.cos()
 
     def cotan(self):
-        """Function cotan
+        """
+        **Function cotan**
 
-        Return the cotangent of an Interval.
-        We use the identity cotan(x) = cos(x)/sin(x).
+        Return the cotangent of an interval.
+        It uses the identity:
+
+        .. math ::
+            cotan(x) = \\frac{cos(x)}{sin(x)}
 
         Args:
             self (Interval): operand
@@ -541,11 +764,69 @@ class Interval:
         """
         return self.cos() / self.sin()
 
+    def cosh(self):
+        """
+        **Function cosh**
+
+        Return the hyperbolic cosine of an interval.
+        It uses the identity:
+
+        .. math ::
+            cosh(x) = \\frac{exp(x) + exp(-x)}{2}
+
+        Args:
+            self (Interval): operand
+
+        Returns:
+            Interval: cosh(self)
+
+        """
+        return (self.exp() + (-self).exp()) * 0.5
+
+    def sinh(self):
+        """
+        **Function sinh**
+
+        Return the hyperbolic sine of an interval.
+        It uses the identity:
+
+        .. math ::
+            sinh(x) = \\frac{exp(x) - exp(-x)}{2}
+
+        Args:
+            self (Interval): operand
+
+        Returns:
+            Interval: sinh(self)
+
+        """
+        return (self.exp() - (-self).exp()) * 0.5
+
+    def tanh(self):
+        """
+        **Function tanh**
+
+        Return the hyperbolic tangeant of an interval.
+        It uses the identity:
+
+        .. math ::
+            tanh(x) = \\frac{sinh(x)}{cosh(x)}
+
+        Args:
+            self (Interval): operand
+
+        Returns:
+            Interval: tanh(self)
+
+        """
+        return self.sinh() / self.cosh()
+
     # Comparison operators
     def __eq__(self, other):
-        """Operator ==
+        """
+        **Operator ==**
 
-        Compare two Intervals.
+        Compare two intervals.
 
         Args:
             self (Interval): first operand
@@ -554,13 +835,19 @@ class Interval:
         Returns:
             bool: self == other
 
+        Raises:
+            AffApyError: other must be Interval
+
         """
-        return self.inf == other.inf and self.sup == other.sup
+        if isinstance(other, self.__class__):
+            return self.inf == other.inf and self.sup == other.sup
+        raise AffApyError("other must be Interval")
 
     def __ne__(self, other):
-        """Operator !=
+        """
+        **Operator !=**
 
-        Negative comparison of two Intervals.
+        Negative comparison of two intervals.
 
         Args:
             self (Interval): first operand
@@ -569,13 +856,19 @@ class Interval:
         Returns:
             bool: self != other
 
+        Raises:
+            AffApyError: other must be Interval
+
         """
-        return self.inf != other.inf or self.sup != other.sup
+        if isinstance(other, self.__class__):
+            return self.inf != other.inf or self.sup != other.sup
+        raise AffApyError("other must be Interval")
 
     def __ge__(self, other):
-        """Operator >=
+        """
+        **Operator >=**
 
-        Greater or equal comparison between two Intervals or with
+        Greater or equal comparison between two intervals or with
         int, float or mpf.
 
         Args:
@@ -585,6 +878,9 @@ class Interval:
         Returns:
             bool: self >= other
 
+        Raises:
+            AffApyError: other must be Interval, int, float, mpf
+
         """
         if isinstance(other, self.__class__):
             return self.inf >= other.sup
@@ -593,9 +889,10 @@ class Interval:
         raise AffApyError("other must be Interval, int, float, mpf")
 
     def __gt__(self, other):
-        """Operator >
+        """
+        **Operator >**
 
-        Greater comparison between two Intervals or with
+        Greater comparison between two intervals or with
         int, float or mpf.
 
         Args:
@@ -605,6 +902,9 @@ class Interval:
         Returns:
             bool: self > other
 
+        Raises:
+            AffApyError: other must be Interval, int, float, mpf
+
         """
         if isinstance(other, self.__class__):
             return self.inf > other.sup
@@ -613,9 +913,10 @@ class Interval:
         raise AffApyError("other must be Interval, int, float, mpf")
 
     def __le__(self, other):
-        """Operator <=
+        """
+        **Operator <=**
 
-        Lesser or equal comparison between two Intervals or with
+        Lesser or equal comparison between two intervals or with
         int, float or mpf.
 
         Args:
@@ -625,6 +926,9 @@ class Interval:
         Returns:
             bool: self <= other
 
+        Raises:
+            AffApyError: other must be Interval, int, float, mpf
+
         """
         if isinstance(other, self.__class__):
             return self.sup <= other.inf
@@ -633,7 +937,8 @@ class Interval:
         raise AffApyError("other must be Interval, int, float, mpf")
 
     def __lt__(self, other):
-        """Operator <
+        """
+        **Operator <**
 
         Lesser comparison between two Intervals or with
         int, float or mpf.
@@ -645,6 +950,9 @@ class Interval:
         Returns:
             bool: self < other
 
+        Raises:
+            AffApyError: other must be Interval, int, float, mpf
+
         """
         if isinstance(other, self.__class__):
             return self.sup < other.inf
@@ -654,10 +962,14 @@ class Interval:
 
     # Inclusion
     def __contains__(self, other):
-        """Operator in
+        """
+        **Operator in**
 
-        Return True if other, who is Interval, or int, or float or mpf, is
-        in self, who is an Interval.
+        Return True if other, who is interval, or int, or float or mpf, is
+        in self, who is an interval:
+
+        .. math ::
+            x \\in [a, b]
 
         Args:
             self (Interval): second operand
@@ -681,7 +993,8 @@ class Interval:
 
     # Formats
     def __str__(self):
-        """String format
+        """
+        **String format**
 
         Make the string format.
 
@@ -699,7 +1012,8 @@ class Interval:
         return "[{}, {}]".format(self.inf, self.sup)
 
     def __repr__(self):
-        """Repr format
+        """
+        **Repr format**
 
         Make the repr format.
 
@@ -714,7 +1028,7 @@ class Interval:
 
     def copy(self):
         """
-        Copy the interval.
+        Copy an interval.
 
         Args:
             self (Interval): arg
@@ -727,12 +1041,21 @@ class Interval:
 
     def convert(self):
         """
-        Convert an interval to an affine form.
+        Convert an interval [a, b] to an affine form:
+
+        .. math ::
+            \\hat{x} = x_0 + x_1\\epsilon_1
+
+        with:
+
+        .. math ::
+            x_0 = \\frac{a + b}{2} ,
+            x_1 = \\frac{a - b}{2}
 
         Args:
             self (Interval): operand
 
         Returns:
-            Affine: associated to the interval
+            Affine: affine form associated to the interval
         """
         return AffApy.affineArithmetic.Affine(interval=[self.inf, self.sup])
