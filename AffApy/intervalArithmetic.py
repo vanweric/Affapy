@@ -3,7 +3,7 @@ import AffApy.affineArithmetic
 from AffApy.affapyError import AffApyError
 import mpmath
 from mpmath import (mp, fadd, fsub, fmul, fdiv, fneg, fabs, floor, ceil,
-                    sqrt, exp, log, cos, fmod)
+                    sqrt, exp, ln, cos, fmod)
 
 
 class Interval:
@@ -66,7 +66,7 @@ class Interval:
             mpf: sup - inf
 
         """
-        return fsub(self.sup, self.inf)
+        return fsub(self.sup, self.inf, rounding='u')
 
     def mid(self):
         """Middle
@@ -80,7 +80,7 @@ class Interval:
             mpf: (inf + sup) / 2
 
         """
-        return fdiv(fadd(self.inf, self.sup), 2)
+        return (self.inf + self.sup) / 2
 
     def radius(self):
         """Radius
@@ -91,12 +91,10 @@ class Interval:
             self (Interval): arg
 
         Returns:
-            mpf: max(m - inf, sup - m) where m is middle
+            mpf: width / 2
 
         """
-        m = self.mid()
-        return max(fsub(m, self.inf, rounding='u'),
-                   fsub(self.sup, m, rounding='u'))
+        return self.width() / 2
 
     def straddles_zero(self):
         """
@@ -133,7 +131,7 @@ class Interval:
             inf = fadd(self.inf, other.inf, rounding='d')
             sup = fadd(self.sup, other.sup, rounding='u')
             return Interval(inf, sup)
-        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf)):
             inf = fadd(self.inf, mp.mpf(other), rounding='d')
             sup = fadd(self.sup, mp.mpf(other), rounding='u')
             return Interval(inf, sup)
@@ -178,7 +176,7 @@ class Interval:
             inf = fsub(self.inf, other.sup, rounding='d')
             sup = fsub(self.sup, other.inf, rounding='u')
             return Interval(inf, sup)
-        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf)):
             inf = fsub(self.inf, mp.mpf(other), rounding='d')
             sup = fsub(self.sup, mp.mpf(other), rounding='u')
             return Interval(inf, sup)
@@ -226,7 +224,7 @@ class Interval:
             sup = max([fmul(a, c, rounding='u'), fmul(a, d, rounding='u'),
                        fmul(b, c, rounding='u'), fmul(b, d, rounding='u')])
             return Interval(inf, sup)
-        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf)):
             return Interval(fmul(mp.mpf(other), self.inf, rounding='d'),
                             fmul(mp.mpf(other), self.sup, rounding='u'))
         raise AffApyError("other must be Interval, int, float, mpf")
@@ -275,36 +273,48 @@ class Interval:
                 return self * Interval(fdiv(1, d, rounding='u'),
                                        fdiv(1, c, rounding='d'))
             raise AffApyError("division by 0")
-        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf)):
             if other != 0:
                 return fdiv(1, other) * self
             raise AffApyError("division by 0")
         raise AffApyError("other must be Interval, int, float, mpf")
 
-    def __pow__(self, exp):
+    def __pow__(self, n):
         """Operator **
 
         Return the power of an Interval with another Interval or an integer.
-        With Interval, we use the identity : x**y = exp(y * log(x)).
+        With Interval, we use the identity : x**n = exp(n * log(x)).
 
         Args:
             self (Interval): first operand
-            exp (Interval or int): second operand (exponent)
+            n (Interval or int): second operand (exponent)
 
         Returns:
-            Affine: self ** exp
+            Affine: self ** n
 
         Raises:
-            AffApyError: if exp is not Interval or int
+            AffApyError: if n is not Interval or int
 
         """
-        if isinstance(exp, int):
-            ret = 1
-            for _ in range(exp):
-                ret *= self
-            return ret
-        elif isinstance(exp, self.__class__):
-            return (exp * self.log()).exp()
+        if isinstance(n, int):
+            if n < 0:
+                x = 1 / self
+                n = -n
+            if n == 0:
+                return 1
+            y = 1
+            x = self.copy()
+            while n > 1:
+                if n % 2 == 0:
+                    x = x * x
+                    n = n / 2
+                else:
+                    y = x * y
+                    x = x * x
+                    n = (n - 1) / 2
+            return x * y
+        elif isinstance(n, self.__class__):
+            return (n * self.log()).exp()
         raise AffApyError("type error: exp must be Interval or int")
 
     # Unary operator
@@ -391,8 +401,8 @@ class Interval:
 
         """
         if self.inf > 0:
-            return Interval(log(self.inf),
-                            log(self.sup))
+            return Interval(ln(self.inf, roundin='d'),
+                            ln(self.sup, rounding='u'))
         raise AffApyError("inf must be > 0")
 
     def exp(self):
@@ -578,7 +588,7 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.inf >= other.sup
-        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf)):
             return self.inf >= other
         raise AffApyError("other must be Interval, int, float, mpf")
 
@@ -598,7 +608,7 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.inf > other.sup
-        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf)):
             return self.inf > other
         raise AffApyError("other must be Interval, int, float, mpf")
 
@@ -618,7 +628,7 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.sup <= other.inf
-        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf)):
             return self.sup <= other
         raise AffApyError("other must be Interval, int, float, mpf")
 
@@ -638,7 +648,7 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.sup < other.inf
-        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf)):
             return self.sup < other
         raise AffApyError("other must be Interval, int, float, mpf")
 
@@ -662,7 +672,7 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.inf <= other.inf and self.sup >= other.sup
-        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf)):
             return self.inf <= other <= self.sup
         if isinstance(other, AffApy.affineArithmetic.Affine):
             return (self.inf <= other.interval.inf
