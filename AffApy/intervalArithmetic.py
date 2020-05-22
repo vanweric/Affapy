@@ -134,18 +134,29 @@ class Interval:
         """
         return self.width() / 2
 
-    def straddles_zero(self):
+    # Unary operator
+    def __neg__(self):
         """
-        Return True if the interval straddles 0, False if not.
+        **Operator - (unary)**
+
+        Return the additive inverse of an interval:
+
+        .. math ::
+            -[a, b] = [-b, -a]
 
         Args:
             self (Interval): operand
 
         Returns:
-            bool: self straddles 0
+            Interval: -self
+
+        Examples:
+            >>> -Interval(1, 2)
+            Interval(-2.0, -1.0)
 
         """
-        return self.inf <= 0 and self.sup >= 0
+        return Interval(fneg(self.sup, rounding='d'),
+                        fneg(self.inf, rounding='u'))
 
     # Binary operators
     def __add__(self, other):
@@ -440,30 +451,6 @@ class Interval:
             return (n * self.log()).exp()
         raise AffApyError("type error: n must be Interval or int")
 
-    # Unary operator
-    def __neg__(self):
-        """
-        **Operator - (unary)**
-
-        Return the additive inverse of an interval:
-
-        .. math ::
-            -[a, b] = [-b, -a]
-
-        Args:
-            self (Interval): operand
-
-        Returns:
-            Interval: -self
-
-        Examples:
-            >>> -Interval(1, 2)
-            Interval(-2.0, -1.0)
-
-        """
-        return Interval(fneg(self.sup, rounding='d'),
-                        fneg(self.inf, rounding='u'))
-
     # Precision
     def __floor__(self):
         """
@@ -562,62 +549,6 @@ class Interval:
                                    fabs(self.sup)))
         return self.copy()
 
-    def log(self):
-        """
-        **Function log**
-
-        Return the logarithm of an interval:
-
-        .. math ::
-            log([a, b]) = [log(a), log(b)]
-
-        It is possible only if a > 0.
-
-        Args:
-            self (Interval): operand
-
-        Returns:
-            Interval: log(self)
-
-        Raises:
-            AffApyError: inf must be > 0
-
-        Examples:
-            >>> Interval(1, 2).log()
-            Interval(0.0, 0.693147180559945)
-            >>> Interval(-1, 2).log()
-            ...
-            AffApy.affapyError.AffApyError: inf must be > 0
-
-        """
-        if self.inf > 0:
-            return Interval(ln(self.inf, roundin='d'),
-                            ln(self.sup, rounding='u'))
-        raise AffApyError("inf must be > 0")
-
-    def exp(self):
-        """
-        **Function exp**
-
-        Return the exponential of an interval:
-
-        .. math ::
-            exp([a, b]) = [exp(a), exp(b)]
-
-        Args:
-            self (Interval): operand
-
-        Returns:
-            Interval: exp(self)
-
-        Examples:
-            >>> Interval(1, 2).exp()
-            Interval(2.71828182845905, 7.38905609893065)
-
-        """
-        return Interval(exp(self.inf, rounding='d'),
-                        exp(self.sup, rounding='u'))
-
     def sqrt(self):
         """
         **Function sqrt**
@@ -650,6 +581,62 @@ class Interval:
             return Interval(sqrt(self.inf, rounding='d'),
                             sqrt(self.sup, rounding='u'))
         raise AffApyError("inf must be >= 0")
+
+    def exp(self):
+        """
+        **Function exp**
+
+        Return the exponential of an interval:
+
+        .. math ::
+            exp([a, b]) = [exp(a), exp(b)]
+
+        Args:
+            self (Interval): operand
+
+        Returns:
+            Interval: exp(self)
+
+        Examples:
+            >>> Interval(1, 2).exp()
+            Interval(2.71828182845905, 7.38905609893065)
+
+        """
+        return Interval(exp(self.inf, rounding='d'),
+                        exp(self.sup, rounding='u'))
+
+    def log(self):
+        """
+        **Function log**
+
+        Return the logarithm of an interval:
+
+        .. math ::
+            log([a, b]) = [log(a), log(b)]
+
+        It is possible only if a > 0.
+
+        Args:
+            self (Interval): operand
+
+        Returns:
+            Interval: log(self)
+
+        Raises:
+            AffApyError: inf must be > 0
+
+        Examples:
+            >>> Interval(1, 2).log()
+            Interval(0.0, 0.693147180559945)
+            >>> Interval(-1, 2).log()
+            ...
+            AffApy.affapyError.AffApyError: inf must be > 0
+
+        """
+        if self.inf > 0:
+            return Interval(ln(self.inf, roundin='d'),
+                            ln(self.sup, rounding='u'))
+        raise AffApyError("inf must be > 0")
 
     # Trigo
     def minTrigo(self):
@@ -991,6 +978,19 @@ class Interval:
             return (self.inf <= other.interval.inf
                     and self.sup >= other.interval.sup)
         raise AffApyError("other must be Interval, int, float, Affine, mpf")
+
+    def straddles_zero(self):
+        """
+        Return True if the interval straddles 0, False if not.
+
+        Args:
+            self (Interval): operand
+
+        Returns:
+            bool: self straddles 0
+
+        """
+        return self.inf <= 0 and self.sup >= 0
 
     # Formats
     def __str__(self):

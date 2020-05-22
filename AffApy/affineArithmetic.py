@@ -75,12 +75,6 @@ class Affine:
     """
     _weightCount = 1
 
-    @staticmethod
-    def _getNewXi():
-        """Get a new noise symbol."""
-        Affine._weightCount += 1
-        return Affine._weightCount - 1
-
     def __init__(self, interval=None, x0=None, xi=None):
         """
         Create an affine form. There are two different ways:
@@ -191,6 +185,12 @@ class Affine:
         self._xi = {i: mp.mpf(val[i], rounding='c') for i in val}
         self._interval = self.convert()
 
+    @staticmethod
+    def _getNewXi():
+        """Get a new noise symbol."""
+        Affine._weightCount += 1
+        return Affine._weightCount - 1
+
     def rad(self):
         """
         Return the radius of an affine form:
@@ -211,32 +211,6 @@ class Affine:
 
         """
         return fsum(self.xi.values(), absolute=True)
-
-    def straddles_zero(self):
-        """
-        Return True if the affine form straddles 0, False if not.
-
-        Args:
-            self (Affine): operand
-
-        Returns:
-            bool: 0 in self
-
-        """
-        return self.interval.straddles_zero()
-
-    def strictly_neg(self):
-        """
-        Return True if the affine is strictly negative, False if not.
-
-        Args:
-            self (Affine): operand
-
-        Returns:
-            bool: self < 0
-
-        """
-        return self.interval < 0
 
     # Unary operator
     def __neg__(self):
@@ -1069,6 +1043,32 @@ class Affine:
         if isinstance(other, (int, float, mpmath.mpf)):
             return other in self.interval
         raise AffApyError("other must be Affine, Interval, int, float, mpf")
+
+    def straddles_zero(self):
+        """
+        Return True if the affine form straddles 0, False if not.
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            bool: 0 in self
+
+        """
+        return self.interval.straddles_zero()
+
+    def strictly_neg(self):
+        """
+        Return True if the affine is strictly negative, False if not.
+
+        Args:
+            self (Affine): operand
+
+        Returns:
+            bool: self < 0
+
+        """
+        return self.interval < 0
 
     # Formats
     def __str__(self):
