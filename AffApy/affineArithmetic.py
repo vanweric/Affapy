@@ -314,17 +314,9 @@ class Affine:
             AffApyError: if other is not Affine, int, float, mpf
 
         """
-        if isinstance(other, self.__class__):   # TODO modifier test (voir discord)
+        if isinstance(other, self.__class__):
             x0 = self.x0 * other.x0
             xi = {}
-            # if self.xi == {} and other.xi != {}:
-            #     keyMax = max(other.xi)
-            # elif self.xi != {} and other.xi == {}:
-            #     keyMax = max(self.xi)
-            # elif self.xi != {} and other.xi != {}:
-            #     keyMax = max(max(self.xi), max(other.xi))
-            # else:
-            #     keyMax = 0
             keyMax = max(max(self.xi) if self.xi else 0,
                          max(other.xi) if other.xi else 0)
             for i in range(keyMax + 1):
