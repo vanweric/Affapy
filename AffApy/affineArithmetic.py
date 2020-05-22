@@ -2,17 +2,23 @@
 
 This module can create affines form and perform operations.
 
-Affine Arithmetic (AA) has been developed to overcome the error explosion problem of standard Interval Arithmetic.
-This method represents a quantity x as an affine form x', which is a first degree polynomial:
+Affine Arithmetic (AA) has been developed to overcome the error explosion
+problem of standard Interval Arithmetic.
+This method represents a quantity x as an affine form x', which is a first
+degree polynomial:
 
             x' = x0 + x1e1 + x2e2 + · · · + xnen
 
 The xi coefficient are finite floating-point numbers.
-x0 is the central value of the affine form x' and xi are it's partial deviation.
-The ei coefficients are real values called noise symbol. Their values are unknown between [0,1].
-This representation enables a better tracking of the different quantities inside the affine form.
+x0 is the central value of the affine form x' and xi are it's partial
+deviation.
+The ei coefficients are real values called noise symbol. Their values are
+unknown between [0,1].
+This representation enables a better tracking of the different quantities
+inside the affine form.
 
-For example, the quantitie [0, 10] can be represented as the following affine form:
+For example, the quantitie [0, 10] can be represented as the following affine
+form:
 
         A = [0, 10] = 5 + 5e1   where x0 = 1 and x1 = 5
 
@@ -20,14 +26,16 @@ But we could also represent it like this :
 
         B = [0, 10] = 5 + 3e1 + 2e2     where x0 = 5, x1 = 3 and x2 = 2
 
-Both form represent the same quantity but they are handling differently the storage of internal quantities.
+Both form represent the same quantity but they are handling differently the
+storage of internal quantities.
 They will behave differently during operation:
 
         A - A = 0,  no surprises here  (1)
 
         A - B = 0 + 2e1 - 2e2 = [0, 4]  (2)
 
-Example (2) illustrate this behaviour. Even though A and B represent the same quantity, they manage their quantity
+Example (2) illustrate this behaviour. Even though A and B represent the
+same quantity, they manage their quantity
 differently, they are therefore not equal.
 """
 import AffApy.intervalArithmetic
@@ -35,38 +43,6 @@ from AffApy.affapyError import AffApyError
 import mpmath
 from mpmath import (
     mp, fdiv, fadd, fsub, fsum, fneg, fmul, fabs, sqrt, exp, log, sin)
-
-
-class rounded:
-    """Manage rounded operations"""
-
-    @staticmethod
-    def sub(x, y):
-        """
-        Choose the right rounding depending on whether
-        the result is positive or negative
-        """
-        if x < y:
-            return fsub(x, y, rounding='d')
-        return fsub(x, y, rounding='u')
-
-    @staticmethod
-    def add(x, y):
-        if x + y < 0:
-            return fadd(x, y, rounding='d')
-        return fadd(x, y, rounding='u')
-
-    @staticmethod
-    def mul(x, y):
-        if mp.sign(x) != mp.sign(y):
-            return fmul(x, y, rounding='d')
-        return fmul(x, y, rounding='u')
-
-    @staticmethod
-    def div(x, y):
-        if mp.sign(x) != mp.sign(y):
-            return fdiv(x, y, rounding='d')
-        return fdiv(x, y, rounding='u')
 
 
 class Affine:
@@ -104,18 +80,18 @@ class Affine:
                 inf, sup = interval.inf, interval.sup
             else:
                 raise AffApyError("interval must be list, tuple or Interval")
-            self._x0 = fdiv(fadd(inf, sup, rounding='n'), 2, rounding='n')
+            self._x0 = (inf + sup) / 2
             self._xi = {Affine.getNewXi(): fdiv(
-                fsub(inf, sup, rounding='d'), 2, rounding='d')}
+                fsub(inf, sup, rounding='c'), 2, rounding='c')}
             self._interval = AffApy.intervalArithmetic.Interval(inf, sup)
         elif x0 is not None and xi is not None:
-            self._x0 = mp.mpf(x0, rounding='n')
-            self._xi = {i: mp.mpf(str(xi[i])) for i in xi}
+            self._x0 = mp.mpf(x0)
+            self._xi = {i: mp.mpf(xi[i], rounding='c') for i in xi}
             self._interval = AffApy.intervalArithmetic.Interval(
-                rounded.add(self._x0, self.rad()),
-                rounded.sub(self._x0, self.rad()))
+                fadd(self._x0, self.rad(), rounding='d'),
+                fsub(self._x0, self.rad(), rounding='u'))
         else:
-            self._x0 = mp.mpf('0')
+            self._x0 = mp.mpf(0)
             self._xi = {}
             self._interval = AffApy.intervalArithmetic.Interval(0, 0)
 
@@ -128,28 +104,25 @@ class Affine:
     @property
     def xi(self):
         """Return xi"""
-        return self._xi
+        return self._xi.copy()
 
     @property
     def interval(self):
         """Return interval"""
-        return self._interval
+        return self._interval.copy()
 
     # Setter
     @x0.setter
-    def x0(self, value):
+    def x0(self, val):
         """Set x0"""
-        self._x0 = value
+        self._x0 = mp.mpf(val)
+        self._interval = self.convert()
 
     @xi.setter
-    def xi(self, value):
+    def xi(self, val):
         """Set xi"""
-        self._xi = value
-
-    @interval.setter
-    def interval(self, value):
-        """Set interval"""
-        self._interval = value
+        self._xi = {i: mp.mpf(val[i], rounding='c') for i in val}
+        self._interval = self.convert()
 
     def rad(self):
         """Radius
@@ -209,7 +182,7 @@ class Affine:
 
         """
         x0 = fneg(self.x0)
-        xi = {i: fneg(self.xi[i]) for i in self.xi}
+        xi = {i: fneg(self.xi[i], rounding='c') for i in self.xi}
         return Affine(x0=x0, xi=xi)
 
     # Affine operations
@@ -234,11 +207,11 @@ class Affine:
 
         """
         if isinstance(other, self.__class__):
-            x0 = fadd(self.x0, other.x0, rounding='n')
+            x0 = self.x0 + other.x0
             xi = {}
             for i in self.xi:
                 if i in other.xi:
-                    val = rounded.add(self.xi[i], other.xi[i])
+                    val = fadd(self.xi[i], other.xi[i], rounding='c')
                     if val != 0:
                         xi[i] = val
                 else:
@@ -247,8 +220,8 @@ class Affine:
                 if i not in self.xi:
                     xi[i] = other.xi[i]
             return Affine(x0=x0, xi=xi)
-        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
-            x0 = fadd(self.x0, mp.mpf(str(other), rounding='n'), rounding='n')
+        if isinstance(other, (int, float, mpmath.mpf)):
+            x0 = self.x0 + mp.mpf(other)
             xi = self.xi.copy()
             return Affine(x0=x0, xi=xi)
         raise AffApyError("other must be Affine, int, float, mpf")
@@ -288,24 +261,21 @@ class Affine:
 
         """
         if isinstance(other, self.__class__):
-            x0 = fsub(self.x0, other.x0, rounding='n')
+            x0 = self.x0 - other.x0
             xi = {}
             for i in self.xi:
                 if i in other.xi:
-                    val = rounded.sub(self.xi[i], other.xi[i])
+                    val = fsub(self.xi[i], other.xi[i], rounding='c')
                     if val != 0:
                         xi[i] = val
                 else:
                     xi[i] = self.xi[i]
             for i in other.xi:
                 if i not in self.xi:
-                    if other.xi[i] < 0:
-                        xi[i] = fneg(other.xi[i], rounding='u')
-                    else:
-                        xi[i] = fneg(other.xi[i], rounding='d')
+                    xi[i] = fneg(other.xi[i], rounding='c')
             return Affine(x0=x0, xi=xi)
-        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
-            x0 = fsub(self.x0, mp.mpf(str(other)), rounding='n')
+        if isinstance(other, (int, float, mpmath.mpf)):
+            x0 = self.x0 - mp.mpf(other)
             xi = self.xi.copy()
             return Affine(x0=x0, xi=xi)
         raise AffApyError("other must be Affine, int, float, mpf")
@@ -344,34 +314,37 @@ class Affine:
             AffApyError: if other is not Affine, int, float, mpf
 
         """
-        if isinstance(other, self.__class__):
-            x0 = fmul(self.x0, other.x0, rounding='n')
+        if isinstance(other, self.__class__):   # TODO modifier test (voir discord)
+            x0 = self.x0 * other.x0
             xi = {}
-            if self.xi == {} and other.xi != {}:
-                keyMax = max(other.xi)
-            elif self.xi != {} and other.xi == {}:
-                keyMax = max(self.xi)
-            elif self.xi != {} and other.xi != {}:
-                keyMax = max(max(self.xi), max(other.xi))
-            else:
-                keyMax = 0
+            # if self.xi == {} and other.xi != {}:
+            #     keyMax = max(other.xi)
+            # elif self.xi != {} and other.xi == {}:
+            #     keyMax = max(self.xi)
+            # elif self.xi != {} and other.xi != {}:
+            #     keyMax = max(max(self.xi), max(other.xi))
+            # else:
+            #     keyMax = 0
+            keyMax = max(max(self.xi) if self.xi else 0,
+                         max(other.xi) if other.xi else 0)
             for i in range(keyMax + 1):
                 v = 0
                 if i in self.xi and i not in other.xi:
-                    v = rounded.mul(self.xi[i], other.x0)
+                    v = fmul(self.xi[i], other.x0, rounding='c')
                 elif i not in self.xi and i in other.xi:
-                    v = rounded.mul(other.xi[i], self.x0)
+                    v = fmul(other.xi[i], self.x0, rounding='c')
                 elif i in self.xi and i in other.xi:
-                    v = rounded.add(rounded.mul(self.xi[i], other.x0),
-                                    rounded.mul(other.xi[i], self.x0))
+                    v = fadd(fmul(self.xi[i], other.x0, rounding='c'),
+                             fmul(other.xi[i], self.x0, rounding='c'),
+                             rounding='c')
                 if v != 0:
                     xi[i] = v
-            xi[Affine.getNewXi()] = rounded.mul(self.rad(), other.rad())
+            xi[Affine.getNewXi()] = fmul(self.rad(), other.rad(), rounding='c')
             return Affine(x0=x0, xi=xi)
-        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
-            x0 = fmul(mp.mpf(str(other)), self.x0)
-            xi = {i: rounded.mul(mp.mpf(str(other)),
-                                 self.xi[i]) for i in self.xi}
+        if isinstance(other, (int, float, mpmath.mpf)):
+            x0 = mp.mpf(other) * self.x0
+            xi = {i: fmul(mp.mpf(other),
+                          self.xi[i], rounding='c') for i in self.xi}
             return Affine(x0=x0, xi=xi)
         raise AffApyError("other must be Affine, int, float, mpf")
 
@@ -394,7 +367,7 @@ class Affine:
         return self * other
 
     # Non-affine operations
-    def affineConstructor(self, alpha, dzeta, delta):
+    def _affineConstructor(self, alpha, dzeta, delta):
         """Affine constructor
 
         Return the affine form for non-affine operations.
@@ -408,8 +381,8 @@ class Affine:
             Affine
 
         """
-        x0 = fadd(fmul(alpha, self.x0, rounding='n'), dzeta, rounding='n')
-        xi = {i: rounded.mul(alpha, self.xi[i]) for i in self.xi}
+        x0 = alpha * self.x0 + dzeta
+        xi = {i: fmul(alpha, self.xi[i], rounding='c') for i in self.xi}
         xi[Affine.getNewXi()] = delta
         return Affine(x0=x0, xi=xi)
 
@@ -432,15 +405,15 @@ class Affine:
         if 0 not in self.interval:
             inf, sup = self.interval.inf, self.interval.sup
             a, b = min(fabs(inf), fabs(sup)), max(fabs(inf), fabs(sup))
-            alpha = fdiv(-1, fmul(b, b))
-            i = AffApy.intervalArithmetic.Interval(fsub(fdiv(1, a),
-                                                        fmul(alpha, a)),
-                                                   fdiv(2, b))
+            alpha = -1 / (b * b)
+            i = AffApy.intervalArithmetic.Interval(
+                fsub(fdiv(1, a), fmul(alpha, a), rounding='d'),
+                fdiv(2, b, rounding='u'))
             dzeta = i.mid()
             if inf < 0:
-                dzeta = fneg(dzeta)
+                dzeta = -dzeta
             delta = i.radius()
-            return self.affineConstructor(alpha, dzeta, delta)
+            return self._affineConstructor(alpha, dzeta, delta)
         raise AffApyError(
             "the interval associated to the affine form contains 0")
 
@@ -463,8 +436,8 @@ class Affine:
         """
         if isinstance(other, self.__class__):
             return self * other.inv()
-        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
-            return self * fdiv(1, other)
+        if isinstance(other, (int, float, mpmath.mpf)):
+            return self * (1 / other)
         raise AffApyError("other must be Affine, int, float, mpf")
 
     def __rtruediv__(self, other):
@@ -485,7 +458,7 @@ class Affine:
 
         """
         if (isinstance(other, self.__class__) or
-                isinstance(other, (int, float, mpmath.ctx_mp_python.mpf))):
+                isinstance(other, (int, float, mpmath.mpf))):
             return other * self.inv()
         raise AffApyError("other must be Affine, int, float, mpf")
 
@@ -502,31 +475,43 @@ class Affine:
         """
         return self * self
 
-    def __pow__(self, exp):
+    def __pow__(self, n):
         """Operator **
 
         Return the power of an Affine with another Affine or an integer.
-        With Affine, we use the identity : x**y = exp(y * log(x)).
+        With Affine, we use the identity : x**n = exp(n * log(x)).
 
         Args:
             self (Affine): first operand
-            exp (Affine or int): second operand (exponent)
+            n (Affine or int): second operand (exponent)
 
         Returns:
-            Affine: self ** exp
+            Affine: self ** n
 
         Raises:
-            AffApyError: if exp is not Affine or int
+            AffApyError: if n is not Affine or int
 
         """
-        if isinstance(exp, int):
-            ret = 1
-            for _ in range(exp):
-                ret *= self
-            return ret
-        elif isinstance(exp, self.__class__):
-            return (exp * self.log()).exp()
-        raise AffApyError("type error: exp must be Affine or int")
+        if isinstance(n, int):
+            if n < 0:
+                x = self.inv()
+                n = -n
+            if n == 0:
+                return 1
+            y = 1
+            x = self.copy()
+            while n > 1:
+                if n % 2 == 0:
+                    x = x * x
+                    n = n / 2
+                else:
+                    y = x * y
+                    x = x * x
+                    n = (n - 1) / 2
+            return x * y
+        elif isinstance(n, self.__class__):
+            return (n * self.log()).exp()
+        raise AffApyError("type error: n must be Affine or int")
 
     # Functions
     def __abs__(self):
@@ -542,7 +527,7 @@ class Affine:
             return -self
         if self.straddles_zero():
             x0 = fabs(self.x0 / 2)
-            xi = {i: fdiv(self.xi[i], 2) for i in self.xi}
+            xi = {i: fdiv(self.xi[i], 2, rounding='c') for i in self.xi}
             return Affine(x0=x0, xi=xi)
         return self.copy()
 
@@ -564,12 +549,13 @@ class Affine:
         """
         if self.interval >= 0:
             a, b = self.interval.inf, self.interval.sup
-            t = fadd(sqrt(a), sqrt(b), rounding='d')
-            alpha = fdiv(1, t, rounding='n')
-            dzeta = fadd(fdiv(t, 8, rounding='n'), fmul(0.5, fdiv(sqrt(fmul(a, b, rounding='n')), t, rounding='n'), rounding='n'), rounding='n')
-            rdelta = fsub(sqrt(b), sqrt(a), rounding='u')
-            delta = fdiv(fmul(rdelta, rdelta, rounding='u'), fmul(8, t, rounding='d'), rounding='u')
-            return self.affineConstructor(alpha, dzeta, delta)
+            t = fadd(sqrt(a), sqrt(b), rounding='f')
+            alpha = fdiv(1, t)
+            dzeta = fadd(fdiv(t, 8), fmul(0.5, fdiv(sqrt(fmul(a, b)), t)))
+            rdelta = fsub(sqrt(b), sqrt(a), rounding='c')
+            delta = fdiv(fmul(rdelta, rdelta, rounding='c'),
+                         fmul(8, t, rounding='f'), rounding='c')
+            return self._affineConstructor(alpha, dzeta, delta)
         raise AffApyError(
             "the interval associated to the affine form must be >= 0")
 
@@ -592,7 +578,7 @@ class Affine:
         maxdelta = fadd(fmul(alpha, fsub(xs, fsub(1, a))), ea)
         dzeta = fmul(alpha, fsub(1, xs))
         delta = fdiv(maxdelta, 2)
-        return self.affineConstructor(alpha, dzeta, delta)
+        return self._affineConstructor(alpha, dzeta, delta)
 
     def log(self):
         """Function log
@@ -618,7 +604,7 @@ class Affine:
             maxdelta = fsub(log(xs), ys)
             dzeta = fdiv(fmul(alpha, fneg(xs)), fdiv(fadd(log(xs), ys), 2))
             delta = fdiv(maxdelta, 2)
-            return self.affineConstructor(alpha, dzeta, delta)
+            return self._affineConstructor(alpha, dzeta, delta)
         raise AffApyError(
             "the interval associated to the affine form must be > 0")
 
@@ -665,7 +651,7 @@ class Affine:
         r = [fabs(yi - (dzeta + alpha * xi)) for xi, yi in zip(x, y)]
         # The error delta is the maximum of the residues (in absolute values)
         delta = max(r)
-        return self.affineConstructor(alpha, dzeta, delta)
+        return self._affineConstructor(alpha, dzeta, delta)
 
     def cos(self):
         """Function cos
@@ -809,7 +795,7 @@ class Affine:
             return other.interval in self.interval
         if isinstance(other, AffApy.intervalArithmetic.Interval):
             return other in self.interval
-        if isinstance(other, (int, float, mpmath.ctx_mp_python.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf)):
             return other in self.interval
         raise AffApyError("other must be Affine, Interval, int, float, mpf")
 

@@ -315,7 +315,7 @@ class Interval:
             return x * y
         elif isinstance(n, self.__class__):
             return (n * self.log()).exp()
-        raise AffApyError("type error: exp must be Interval or int")
+        raise AffApyError("type error: n must be Interval or int")
 
     # Unary operator
     def __neg__(self):
