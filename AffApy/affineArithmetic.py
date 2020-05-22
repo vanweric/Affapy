@@ -2,6 +2,33 @@
 
 This module can create affines form and perform operations.
 
+Affine Arithmetic (AA) has been developed to overcome the error explosion problem of standard Interval Arithmetic.
+This method represents a quantity x as an affine form x', which is a first degree polynomial:
+
+            x' = x0 + x1e1 + x2e2 + · · · + xnen
+
+The xi coefficient are finite floating-point numbers.
+x0 is the central value of the affine form x' and xi are it's partial deviation.
+The ei coefficients are real values called noise symbol. Their values are unknown between [0,1].
+This representation enables a better tracking of the different quantities inside the affine form.
+
+For example, the quantitie [0, 10] can be represented as the following affine form:
+
+        A = [0, 10] = 5 + 5e1   where x0 = 1 and x1 = 5
+
+But we could also represent it like this :
+
+        B = [0, 10] = 5 + 3e1 + 2e2     where x0 = 5, x1 = 3 and x2 = 2
+
+Both form represent the same quantity but they are handling differently the storage of internal quantities.
+They will behave differently during operation:
+
+        A - A = 0,  no surprises here  (1)
+
+        A - B = 0 + 2e1 - 2e2 = [0, 4]  (2)
+
+Example (2) illustrate this behaviour. Even though A and B represent the same quantity, they manage their quantity
+differently, they are therefore not equal.
 """
 import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError
@@ -12,6 +39,7 @@ from mpmath import (
 
 class rounded:
     """Manage rounded operations"""
+
     @staticmethod
     def sub(x, y):
         """
@@ -34,10 +62,16 @@ class rounded:
             return fmul(x, y, rounding='d')
         return fmul(x, y, rounding='u')
 
+    @staticmethod
+    def div(x, y):
+        if mp.sign(x) != mp.sign(y):
+            return fdiv(x, y, rounding='d')
+        return fdiv(x, y, rounding='u')
+
 
 class Affine:
     """Representation of an affine form"""
-    _weightCount = 1
+    _weightCount = 3
 
     @staticmethod
     def getNewXi():
@@ -374,7 +408,7 @@ class Affine:
             Affine
 
         """
-        x0 = fadd(fmul(alpha, self.x0), dzeta)
+        x0 = fadd(fmul(alpha, self.x0, rounding='n'), dzeta, rounding='n')
         xi = {i: rounded.mul(alpha, self.xi[i]) for i in self.xi}
         xi[Affine.getNewXi()] = delta
         return Affine(x0=x0, xi=xi)
@@ -530,11 +564,11 @@ class Affine:
         """
         if self.interval >= 0:
             a, b = self.interval.inf, self.interval.sup
-            t = fadd(sqrt(a), sqrt(b))
-            alpha = fdiv(1, t)
-            dzeta = fadd(fdiv(t, 8), fdiv(fmul(0.5, sqrt(fmul(a, b))), t))
-            rdelta = fsub(sqrt(b), sqrt(a))
-            delta = fdiv(fmul(rdelta, rdelta), fmul(8, t))
+            t = fadd(sqrt(a), sqrt(b), rounding='d')
+            alpha = fdiv(1, t, rounding='n')
+            dzeta = fadd(fdiv(t, 8, rounding='n'), fmul(0.5, fdiv(sqrt(fmul(a, b, rounding='n')), t, rounding='n'), rounding='n'), rounding='n')
+            rdelta = fsub(sqrt(b), sqrt(a), rounding='u')
+            delta = fdiv(fmul(rdelta, rdelta, rounding='u'), fmul(8, t, rounding='d'), rounding='u')
             return self.affineConstructor(alpha, dzeta, delta)
         raise AffApyError(
             "the interval associated to the affine form must be >= 0")
@@ -606,13 +640,13 @@ class Affine:
         """
         w = self.interval.width()
         a, b = self.interval.inf, self.interval.sup
-        if w >= 2*mp.pi:
+        if w >= 2 * mp.pi:
             return Affine(interval=[-1, 1])
         # Case of the least squares
         x, y = [a], [sin(a)]
         pas = w / (npts - 1)
         for i in range(1, npts - 1):
-            x.append(x[i-1] + pas)
+            x.append(x[i - 1] + pas)
             y.append(sin(x[i]))
         x.append(b)
         y.append(sin(b))
