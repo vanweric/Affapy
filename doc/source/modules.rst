@@ -1,11 +1,12 @@
 AffApy
 ======
 
+The affapy library contains 4 modules:
+
 .. toctree::
    :maxdepth: 4
 
-   affapyError
-   affapyParametrize
-   affapyPrecision
    affineArithmetic
    intervalArithmetic
+   affapyPrecision
+   affapyError

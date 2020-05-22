@@ -8,13 +8,22 @@ Welcome to AffApy's documentation!
 
 Presentation
 ============
-*AffApy* is a python library for multiprecision Affine Arithmetic.
+*AffApy* is a Python library for multiprecision Affine Arithmetic.
+
+These documentation is a listing of all methods of the two classes:
+
+* **Affine**: affine arithmetic (AA)
+* **Interval**: interval arithmetic (IA)
+
+There are explanations about the implementation and examples.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   installation
    modules
+   examples
 
 
 Indices and tables

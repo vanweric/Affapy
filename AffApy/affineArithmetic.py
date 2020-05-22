@@ -1,42 +1,60 @@
-"""Affine Arithmetic module
-
-This module can create affines form and perform operations.
+"""
+This module can create affine forms and perform operations.
 
 Affine Arithmetic (AA) has been developed to overcome the error explosion
 problem of standard Interval Arithmetic.
-This method represents a quantity x as an affine form x', which is a first
+This method represents a quantity x as an affine form x hat, which is a first
 degree polynomial:
 
-            x' = x0 + x1e1 + x2e2 + · · · + xnen
+.. math ::
+    \\hat{x} = x_0 + \\sum_{i=1}^{n} x_i\\epsilon_i
 
-The xi coefficient are finite floating-point numbers.
-x0 is the central value of the affine form x' and xi are it's partial
+The xi coefficients are finite floating-point numbers.
+x0 is the central value of the affine form x hat and xi are it's partial
 deviation.
-The ei coefficients are real values called noise symbol. Their values are
-unknown between [0,1].
+
+The epsilon coefficients are real values called noise symbols. Their values are
+unknown between -1 and 1.
+
 This representation enables a better tracking of the different quantities
 inside the affine form.
 
 For example, the quantitie [0, 10] can be represented as the following affine
 form:
 
-        A = [0, 10] = 5 + 5e1   where x0 = 1 and x1 = 5
+.. math ::
+    A = [0, 10] = 5 + 5\\epsilon_1
+
+where
+
+.. math ::
+    x_0 = 1, x_1 = 5
 
 But we could also represent it like this :
 
-        B = [0, 10] = 5 + 3e1 + 2e2     where x0 = 5, x1 = 3 and x2 = 2
+.. math ::
+    B = [0, 10] = 5 + 3\\epsilon_1 + 2\\epsilon_e2
+
+where
+
+.. math ::
+    x_0 = 5, x_1 = 3, x_2 = 2
 
 Both form represent the same quantity but they are handling differently the
-storage of internal quantities.
-They will behave differently during operation:
+storage of internal quantities. They will behave differently during operation:
 
-        A - A = 0,  no surprises here  (1)
+.. math::
+    A - A = 0
 
-        A - B = 0 + 2e1 - 2e2 = [0, 4]  (2)
+no surprises here
 
-Example (2) illustrate this behaviour. Even though A and B represent the
-same quantity, they manage their quantity
-differently, they are therefore not equal.
+.. math::
+    A - B = 0 + 2\\epsilon_1 - 2\\epsilon_2 = [0, 4]
+
+The second example illustrate this behaviour. Even though A and B represent the
+same quantity, they manage their quantity differently.
+They are therefore not equal.
+
 """
 import AffApy.intervalArithmetic
 from AffApy.affapyError import AffApyError

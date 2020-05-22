@@ -1,11 +1,13 @@
-"""Error module"""
+"""
+This module manage the errors of the affapy librairie.
+"""
 
 
 class AffApyError(Exception):
-    """Manage exception errors"""
+    """Manage exception errors."""
     pass
 
 
 class AffApyWarning(UserWarning):
-    """Manage warnings"""
+    """Manage warnings."""
     pass
