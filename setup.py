@@ -14,12 +14,12 @@ setuptools.setup(
         "Tristan MICHEL"
     ],
     author_email=[
-        "ruxue.zeng@etu.sorbonne-universite.fr",
         "quentin.deschamps@etu.sorbonne-universite.fr",
         "florian.guily@etu.sorbonne-universite.fr",
-        "tristan.michel1@etu.sorbonne-universite.fr"
+        "tristan.michel1@etu.sorbonne-universite.fr",
+        "ruxue.zeng@etu.sorbonne-universite.fr"
     ],
-    description="A package using affine and interval arithmetic to predict variables content.",
+    description="A python library for multiprecision Affine Arithmetic",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://gitlab.lip6.fr/hilaire/affapy",
