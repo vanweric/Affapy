@@ -1,2 +1,2 @@
-affapy/
-examples/
+../affapy/
+../examples/
