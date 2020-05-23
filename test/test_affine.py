@@ -1,8 +1,8 @@
 """Defining test cases for Affine class"""
 
-from AffApy.affineArithmetic import Affine
-from AffApy.intervalArithmetic import Interval
-from AffApy.affapyPrecision import precision
+from affapy.aa import Affine
+from affapy.ia import Interval
+from affapy.precision import precision
 import unittest
 from mpmath import mp
 

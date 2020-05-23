@@ -8,7 +8,7 @@ With *affapy*, you can create affine forms and perform operations:
 
 .. code-block:: python
 
-    from AffApy.affineArithmetic import Affine
+    from affapy.aa import Affine
 
     # Init
     x = Affine([1, 2])
@@ -61,7 +61,7 @@ You can also create intervals and perform operations:
 
 .. code-block:: python
 
-    from AffApy.intervalArithmetic import Interval
+    from affapy.ia import Interval
 
     # Init
     x = Interval(1, 2)
@@ -87,6 +87,8 @@ Precicion context
 You can set the precision of your calculations with the module **precision**:
 
 .. code-block:: python
+
+    from affapy.precision import precision
 
     with precision(bin_prec=30):
         x + y

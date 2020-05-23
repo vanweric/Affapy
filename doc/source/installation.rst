@@ -1,11 +1,11 @@
 Installation
 ============
 
-You can install latest release of the *AffApy* library with pip3:
+You can install latest release of the *affapy* library with pip3:
 
 .. code-block:: bash
 
-    pip3 install AffApy
+    pip3 install affapy
 
 The library uses *mpmath* for multiprecision calculations.
 

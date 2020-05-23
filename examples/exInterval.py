@@ -1,5 +1,5 @@
 """Basic usage of Interval module"""
-from AffApy.intervalArithmetic import Interval
+from affapy.ia import Interval
 
 # Init
 x = Interval(inf=1, sup=2)

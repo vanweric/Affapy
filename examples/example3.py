@@ -1,7 +1,7 @@
 """
 **Example 3**: Underflow demonstration
 """
-from AffApy.affineArithmetic import Affine
+from affapy.aa import Affine
 
 eps = 1e-10
 

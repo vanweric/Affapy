@@ -1,4 +1,4 @@
-from AffApy.affapyParametrize import parametrize
+from affapy.parametrize import parametrize
 
 from mpmath import mp
 

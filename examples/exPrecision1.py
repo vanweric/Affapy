@@ -1,7 +1,7 @@
 """Use of precision module"""
-from AffApy.affapyPrecision import precision
-from AffApy.intervalArithmetic import Interval
-from AffApy.affineArithmetic import Affine
+from affapy.precision import precision
+from affapy.ia import Interval
+from affapy.aa import Affine
 from mpmath import mp
 
 

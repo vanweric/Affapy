@@ -8,8 +8,8 @@ Arguments:
 * boxn: number of boxes (default: 60)
 
 """
-from AffApy.intervalArithmetic import Interval
-from AffApy.affineArithmetic import Affine
+from affapy.ia import Interval
+from affapy.aa import Affine
 import sys
 import numpy as np
 import matplotlib.pyplot as plt

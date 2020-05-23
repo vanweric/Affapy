@@ -10,8 +10,8 @@ Arguments:
 * boxn: number of boxes
 
 """
-from AffApy.intervalArithmetic import Interval
-from AffApy.affineArithmetic import Affine
+from affapy.ia import Interval
+from affapy.aa import Affine
 from time import time
 import sys
 

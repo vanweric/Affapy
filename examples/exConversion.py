@@ -1,6 +1,6 @@
 """Conversion between IA and AA"""
-from AffApy.intervalArithmetic import Interval
-from AffApy.affineArithmetic import Affine
+from affapy.ia import Interval
+from affapy.aa import Affine
 
 # IA to AA
 i = Interval(-1, 2)

@@ -1,5 +1,5 @@
 """Theorical use example of Affine Arithmetic"""
-from AffApy.affineArithmetic import Affine
+from affapy.aa import Affine
 
 f0, f1, f2, f3, f4 = (Affine(interval=[0, 255]) for _ in range(5))
 x = Affine(interval=[0, 1])

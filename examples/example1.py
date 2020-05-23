@@ -1,8 +1,8 @@
 """
 **Example 1**: A simple example of using the lib
 """
-from AffApy.intervalArithmetic import Interval
-from AffApy.affineArithmetic import Affine
+from affapy.ia import Interval
+from affapy.aa import Affine
 
 u = Interval(-2, 2)
 v = Interval(-1, 1)

@@ -1,7 +1,7 @@
 """Defining test cases for Interval class"""
 
-from AffApy.intervalArithmetic import Interval
-from AffApy.affapyPrecision import precision
+from affapy.ia import Interval
+from affapy.precision import precision
 import unittest
 from mpmath import sqrt, log, exp, sin, cos, mp, pi
 from math import ceil, floor

@@ -1,5 +1,5 @@
 """Basic usage of Affine module"""
-from AffApy.affineArithmetic import Affine
+from affapy.aa import Affine
 
 # Init
 x = Affine(x0=1, xi={1: 2, 2: 3})

@@ -5,12 +5,12 @@ stages:
   - unit_tests
 
 
-# install and activate the virtual env, install AffApy
+# install and activate the virtual env, install affapy
 before_script:
   - pip install --upgrade pip setuptools
   - pip install virtualenv
-  - virtualenv -p `which python` .virtualenv/AffApy
-  - source .virtualenv/AffApy/bin/activate
+  - virtualenv -p `which python` .virtualenv/affapy
+  - source .virtualenv/affapy/bin/activate
   - pip install .
 
 
@@ -42,7 +42,7 @@ job:test-python3.7:
     # install coverage
     - pip install coverage
     # run the unit tests and report the coverage
-    - coverage run --source=AffApy,test -m unittest discover -v test
+    - coverage run --source=affapy,test -m unittest discover -v test
     - coverage html
     - coverage report
   coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
