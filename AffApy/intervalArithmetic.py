@@ -1,5 +1,23 @@
 """
 This module can create intervals and perform operations.
+
+In order to bound rounding errors when performing floating point arithmetic,
+we can use interval arithmetic to keep track of rounding errors.
+
+After a series of operations using basic operators like +, -, * and / we end
+of with an interval instead of an approximation of the result.
+
+The interval width represent the uncertainty of the result but we would know
+for sure that the correct result will be within this interval.
+
+An interval is presented by two number representing the lower and upper range
+of the interval:
+
+.. math ::
+    [a, b]
+
+where a <= b.
+
 """
 import AffApy.affineArithmetic
 from AffApy.affapyError import AffApyError

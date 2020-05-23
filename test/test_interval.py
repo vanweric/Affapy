@@ -191,7 +191,7 @@ class TestInterval(unittest.TestCase):
     def test_log_interval(self):
         """Test 'log' function from class Interval"""
         x = Interval(3, 4)
-        self.assertEqual(x.log(), Interval(log(3), log(4)))
+        self.assertTrue(Interval(log(3), log(4)) in x.log())
 
         x = Interval(mp.phi, pi)
         self.assertTrue(Interval(log(mp.phi), log(pi)) in x.log())
