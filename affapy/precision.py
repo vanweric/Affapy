@@ -8,6 +8,8 @@ precision decorator or use the class with the *with* statement.
 
 This class changes the precision context of *mpmath*.
 
+You can see **exPrecision1** and **exPrecision2** to see how it works.
+
 """
 
 from contextlib import ContextDecorator
@@ -27,7 +29,20 @@ class precision(ContextDecorator):
     * **dps**: decimal precision (decimals number)
     * **prec**: binary precision (bits number)
     * **old_dps**: decimal precision before entry to the context
-    * **old_prec**: precision before entry to the context
+    * **old_prec**: binary precision before entry to the context
+
+    **Example**:
+
+    .. code-block:: python
+
+        from affapy.precision import precision
+
+        with precision(dps=30):
+            x + y
+
+        @precision(dps=30)
+        def eval_fct(x, y):
+            return x + y
 
     """
 
@@ -87,7 +102,7 @@ class precision(ContextDecorator):
         Set decimal precision.
 
         Args:
-            dps (int)
+            dps (int): decimal precision
 
         """
         self._dps = dps
@@ -99,7 +114,7 @@ class precision(ContextDecorator):
         Set binary precision.
 
         Args:
-            prec (int)
+            prec (int): binary precision
 
         """
         self._prec = prec
@@ -111,7 +126,7 @@ class precision(ContextDecorator):
         Set old decimal precision.
 
         Args:
-            dps (int)
+            dps (int): decimal precision
 
         """
         self._old_dps = dps
@@ -122,7 +137,7 @@ class precision(ContextDecorator):
         Set old binary precision.
 
         Args:
-            prec (int)
+            prec (int): binary precision
 
         """
         self._old_prec = prec
@@ -134,7 +149,7 @@ class precision(ContextDecorator):
         Set decimal precision outside precision class.
 
         Args:
-            dps (int)
+            dps (int): decimal precision
 
         """
         mp.dps = dps
@@ -145,7 +160,7 @@ class precision(ContextDecorator):
         Set binary precision outside precision class.
 
         Args:
-            prec (int)
+            prec (int): binary precision
         """
         mp.prec = prec
 

@@ -44,6 +44,8 @@ With *affapy*, you can create affine forms and perform operations:
     x.cos()
     x.tan()
     x.cotan()
+
+    # Hyperbolic functions
     x.cosh()
     x.sinh()
     x.tanh()
@@ -90,9 +92,9 @@ You can set the precision of your calculations with the module **precision**:
 
     from affapy.precision import precision
 
-    with precision(bin_prec=30):
+    with precision(dps=30):
         x + y
 
-    @precision(bin_prec=30)
+    @precision(dps=30)
     def eval_fct(x, y):
         return x + y
