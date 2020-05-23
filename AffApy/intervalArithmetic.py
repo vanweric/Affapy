@@ -2,7 +2,7 @@
 This module can create intervals and perform operations.
 
 In order to bound rounding errors when performing floating point arithmetic,
-we can use interval arithmetic to keep track of rounding errors.
+we can use interval arithmetic (IA) to keep track of rounding errors.
 
 After a series of operations using basic operators like +, -, * and / we end
 of with an interval instead of an approximation of the result.

@@ -2,19 +2,20 @@
 This module can create affine forms and perform operations.
 
 Affine Arithmetic (AA) has been developed to overcome the error explosion
-problem of standard Interval Arithmetic.
+problem of standard Interval Arithmetic (IA).
 This method represents a quantity x as an affine form x hat, which is a first
 degree polynomial:
 
 .. math ::
     \\hat{x} = x_0 + \\sum_{i=1}^{n} x_i\\epsilon_i
 
-The xi coefficients are finite floating-point numbers.
-x0 is the central value of the affine form x hat and xi are it's partial
-deviation.
+The coefficients **xi** are finite floating-point numbers: they are called
+the *partial deviations*.
 
-The epsilon coefficients are real values called noise symbols. Their values are
-unknown between -1 and 1.
+The coefficient **x0** is the *central value* of the affine form x hat.
+
+The **epsilon** coefficients are symbolic real values called *noise symbols*.
+Their values are unknown between -1 and 1.
 
 This representation enables a better tracking of the different quantities
 inside the affine form.
@@ -33,27 +34,27 @@ where
 But we could also represent it like this :
 
 .. math ::
-    B = [0, 10] = 5 + 3\\epsilon_1 + 2\\epsilon_e2
+    B = [0, 10] = 5 + 3\\epsilon_1 + 2\\epsilon_2
 
 where
 
 .. math ::
     x_0 = 5, x_1 = 3, x_2 = 2
 
-Both form represent the same quantity but they are handling differently the
+Both forms represent the same quantity but they are handling differently the
 storage of internal quantities. They will behave differently during operation:
 
 .. math::
     A - A = 0
 
-no surprises here
+whereas
 
 .. math::
     A - B = 0 + 2\\epsilon_1 - 2\\epsilon_2 = [0, 4]
 
 The second example illustrate this behaviour. Even though A and B represent the
 same quantity, they manage their quantity differently.
-They are therefore not equal.
+Therefore, they are not equal.
 
 """
 import AffApy.intervalArithmetic
