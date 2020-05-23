@@ -1,4 +1,6 @@
-"""Basic usage of Affine module"""
+"""
+**Affine example**: Basic usage of Affine module
+"""
 from affapy.aa import Affine
 
 # Init

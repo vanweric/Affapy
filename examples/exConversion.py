@@ -1,4 +1,6 @@
-"""Conversion between IA and AA"""
+"""
+**Conversion example**: Conversion between IA and AA
+"""
 from affapy.ia import Interval
 from affapy.aa import Affine
 

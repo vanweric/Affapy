@@ -1,4 +1,6 @@
-"""Use of precision module: decorators"""
+"""
+**Precision example 2**: Use of precision module with decorators
+"""
 from affapy.precision import precision
 from mpmath import mp
 

@@ -1,4 +1,6 @@
-"""Use of precision module with *affapy*"""
+"""
+**Precision example 1**: Use of precision module with *affapy*
+"""
 from affapy.precision import precision
 from affapy.ia import Interval
 from affapy.aa import Affine

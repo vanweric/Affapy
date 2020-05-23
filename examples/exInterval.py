@@ -1,4 +1,6 @@
-"""Basic usage of Interval module"""
+"""
+**Interval example**: Basic usage of Interval module
+"""
 from affapy.ia import Interval
 
 # Init
