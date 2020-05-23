@@ -503,7 +503,7 @@ class Affine:
         xi[Affine._getNewXi()] = delta
         return Affine(x0=x0, xi=xi)
 
-    def inv(self):  # TODO doc
+    def inv(self):
         """
         **Inverse**
 
@@ -511,7 +511,27 @@ class Affine:
         It uses the affine constructor with:
 
         .. math ::
-            \\alpha = -\\frac{1}{b^2}, \\zeta = mid(i_x), \\delta = radius(i_x)
+            \\alpha = -\\frac{1}{b^2}
+
+        .. math ::
+            \\zeta = abs(mid(i)),
+
+        .. math ::
+            \\delta = radius(i)
+
+        with:
+
+        .. math ::
+            i = [\\frac{1}{a} - \\alpha a, \\frac{2}{b}]
+
+        .. math ::
+            a = min(|inf|, |sup|)
+
+        .. math ::
+            b = max(|inf|, |sup|)
+
+        where [inf, sup] is the interval associated to the affine
+        form in argument.
 
         Args:
             self: operand
@@ -544,7 +564,7 @@ class Affine:
         **Operator /**
 
         Divide two affine forms or an integer or float or mpf
-        and an affine form. We use the identity:
+        and an affine form. It uses the identity:
 
         .. math ::
             \\frac{x}{y} = x . \\frac{1}{y}
@@ -601,7 +621,7 @@ class Affine:
     def sqr(self):
         """
         Return the square of an affine form.
-        We use the identity:
+        It uses the identity:
 
         .. math ::
             x^2 = x.x
@@ -755,7 +775,17 @@ class Affine:
         **Function exp**
 
         Return the exponential of an affine form.
-        It uses the affine constructor.
+        We consider the interval [a, b] associated to the affine form.
+        It uses the affine constructor with:
+
+        .. math ::
+            \\alpha = \\frac{exp(b) - exp(a)}{b - a}
+
+        .. math ::
+            \\zeta = \\alpha.(1 - log(\\alpha))
+
+        .. math ::
+            \\delta = \\frac{\\alpha.(log(\\alpha) - 1 - a)) + exp(a)}{2}
 
         Args:
             self (Affine): operand
@@ -782,7 +812,25 @@ class Affine:
         **Function log**
 
         Return the logarithm of an affine form.
-        It uses the affine constructor.
+        We consider the interval [a, b] associated to the affine form.
+        It uses the affine constructor with:
+
+        .. math ::
+            \\alpha = \\frac{log(b) - log(a)}{b - a}
+
+        .. math ::
+            \\zeta = \\frac{-\\alpha x_s}{\\frac{log(x_s) + y_s}{2}}
+
+        .. math ::
+            \\delta = \\frac{log(x_s) - y_s}{2}
+
+        with:
+
+        .. math ::
+            x_s = \\frac{1}{\\alpha}
+
+        .. math ::
+            y_s = \\alpha (x_s - a) + log(a)
 
         Args:
             self (Affine): operand
@@ -818,11 +866,12 @@ class Affine:
 
         Return the sinus of an affine form.
         It uses the least squares and the affine constructor.
+        The argument npts is the number of points for the linear
+        regression approximation.
 
         Args:
             self (Affine): operand
-            npts (int): number of points for the linear regression
-            approximation (default: 8)
+            npts (int): number of points (default: 8)
 
         Returns:
             Affine: sin(self)
