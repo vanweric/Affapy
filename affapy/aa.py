@@ -7,7 +7,7 @@ This method represents a quantity x as an affine form x hat, which is a first
 degree polynomial:
 
 .. math ::
-    \\hat{x} = x_0 + \\sum_{i=1}^{n} x_i\\epsilon_i
+    \\hat{x} = x_0 + \\sum_{i=1}^{m} x_i\\epsilon_i
 
 The coefficients **xi** are finite floating-point numbers: they are called
 the *partial deviations*.

@@ -1,5 +1,5 @@
 """
-This module manage the errors of the affapy library.
+This module manage the errors of the *affapy* library.
 """
 
 

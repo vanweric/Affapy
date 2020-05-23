@@ -746,7 +746,7 @@ class Interval:
                 return Interval(cos(inf, rounding='d'), cos(sup, rounding='u'))
             if 2*mp.pi < sup <= 3*mp.pi:
                 return Interval(min(cos(inf, rounding='d'),
-                                    cos(sup, rounding='u')), 1)
+                                    cos(sup, rounding='d')), 1)
             return Interval(-1, 1)
 
     def sin(self):
