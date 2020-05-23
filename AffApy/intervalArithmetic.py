@@ -684,6 +684,42 @@ class Interval:
         **Function cos**
 
         Return the cosinus of an interval.
+        It considers the 2pi periodic interval [a, b] of the interval x.
+        Then:
+
+        1. If a <= pi:
+
+        * if b <= pi:
+
+        .. math ::
+            cos(x) = [cos(b), cos(a)]
+
+        * if pi < b <= 2pi:
+
+        .. math ::
+            cos(x) = [-1, max(cos(a), cos(b))]
+
+        * else:
+
+        .. math ::
+            cos(x) = [-1, 1]
+
+        2. If pi < a <= 2pi:
+
+        * if b <= 2pi:
+
+        .. math ::
+            cos(x) = [cos(a), cos(b)]
+
+        * if 2pi < b <= 3pi:
+
+        .. math ::
+            cos(x) = [min(cos(a), cos(b)), 1]
+
+        * else:
+
+        .. math ::
+            cos(x) = [-1, 1]
 
         Args:
             self (Interval): operand
@@ -844,6 +880,12 @@ class Interval:
         Raises:
             AffApyError: other must be Interval
 
+        Examples:
+            >>> Interval(1, 2) == Interval(1, 2)
+            True
+            >>> Interval(1, 2) == Interval(1, 3)
+            False
+
         """
         if isinstance(other, self.__class__):
             return self.inf == other.inf and self.sup == other.sup
@@ -864,6 +906,12 @@ class Interval:
 
         Raises:
             AffApyError: other must be Interval
+
+        Examples:
+            >>> Interval(1, 2) != Interval(1, 2)
+            False
+            >>> Interval(1, 2) != Interval(1, 3)
+            True
 
         """
         if isinstance(other, self.__class__):
@@ -886,6 +934,12 @@ class Interval:
 
         Raises:
             AffApyError: other must be Interval, int, float, mpf
+
+        Examples:
+            >>> Interval(1, 2) >= Interval(0, 1)
+            True
+            >>> Interval(1, 2) >= Interval(0, 2)
+            False
 
         """
         if isinstance(other, self.__class__):
@@ -911,6 +965,10 @@ class Interval:
         Raises:
             AffApyError: other must be Interval, int, float, mpf
 
+        Examples:
+            >>> Interval(1, 2) > Interval(0, 1)
+            False
+
         """
         if isinstance(other, self.__class__):
             return self.inf > other.sup
@@ -935,6 +993,12 @@ class Interval:
         Raises:
             AffApyError: other must be Interval, int, float, mpf
 
+        Examples:
+            >>> Interval(1, 2) <= Interval(2, 3)
+            True
+            >>> Interval(1, 2) <= Interval(1, 3)
+            False
+
         """
         if isinstance(other, self.__class__):
             return self.sup <= other.inf
@@ -958,6 +1022,10 @@ class Interval:
 
         Raises:
             AffApyError: other must be Interval, int, float, mpf
+
+        Examples:
+            >>> Interval(1, 2) <= Interval(2, 3)
+            False
 
         """
         if isinstance(other, self.__class__):
@@ -986,6 +1054,12 @@ class Interval:
 
         Raises:
             AffApyError: if other is not Interval, int, float, Affine, mpf
+
+        Examples:
+            >>> Interval(1, 2) in Interval(1, 3)
+            True
+            >>> Interval(1, 4) in Interval(1, 3)
+            False
 
         """
         if isinstance(other, self.__class__):
@@ -1076,5 +1150,6 @@ class Interval:
 
         Returns:
             Affine: affine form associated to the interval
+
         """
         return AffApy.affineArithmetic.Affine(interval=[self.inf, self.sup])
