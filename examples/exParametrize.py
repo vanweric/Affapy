@@ -3,7 +3,7 @@ from affapy.parametrize import parametrize
 from mpmath import mp
 
 
-@parametrize(precision={"dec_precision": 10, "bin_precision": 20},
+@parametrize(precision={"dps": 10, "prec": 20},
              test_1=1, test_2=2)
 def test_parametrize():
     print("Decimal precision during function:", mp.dps)

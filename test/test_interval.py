@@ -10,7 +10,7 @@ from math import ceil, floor
 class TestInterval(unittest.TestCase):
     """Test case used to test functions from class Interval"""
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_add_interval(self):
         """Test 'add' function from class Interval"""
         x = Interval(1, 2)
@@ -28,7 +28,7 @@ class TestInterval(unittest.TestCase):
         self.assertTrue(Interval(
             mp.phi + mp.euler - pi, pi + mp.e + pi) in x + y + z)
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_sub_interval(self):
         """Test 'sub' function from class Interval"""
         x = Interval(1, 2)
@@ -48,7 +48,7 @@ class TestInterval(unittest.TestCase):
             mp.phi - mp.euler + pi, pi - mp.e - pi) in x - y - z)
         self.assertTrue(Interval(0, 0) in x - x)
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_mul_interval(self):
         """Test 'mul' function from class Interval"""
         x = Interval(1, 2)
@@ -70,7 +70,7 @@ class TestInterval(unittest.TestCase):
             max(e * (a + c), e * (b + d), f * (a + c), f * (b + d)))
             in z * (x + y))
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_truediv_interval(self):
         """Test 'truediv' function from class Interval"""
         x = Interval(1, 2)
@@ -89,7 +89,7 @@ class TestInterval(unittest.TestCase):
         self.assertTrue(Interval(min(-a/d, -a/c, -b/d, -b/c),
                                  max(-a/d, -a/c, -b/d, -b/c)) in x / z)
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_pow_interval(self):
         """Test 'pow' function from class Interval"""
         x = Interval(-3, -1)
@@ -187,7 +187,7 @@ class TestInterval(unittest.TestCase):
         self.assertEqual(x.mid(), -1)
         self.assertEqual(y.mid(), 3.5)
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_log_interval(self):
         """Test 'log' function from class Interval"""
         x = Interval(3, 4)
@@ -196,7 +196,7 @@ class TestInterval(unittest.TestCase):
         x = Interval(mp.phi, pi)
         self.assertTrue(Interval(log(mp.phi), log(pi)) in x.log())
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_exp_interval(self):
         """Test 'exp' function from class Interval"""
         x = Interval(-3, -1)
@@ -216,7 +216,7 @@ class TestInterval(unittest.TestCase):
         self.assertTrue(Interval(exp(-pi), exp(mp.euler)) in y.exp())
         self.assertTrue(Interval(exp(mp.euler), exp(pi)) in z.exp())
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_sqrt_interval(self):
         """Test 'sqrt' function from class Interval"""
         x = Interval(0, 3)
@@ -229,7 +229,7 @@ class TestInterval(unittest.TestCase):
         self.assertTrue(Interval(0, sqrt(pi)) in x.sqrt())
         self.assertTrue(Interval(sqrt(mp.phi), sqrt(3 * pi)) in y.sqrt())
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_sin_interval(self):    # TODO Corriger arrondis
         """test 'sin' function from class Interval"""
         x = Interval(0, pi / 2)
@@ -253,7 +253,7 @@ class TestInterval(unittest.TestCase):
         self.assertTrue(Interval(-1, sin(pi / 3)) in y1.sin())
         self.assertTrue(Interval(-1, 1) in z1.sin())
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_cos_interval(self):
         """Test 'cos' function from class Interval"""
         x = Interval(pi / 2, pi)
@@ -262,6 +262,8 @@ class TestInterval(unittest.TestCase):
         x1 = Interval(3 * pi / 2, 2 * pi)
         y1 = Interval(4 * pi / 3, 2 * pi + pi / 3)
         z1 = Interval(3 * pi / 2, 4 * pi)
+        print("cos calculé", x.cos())
+        print("exact", Interval(cos(pi), cos(pi / 2)))
         self.assertTrue(Interval(cos(pi), cos(pi / 2)) in x.cos())
         self.assertTrue(Interval(-1, cos(pi / 3)) in y.cos())
         self.assertTrue(Interval(-1, 1) in z.cos())

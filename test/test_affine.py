@@ -10,7 +10,7 @@ from mpmath import mp
 class TestAffine(unittest.TestCase):
     """Test case used to test functions from class Affine"""
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_add_affine(self):
         """Test 'add' function from class Affine"""
         x = Affine(x0=0, xi={1: 10})
@@ -26,7 +26,7 @@ class TestAffine(unittest.TestCase):
         self.assertTrue(Affine(x0=-2 * mp.pi, xi={1: 2 * mp.e}) in x + x)
         self.assertTrue(Affine(x0=-mp.pi + 4, xi={1: mp.e}) in x + 4)
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_sub_affine(self):
         """Test 'sub' function from class Affine"""
         x = Affine(x0=0, xi={1: 10})
@@ -43,7 +43,7 @@ class TestAffine(unittest.TestCase):
         self.assertTrue(Affine(x0=0, xi={}) in x - x)
         self.assertTrue(Affine(x0=mp.pi - 4, xi={1: mp.e}) in x - 4)
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_mul_affine(self):
         """Test 'mul' function from class Affine"""
         x = Affine(xi={1: 10}, x0=0)
@@ -70,7 +70,7 @@ class TestAffine(unittest.TestCase):
                        2: 2 * mp.pi * mp.e - mp.e,
                        7: mp.e * mp.phi + mp.e ** 2}) in (x + x) * y - y)
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_contains_affine(self):
         """Test 'contains' function from class Affine"""
         x = Affine(xi={1: 10}, x0=0)
@@ -82,7 +82,7 @@ class TestAffine(unittest.TestCase):
         self.assertFalse(y in z)
         # self.assertFalse(x in 0) TODO
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_inv_affine(self):
         """Test 'inv' function from class Affine"""
         x = Affine(xi={1: 6}, x0=10)
@@ -92,7 +92,7 @@ class TestAffine(unittest.TestCase):
         self.assertTrue(Interval(1 / 16, 1 / 4) in x.inv())
         self.assertTrue(Interval(-1 / 28, -1 / 12) in y.inv())
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_truediv_affine(self):
         """Test 'truediv' function from class Affine"""
         x = Affine(xi={1: 6}, x0=10)
@@ -131,7 +131,7 @@ class TestAffine(unittest.TestCase):
         self.assertTrue(x != z)
         self.assertTrue(x != X)
 
-    @precision(dec_precision=50)
+    @precision(dps=50)
     def test_sqrt_affine(self):
         """Test 'sqrt' function from class Affine"""
         x = Affine(x0=5, xi={1: 5})
