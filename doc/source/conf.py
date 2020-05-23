@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('../../examples'))
 
 project = 'affapy'
 copyright = '2020, Quentin DESCHAMPS, Florian GUILY, Tristan MICHEL, Ruxue ZENG'
-author = 'Quentin DESCHAMPS, Florian GUILY, Tristan MICHEL, Ruxue ZENG'
+author = 'Q. DESCHAMPS, F. GUILY, T. MICHEL, R. ZENG'
 
 # The full version, including alpha/beta/rc tags
 release = '0.1'
