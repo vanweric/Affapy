@@ -23,7 +23,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://gitlab.lip6.fr/hilaire/affapy",
-    packages=["AffApy"],
+    packages=["affapy"],
     install_requires=['Sphinx', 'mpmath', 'sphinx-rtd-theme'],
     classifiers=[
         "Programming Language :: Python :: 3",

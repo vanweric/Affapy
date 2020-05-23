@@ -3,12 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to AffApy's documentation!
+Welcome to affapy's documentation!
 ==================================
 
 Presentation
 ============
-*AffApy* is a Python library for multiprecision Affine Arithmetic.
+*Affapy* is a Python library for multiprecision Affine Arithmetic.
 
 These documentation is a listing of all methods of the two classes:
 
