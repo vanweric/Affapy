@@ -22,6 +22,7 @@ There are explanations about the implementation and examples.
    :caption: Contents:
 
    installation
+   basic
    modules
    examples
 
