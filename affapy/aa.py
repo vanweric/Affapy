@@ -144,8 +144,8 @@ class Affine:
             self._x0 = mp.mpf(x0)
             self._xi = {i: mp.mpf(xi[i], rounding='c') for i in xi}
             self._interval = affapy.ia.Interval(
-                fadd(self._x0, self.rad(), rounding='d'),
-                fsub(self._x0, self.rad(), rounding='u'))
+                fadd(self._x0, self.rad()),
+                fsub(self._x0, self.rad()))
         else:
             self._x0 = mp.mpf(0)
             self._xi = {}
@@ -547,10 +547,7 @@ class Affine:
             inf, sup = self.interval.inf, self.interval.sup
             a, b = min(fabs(inf), fabs(sup)), max(fabs(inf), fabs(sup))
             alpha = -1 / b**2
-            i = affapy.ia.Interval(
-                fsub(fdiv(1, a, rounding='d'), fmul(alpha, a, rounding='d'),
-                     rounding='d'),
-                fdiv(2, b, rounding='u'))
+            i = affapy.ia.Interval(1/a - alpha*a, 2/b)
             dzeta = i.mid()
             if inf < 0:
                 dzeta = -dzeta

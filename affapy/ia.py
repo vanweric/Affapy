@@ -736,17 +736,17 @@ class Interval:
         inf, sup = interMinTrigo.inf, interMinTrigo.sup
         if inf <= mp.pi:
             if sup <= mp.pi:
-                return Interval(cos(sup, rounding='d'), cos(inf, rounding='u'))
+                return Interval(cos(sup), cos(inf))
             if mp.pi < sup <= 2*mp.pi:
-                return Interval(-1, max(cos(inf, rounding='u'),
-                                        cos(sup, rounding='u')))
+                return Interval(-1, max(cos(inf),
+                                        cos(sup)))
             return Interval(-1, 1)
         if mp.pi < inf <= 2*mp.pi:
             if sup <= 2*mp.pi:
-                return Interval(cos(inf, rounding='d'), cos(sup, rounding='u'))
+                return Interval(cos(inf), cos(sup))
             if 2*mp.pi < sup <= 3*mp.pi:
-                return Interval(min(cos(inf, rounding='d'),
-                                    cos(sup, rounding='d')), 1)
+                return Interval(min(cos(inf),
+                                    cos(sup)), 1)
             return Interval(-1, 1)
 
     def sin(self):
