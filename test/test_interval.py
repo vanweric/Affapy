@@ -10,6 +10,29 @@ from math import ceil, floor
 class TestInterval(unittest.TestCase):
     """Test case used to test functions from class Interval"""
 
+    def test_mid_interval(self):
+        """Test 'mid' function from class Interval"""
+        x = Interval(-3, 1)
+        y = Interval(3, 4)
+        self.assertEqual(x.mid(), -1)
+        self.assertEqual(y.mid(), 3.5)
+
+    def test_radius_interval(self):
+        """Test 'radius' function from class Interval"""
+        x = Interval(-3, 1)
+        y = Interval(3, 4)
+        self.assertEqual(x.radius(), 2)
+        self.assertEqual(y.radius(), 0.5)
+
+    def test_neg_interval(self):
+        """Test 'neg' function from class Interval"""
+        x = Interval(-3, -1)
+        y = Interval(3, 4)
+        z = Interval(-1, 1)
+        self.assertEqual(-x, Interval(1, 3))
+        self.assertEqual(-y, Interval(-4, -3))
+        self.assertEqual(-z, Interval(-1, 1))
+
     @precision(dps=50)
     def test_add_interval(self):
         """Test 'add' function from class Interval"""
@@ -102,14 +125,15 @@ class TestInterval(unittest.TestCase):
         self.assertTrue(x ** 2 in Interval(1, 9))
         self.assertTrue(Interval(13, 37) in x ** 2 + y ** 2 - x * y)
 
-    def test_neg_interval(self):
-        """Test 'neg' function from class Interval"""
-        x = Interval(-3, -1)
-        y = Interval(3, 4)
-        z = Interval(-1, 1)
-        self.assertEqual(-x, Interval(1, 3))
-        self.assertEqual(-y, Interval(-4, -3))
-        self.assertEqual(-z, Interval(-1, 1))
+    def test_floor_interval(self):
+        """Test 'floor' function from class Interval"""
+        self.assertEqual(floor(Interval(-pi, pi)), Interval(-4, 3))
+        self.assertEqual(floor(Interval(1 / 6, 1 / 3)), Interval(0, 0))
+
+    def test_ceil_interval(self):
+        """Test 'ceil' function from class Interval"""
+        self.assertEqual(ceil(Interval(-pi, pi)), Interval(-3, 4))
+        self.assertEqual(ceil(Interval(1 / 6, 4 / 3)), Interval(1, 2))
 
     def test_abs_interval(self):
         """Test 'abs' function from class Interval"""
@@ -120,6 +144,90 @@ class TestInterval(unittest.TestCase):
         self.assertEqual(abs(y), Interval(3, 4))
         self.assertEqual(abs(z), Interval(0, 1))
 
+    @precision(dps=50)
+    def test_sqrt_interval(self):
+        """Test 'sqrt' function from class Interval"""
+        x = Interval(0, 3)
+        y = Interval(1, 10)
+        self.assertEqual(x.sqrt(), Interval(0, sqrt(3)))
+        self.assertTrue(Interval(sqrt(1), sqrt(10)) in y.sqrt())
+
+        x = Interval(0, pi)
+        y = Interval(mp.phi, 3 * pi)
+        self.assertTrue(Interval(0, sqrt(pi)) in x.sqrt())
+        self.assertTrue(Interval(sqrt(mp.phi), sqrt(3 * pi)) in y.sqrt())
+
+    @precision(dps=50)
+    def test_exp_interval(self):
+        """Test 'exp' function from class Interval"""
+        x = Interval(-3, -1)
+        y = Interval(-3, 1)
+        z = Interval(1, 5)
+        self.assertEqual(x.exp(), Interval(exp(-3, rounding='d'),
+                                           exp(-1, rounding='u')))
+        self.assertEqual(y.exp(), Interval(exp(-3, rounding='d'),
+                                           exp(1, rounding='u')))
+        self.assertEqual(z.exp(), Interval(exp(1, rounding='d'),
+                                           exp(5, rounding='u')))
+
+        x = Interval(-pi, -mp.euler)
+        y = Interval(-pi, mp.euler)
+        z = Interval(mp.euler, pi)
+        self.assertTrue(Interval(exp(-pi), exp(-mp.euler)) in x.exp())
+        self.assertTrue(Interval(exp(-pi), exp(mp.euler)) in y.exp())
+        self.assertTrue(Interval(exp(mp.euler), exp(pi)) in z.exp())
+
+    @precision(dps=50)
+    def test_log_interval(self):
+        """Test 'log' function from class Interval"""
+        x = Interval(3, 4)
+        self.assertTrue(Interval(log(3), log(4)) in x.log())
+
+        x = Interval(mp.phi, pi)
+        self.assertTrue(Interval(log(mp.phi), log(pi)) in x.log())
+
+    def test_mintrigo_interval(self):
+        """Test 'minTrigo' function from class Interval"""
+        self.assertTrue(Interval(pi, 2 * pi)
+                        in Interval(5 * pi, 6 * pi).minTrigo())
+        self.assertTrue(Interval(-pi, 2 * pi).minTrigo() in Interval(-pi, pi))
+        self.assertTrue(Interval(0, 2 * pi)
+                        in Interval(0, 3 * pi).minTrigo())
+        self.assertTrue(Interval(0, 2 * pi)
+                        in Interval(-2 * pi, 2 * pi).minTrigo())
+
+    @precision(dps=50)
+    def test_cos_interval(self):
+        """Test 'cos' function from class Interval"""
+        x = Interval(pi / 2, pi)
+        y = Interval(pi / 3, 3 * pi / 2)
+        z = Interval(pi / 4, 3 * pi)
+        x1 = Interval(3 * pi / 2, 2 * pi)
+        y1 = Interval(4 * pi / 3, 2 * pi + pi / 3)
+        z1 = Interval(3 * pi / 2, 4 * pi)
+        self.assertTrue(Interval(cos(pi), cos(pi / 2)) in x.cos())
+        self.assertTrue(Interval(-1, cos(pi / 3)) in y.cos())
+        self.assertTrue(Interval(-1, 1) in z.cos())
+        self.assertTrue(Interval(cos(3 * pi / 2), cos(2 * pi)) in x1.cos())
+        self.assertTrue(Interval(cos(4 * pi / 3), 1) in y1.cos())
+        self.assertTrue(Interval(-1, 1) in z1.cos())
+
+    @precision(dps=50)
+    def test_sin_interval(self):
+        """Test 'sin' function from class Interval"""
+        x = Interval(0, pi / 2)
+        x_result = Interval(sin(0), sin(pi / 2))
+        y = Interval(pi / 3, pi)
+        y_result = (-y + pi / 2).cos()
+        z = Interval(pi, pi)
+        z_result = (-z + pi / 2).cos()
+        t = Interval(3 * pi / 2, 2 * pi + pi / 2)
+        t_result = Interval(-1, 1)
+        self.assertTrue(x_result in x.sin())
+        self.assertTrue(y_result in y.sin())
+        self.assertTrue(z_result in z.sin())
+        self.assertTrue(t_result in t.sin())
+
     def test_eq_interval(self):
         """Test 'eq' function from class Interval"""
         x = Interval(-3, -1)
@@ -127,8 +235,8 @@ class TestInterval(unittest.TestCase):
         self.assertTrue(x == Interval(-3, -1))
         self.assertTrue(not (x == y))
 
-    def test_neq_interval(self):
-        """Test 'neq' function from class Interval"""
+    def test_ne_interval(self):
+        """Test 'ne' function from class Interval"""
         x = Interval(-3, -1)
         y = Interval(3, 4)
         self.assertTrue(not (x != Interval(-3, -1)))
@@ -173,96 +281,8 @@ class TestInterval(unittest.TestCase):
         self.assertTrue(not (x < -4))
         self.assertTrue(not (x < y))
 
-    def test_radius_interval(self):
-        """Test 'radius' function from class Interval"""
-        x = Interval(-3, 1)
-        y = Interval(3, 4)
-        self.assertEqual(x.radius(), 2)
-        self.assertEqual(y.radius(), 0.5)
-
-    def test_mid_interval(self):
-        """Test 'mid' function from class Interval"""
-        x = Interval(-3, 1)
-        y = Interval(3, 4)
-        self.assertEqual(x.mid(), -1)
-        self.assertEqual(y.mid(), 3.5)
-
-    @precision(dps=50)
-    def test_log_interval(self):
-        """Test 'log' function from class Interval"""
-        x = Interval(3, 4)
-        self.assertTrue(Interval(log(3), log(4)) in x.log())
-
-        x = Interval(mp.phi, pi)
-        self.assertTrue(Interval(log(mp.phi), log(pi)) in x.log())
-
-    @precision(dps=50)
-    def test_exp_interval(self):
-        """Test 'exp' function from class Interval"""
-        x = Interval(-3, -1)
-        y = Interval(-3, 1)
-        z = Interval(1, 5)
-        self.assertEqual(x.exp(), Interval(exp(-3, rounding='d'),
-                                           exp(-1, rounding='u')))
-        self.assertEqual(y.exp(), Interval(exp(-3, rounding='d'),
-                                           exp(1, rounding='u')))
-        self.assertEqual(z.exp(), Interval(exp(1, rounding='d'),
-                                           exp(5, rounding='u')))
-
-        x = Interval(-pi, -mp.euler)
-        y = Interval(-pi, mp.euler)
-        z = Interval(mp.euler, pi)
-        self.assertTrue(Interval(exp(-pi), exp(-mp.euler)) in x.exp())
-        self.assertTrue(Interval(exp(-pi), exp(mp.euler)) in y.exp())
-        self.assertTrue(Interval(exp(mp.euler), exp(pi)) in z.exp())
-
-    @precision(dps=50)
-    def test_sqrt_interval(self):
-        """Test 'sqrt' function from class Interval"""
-        x = Interval(0, 3)
-        y = Interval(1, 10)
-        self.assertEqual(x.sqrt(), Interval(0, sqrt(3)))
-        self.assertTrue(Interval(sqrt(1), sqrt(10)) in y.sqrt())
-
-        x = Interval(0, pi)
-        y = Interval(mp.phi, 3 * pi)
-        self.assertTrue(Interval(0, sqrt(pi)) in x.sqrt())
-        self.assertTrue(Interval(sqrt(mp.phi), sqrt(3 * pi)) in y.sqrt())
-
-    @precision(dps=50)
-    def test_sin_interval(self):
-        """test 'sin' function from class Interval"""
-        x = Interval(0, pi / 2)
-        x_result = Interval(sin(0), sin(pi / 2))
-        y = Interval(pi / 3, pi)
-        y_result = (-y + pi / 2).cos()
-        z = Interval(pi, pi)
-        z_result = (-z + pi / 2).cos()
-        t = Interval(3 * pi / 2, 2 * pi + pi / 2)
-        t_result = Interval(-1, 1)
-        self.assertTrue(x_result in x.sin())
-        self.assertTrue(y_result in y.sin())
-        self.assertTrue(z_result in z.sin())
-        self.assertTrue(t_result in t.sin())
-
-    @precision(dps=50)
-    def test_cos_interval(self):
-        """Test 'cos' function from class Interval"""
-        x = Interval(pi / 2, pi)
-        y = Interval(pi / 3, 3 * pi / 2)
-        z = Interval(pi / 4, 3 * pi)
-        x1 = Interval(3 * pi / 2, 2 * pi)
-        y1 = Interval(4 * pi / 3, 2 * pi + pi / 3)
-        z1 = Interval(3 * pi / 2, 4 * pi)
-        self.assertTrue(Interval(cos(pi), cos(pi / 2)) in x.cos())
-        self.assertTrue(Interval(-1, cos(pi / 3)) in y.cos())
-        self.assertTrue(Interval(-1, 1) in z.cos())
-        self.assertTrue(Interval(cos(3 * pi / 2), cos(2 * pi)) in x1.cos())
-        self.assertTrue(Interval(cos(4 * pi / 3), 1) in y1.cos())
-        self.assertTrue(Interval(-1, 1) in z1.cos())
-
     def test_contains_interval(self):
-        """Test 'sin' function from class Interval"""
+        """Test 'contains' function from class Interval"""
         x = Interval(1, 2)
         y = Interval(3, 4)
         z = Interval(-1, 1)
@@ -274,26 +294,6 @@ class TestInterval(unittest.TestCase):
         self.assertTrue(0 in z)
         self.assertFalse(0 in y)
         self.assertTrue(x2 * (y2 + z2) in x2 * y2 + x2 * z2)
-
-    def test_floor_interval(self):
-        """Test 'floor' function from class Interval"""
-        self.assertEqual(floor(Interval(-pi, pi)), Interval(-4, 3))
-        self.assertEqual(floor(Interval(1 / 6, 1 / 3)), Interval(0, 0))
-
-    def test_ceil_interval(self):
-        """Test 'ceil' function from class Interval"""
-        self.assertEqual(ceil(Interval(-pi, pi)), Interval(-3, 4))
-        self.assertEqual(ceil(Interval(1 / 6, 4 / 3)), Interval(1, 2))
-
-    def test_mintrigo_interval(self):
-        """Test 'minTrigo' function from class Interval"""
-        self.assertTrue(Interval(pi, 2 * pi)
-                        in Interval(5 * pi, 6 * pi).minTrigo())
-        self.assertTrue(Interval(-pi, 2 * pi).minTrigo() in Interval(-pi, pi))
-        self.assertTrue(Interval(0, 2 * pi)
-                        in Interval(0, 3 * pi).minTrigo())
-        self.assertTrue(Interval(0, 2 * pi)
-                        in Interval(-2 * pi, 2 * pi).minTrigo())
 
 
 if __name__ == "__main__":
