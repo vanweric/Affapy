@@ -86,21 +86,18 @@ class TestAffine(unittest.TestCase):
     def test_inv_affine(self):
         """Test 'inv' function from class Affine"""
         x = Affine(xi={1: 6}, x0=10)
-        y = Affine(xi={1: -2, 2: 6}, x0=-20)
-        print(Interval(1 / 16, 1 / 4), '\n')
-        print(x.inv().interval, '\n')
-        self.assertTrue(Interval(1 / 16, 1 / 4) in x.inv())
-        self.assertTrue(Interval(-1 / 28, -1 / 12) in y.inv())
+        x_result = Interval(1 / 16, 1 / 4)
+        y = Affine([1, 2])
+        y_result = Affine(x0=0.75, xi={1: -0.125, 2: 0.125})
+        self.assertTrue(x_result in x.inv())
+        self.assertTrue(y_result in y.inv())
 
     @precision(dps=50)
     def test_truediv_affine(self):
         """Test 'truediv' function from class Affine"""
         x = Affine(xi={1: 6}, x0=10)
         y = Affine(xi={1: -2, 2: 6}, x0=-20)
-        X = Interval(4, 16)
-        Y = Interval(-28, -12)
         self.assertEqual((x / y).interval, (x * y.inv()).interval)
-        self.assertTrue(X / Y in x / y)
 
     def test_neq_affine(self):
         """Test 'neq' function from class Affine"""
