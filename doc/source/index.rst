@@ -9,6 +9,7 @@ Welcome to affapy's documentation!
 Presentation
 ============
 *Affapy* is a Python library for multiprecision Affine Arithmetic.
+*Affapy* can be used to perform operations with affine forms and intervals.
 
 These documentation is a listing of all methods of the two classes:
 
