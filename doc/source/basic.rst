@@ -86,7 +86,7 @@ Nevertheless, there are other comparison operators for intervals:
 Precicion context
 -----------------
 
-You can set the precision of your calculations with the module **precision**:
+You can set the precision of your calculations using the **precision** module:
 
 .. code-block:: python
 

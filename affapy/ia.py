@@ -315,13 +315,14 @@ class Interval:
         Multiply two intervals:
 
         .. math ::
-            [a, b].[c, d] =
-            [min\\{a.c, a.d, b.c, b.d\\}, max\\{a.c, a.d, b.c, b.d\\}]
+            [a, b] \\times [c, d] =
+            [min\\{a \\times c, a \\times d, b \\times c, b \\times d\\},
+            max\\{a \\times c, a \\times d, b \\times c, b \\times d\\}]
 
         Or multiply an interval and an integer or float or mpf:
 
         .. math ::
-            [a, b].k = [a.k, b.k]
+            [a, b] \\times k = [a \\times k, b \\times k]
 
         Args:
             self (Interval): first operand
@@ -379,12 +380,12 @@ class Interval:
         Divide two intervals:
 
         .. math ::
-            [a, b] / [c, d] = [a, b].[1/d, 1/c]
+            [a, b] / [c, d] = [a, b] \\times [1/d, 1/c]
 
         or an interval and an integer or float or mpf:
 
         .. math ::
-            [a, b] / k = \\frac{1}{k}.[a, b]
+            [a, b] / k = \\frac{1}{k} \\times [a, b]
 
         It is possible only if other does not contains 0.
 
@@ -429,7 +430,7 @@ class Interval:
         With an interval, it uses the identity:
 
         .. math ::
-            x^n = exp(n.log(x))
+            x^n = exp(n \\times log(x))
 
         Args:
             self (Interval): first operand
@@ -1137,13 +1138,13 @@ class Interval:
         Convert an interval [a, b] to an affine form:
 
         .. math ::
-            \\hat{x} = x_0 + x_1\\epsilon_1
+            \\hat{x} = x_0 + x_k\\epsilon_k
 
         with:
 
         .. math ::
             x_0 = \\frac{a + b}{2} ,
-            x_1 = \\frac{a - b}{2}
+            x_k = \\frac{a - b}{2}
 
         Args:
             self (Interval): operand

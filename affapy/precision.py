@@ -2,9 +2,9 @@
 This module manage the context precision of calculations
 using *affapy*.
 
-Indeed, you can choice the precision with the **precision** class.
-You can set different precision contexts between functions with the
-precision decorator or use the class with the *with* statement.
+Indeed, you can choice the precision using the **precision** class.
+You can set different precision contexts between functions using the
+precision decorator or use the class using the *with* statement.
 
 This class changes the precision context of *mpmath*.
 
@@ -22,7 +22,7 @@ class precision(ContextDecorator):
     Manage precision for *affapy* library. You can use it:
 
     * As decorator of a function
-    * With the *with* statement
+    * Using the *with* statement
 
     It contains four fields:
 

@@ -7,7 +7,7 @@ This method represents a quantity x as an affine form x hat, which is a first
 degree polynomial:
 
 .. math ::
-    \\hat{x} = x_0 + \\sum_{i=1}^{m} x_i\\epsilon_i
+    \\hat{x} = x_0 + \\sum_{i=1}^{n} x_i\\epsilon_i
 
 The coefficients **xi** are finite floating-point numbers: they are called
 the *partial deviations*.
@@ -52,8 +52,8 @@ whereas
 .. math::
     A - B = 0 + 2\\epsilon_1 - 2\\epsilon_2 = [0, 4]
 
-The second example illustrate this behaviour. Even though A and B represent the
-same quantity, they manage their quantity differently.
+The second example illustrates this behaviour. Even though A and B represent
+the same quantity, they manage their quantity differently.
 Therefore, they are not equal.
 
 """
@@ -91,13 +91,13 @@ class Affine:
         [a, b] into an affine form, there is the formula:
 
         .. math ::
-            \\hat{x} = x_0 + x_1\\epsilon_1
+            \\hat{x} = x_0 + x_k\\epsilon_k
 
         with:
 
         .. math ::
             x_0 = \\frac{a + b}{2} ,
-            x_1 = \\frac{a - b}{2}
+            x_k = \\frac{a - b}{2}
 
         To convert an affine form into an interval X:
 
@@ -107,7 +107,7 @@ class Affine:
         with:
 
         .. math ::
-            rad(x) = \\sum_{i=1}^{m} |x_i|
+            rad(x) = \\sum_{i=1}^{n} |x_i|
 
         Args:
             interval (list or tuple with length 2 or Interval): the interval
@@ -197,7 +197,7 @@ class Affine:
         Return the radius of an affine form:
 
         .. math ::
-            rad(x) = \\sum_{i=1}^{m} |x_i|
+            rad(x) = \\sum_{i=1}^{n} |x_i|
 
         Args:
             self (Affine): operand
@@ -221,7 +221,7 @@ class Affine:
         Return the additive inverse of an affine form:
 
         .. math ::
-            -\\hat{x} = -x_0 + \\sum_{i=1}^{m} -x_i\\epsilon_i
+            -\\hat{x} = -x_0 + \\sum_{i=1}^{n} -x_i\\epsilon_i
 
         Args:
             self (Affine): operand
@@ -247,13 +247,13 @@ class Affine:
 
         .. math ::
             \\hat{x} + \\hat{y} =
-            (x_0 + y_0) + \\sum_{i=1}^{m} (x_i + y_i)\\epsilon_i
+            (x_0 + y_0) + \\sum_{i=1}^{n} (x_i + y_i)\\epsilon_i
 
         Or add an affine form and an integer or float or mpf:
 
         .. math ::
             \\hat{x} + y =
-            (x_0 + y) + \\sum_{i=1}^{m} x_i\\epsilon_i
+            (x_0 + y) + \\sum_{i=1}^{n} x_i\\epsilon_i
 
         Args:
             self (Affine): first operand
@@ -324,13 +324,13 @@ class Affine:
 
         .. math ::
             \\hat{x} - \\hat{y} =
-            (x_0 - y_0) + \\sum_{i=1}^{m} (x_i - y_i)\\epsilon_i
+            (x_0 - y_0) + \\sum_{i=1}^{n} (x_i - y_i)\\epsilon_i
 
         Or subtract an affine form and an integer or float or mpf:
 
         .. math ::
             \\hat{x} - y =
-            (x_0 - y) + \\sum_{i=1}^{m} x_i\\epsilon_i
+            (x_0 - y) + \\sum_{i=1}^{n} x_i\\epsilon_i
 
         Args:
             self (Affine): first operand
@@ -402,7 +402,7 @@ class Affine:
 
         .. math ::
             \\hat{x}\\hat{y} =
-            x_0y_0 + \\sum_{i=1}^{m} (x_0y_i + y_0x_i)\\epsilon_i
+            x_0y_0 + \\sum_{i=1}^{n} (x_0y_i + y_0x_i)\\epsilon_i
             + rad(x)rad(y)\\epsilon_k
 
         k is a new noise symbol.
@@ -410,7 +410,7 @@ class Affine:
 
         .. math ::
             \\hat{x}y =
-            x_0y + \\sum_{i=1}^{m} x_iy\\epsilon_i
+            x_0y + \\sum_{i=1}^{n} x_iy\\epsilon_i
 
         Args:
             self (Affine): first operand
@@ -484,7 +484,7 @@ class Affine:
 
         .. math ::
             \\hat{\\chi} =
-            (\\alpha x_0 + \\zeta) + \\sum_{i=1}^{m} \\alpha x_i\\epsilon_i
+            (\\alpha x_0 + \\zeta) + \\sum_{i=1}^{n} \\alpha x_i\\epsilon_i
             + \\delta \\epsilon_k
 
         k is a new noise symbol.
@@ -564,7 +564,7 @@ class Affine:
         and an affine form. It uses the identity:
 
         .. math ::
-            \\frac{x}{y} = x . \\frac{1}{y}
+            \\frac{x}{y} = x \\times \\frac{1}{y}
 
         Args:
             self (Affine): first operand
@@ -621,7 +621,7 @@ class Affine:
         It uses the identity:
 
         .. math ::
-            x^2 = x.x
+            x^2 = x \\times x
 
         Args:
             self (Affine): operand
@@ -641,7 +641,7 @@ class Affine:
         With an affine, it uses the identity:
 
         .. math ::
-            x^n = exp(n.log(x))
+            x^n = exp(n \\times log(x))
 
         Args:
             self (Affine): first operand
@@ -699,7 +699,7 @@ class Affine:
 
         .. math ::
             |\\hat{x}| = \\frac{|x_0|}{2} +
-            \\sum_{i=1}^{m} \\frac{x_i\\epsilon_i}{2}
+            \\sum_{i=1}^{n} \\frac{x_i\\epsilon_i}{2}
 
         Args:
             self (Affine): operand
@@ -779,10 +779,10 @@ class Affine:
             \\alpha = \\frac{exp(b) - exp(a)}{b - a}
 
         .. math ::
-            \\zeta = \\alpha.(1 - log(\\alpha))
+            \\zeta = \\alpha \\times (1 - log(\\alpha))
 
         .. math ::
-            \\delta = \\frac{\\alpha.(log(\\alpha) - 1 - a)) + exp(a)}{2}
+            \\delta = \\frac{\\alpha \\times (log(\\alpha)-1-a)) + exp(a)}{2}
 
         Args:
             self (Affine): operand
@@ -1177,7 +1177,7 @@ class Affine:
         with:
 
         .. math ::
-            rad(x) = \\sum_{i=1}^{m} |x_i|
+            rad(x) = \\sum_{i=1}^{n} |x_i|
 
         Args:
             self (Affine): arg
