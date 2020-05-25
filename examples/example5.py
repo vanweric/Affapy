@@ -28,7 +28,11 @@ You need to install *matplotlib* and *numpy* to run this example.
 
 .. image:: example5.png
 
-Output of example 5
+Output of example 5:
+
+* in blue: the function
+* in yellow: IA
+* in orange: AA
 
 """
 from affapy.ia import Interval
