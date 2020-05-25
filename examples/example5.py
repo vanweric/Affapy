@@ -1,11 +1,34 @@
 """
-**Example 5**: Comparison AA vs IA
+Example 5
+---------
 
-Arguments:
+**Comparison AA vs IA**
+
+We consider the function:
+
+.. math::
+    \\frac{\\sqrt{x^2 - x + \\frac{1}{2}}}{\\sqrt{x^2 + \\frac{1}{2}}}
+
+We consider the interval [lbound, ubound] (default: [0, 5])
+and a subdivision of this interval containing n boxes (default: 60).
+The function is evaluated for each box with AA and IA.
+The result is plotted using matplotlib.
+
+Usage:
+
+.. code-block:: bash
+
+    python3 example5.py [lbound] [ubound] [boxn]
 
 * lbound: lower bound of the interval (default: 0)
 * ubound: upper bound of the interval (default: 5)
 * boxn: number of boxes (default: 60)
+
+You need to install *matplotlib* and *numpy* to run this example.
+
+.. image:: example5.png
+
+Output of example 5
 
 """
 from affapy.ia import Interval

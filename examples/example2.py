@@ -1,7 +1,20 @@
 """
-**Example 2**: Time performances between AA and IA model
+Example 2
+---------
 
-Arguments:
+**Time performances between AA and IA model**
+
+This example shows the time performances between AA and IA.
+It permorms calculations on the following function:
+
+.. math::
+    x_1, x_2 \\mapsto 1 + (x_1^2 - 2)x_2 + x_1x_2^2
+
+Usage:
+
+.. code-block:: bash
+
+    python3 example5.py lbound1 ubound1 lbound2 ubound2 boxn
 
 * lbound1: lower bound of the interval 1
 * ubound1: upper bound of the interval 1

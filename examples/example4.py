@@ -1,11 +1,34 @@
 """
-**Example 4**: Comparison AA vs IA
+Example 4
+---------
 
-Arguments:
+**Comparison AA vs IA**
+
+We consider the function:
+
+.. math::
+    \\frac{sin(x)^2 cos(x) - 4}{\\sqrt{x}}
+
+We consider the interval [lbound, ubound] (default: [1, 6])
+and a subdivision of this interval containing n boxes (default: 12).
+The function is evaluated for each box with AA and IA.
+The result is plotted using matplotlib.
+
+Usage:
+
+.. code-block:: bash
+
+    python3 example4.py [lbound] [ubound] [boxn]
 
 * lbound: lower bound of the interval (default: 1)
 * ubound: upper bound of the interval (default: 6)
 * boxn: number of boxes (default: 12)
+
+You need to install *matplotlib* and *numpy* to run this example.
+
+.. image:: example4.png
+
+Output of example 4
 
 """
 from affapy.ia import Interval

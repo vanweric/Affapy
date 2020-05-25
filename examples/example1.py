@@ -1,5 +1,11 @@
 """
-**Example 1**: A simple example of using the lib
+Example 1
+---------
+
+**A simple example of using the lib**
+
+This example is a simply way to use the *affapy* librairy.
+
 """
 from affapy.ia import Interval
 from affapy.aa import Affine

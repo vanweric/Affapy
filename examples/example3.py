@@ -1,5 +1,12 @@
 """
-**Example 3**: Underflow demonstration
+Example 3
+---------
+
+**Underflow demonstration**
+
+This example shows that with a little uncertainty,
+the model of AA can return a huge interval after calculations.
+
 """
 from affapy.aa import Affine
 
