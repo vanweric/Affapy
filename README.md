@@ -15,3 +15,4 @@ pip3 install affapy
 See the Affapy documentation [here](https://affapy.readthedocs.io/en/latest/).
 
 ## License
+[GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
