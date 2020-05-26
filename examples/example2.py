@@ -10,17 +10,19 @@ It permorms calculations on the following function:
 .. math::
     x_1, x_2 \\mapsto 1 + (x_1^2 - 2)x_2 + x_1x_2^2
 
+The result of this example is that AA is slower than IA.
+
 Usage:
 
 .. code-block:: bash
 
-    python3 example5.py lbound1 ubound1 lbound2 ubound2 boxn
+    python3 example5.py [lbound1] [ubound1] [lbound2] [ubound2] [boxn]
 
-* lbound1: lower bound of the interval 1
-* ubound1: upper bound of the interval 1
-* lbound2: lower bound of the interval 2
-* ubound2: upper bound of the interval 2
-* boxn: number of boxes
+* lbound1: lower bound of the interval 1 (default: 10)
+* ubound1: upper bound of the interval 1 (default: 100)
+* lbound2: lower bound of the interval 2 (default: 10)
+* ubound2: upper bound of the interval 2 (default: 100)
+* boxn: number of boxes (default: 1000)
 
 """
 from affapy.ia import Interval
@@ -34,21 +36,29 @@ def eval_fct(x1, x2):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 6:
+    if len(sys.argv) == 1:
+        lbound1 = 10
+        ubound1 = 100
+        lbound2 = 10
+        ubound2 = 100
+        boxn = 1000
+
+    elif len(sys.argv) != 6:
         print("Usage:", sys.argv[0])
         print("LOWER_BOUND1 UPPER_BOUND1 LOWER_BOUND2 UPPER_BOUND2 BOXN")
         exit()
 
-    # interval of x1
-    lbound1 = float(sys.argv[1])
-    ubound1 = float(sys.argv[2])
+    else:
+        # interval of x1
+        lbound1 = float(sys.argv[1])
+        ubound1 = float(sys.argv[2])
 
-    # interval of x2
-    lbound2 = float(sys.argv[3])
-    ubound2 = float(sys.argv[4])
+        # interval of x2
+        lbound2 = float(sys.argv[3])
+        ubound2 = float(sys.argv[4])
 
-    # number of boxes
-    boxn = int(sys.argv[5])
+        # number of boxes
+        boxn = int(sys.argv[5])
 
     if lbound1 > ubound1 or lbound2 > ubound2:
         print("The lower bound must be smaller than the upper bound!")
@@ -82,7 +92,7 @@ if __name__ == "__main__":
 
     tstop1 = time()
 
-    total1 = (tstop1 - tstart1) / 100
+    total1 = tstop1 - tstart1
     print(f"AA: ydelta = {ydelta}, y = {y}")
 
     # IA
@@ -106,7 +116,7 @@ if __name__ == "__main__":
 
     tstop2 = time()
 
-    total2 = (tstop2 - tstart2) / 100
+    total2 = tstop2 - tstart2
     print(f"IA: ydelta = {ydelta}, y = {y}")
 
     print("AA:", total1, "s")
