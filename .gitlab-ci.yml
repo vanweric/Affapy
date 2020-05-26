@@ -63,6 +63,7 @@ job:PDF:
     - apt-get -y install texlive-latex-recommended latexmk texlive-fonts-recommended texlive-science texlive-formats-extra texlive-lang-french
     # generate the html and the pdf documentation
     - pip install .
+    - pip install -r doc/requirements.txt
     - cd doc/
     - make html
     - make latexpdf

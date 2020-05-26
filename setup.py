@@ -8,10 +8,10 @@ setuptools.setup(
     name='affapy',
     version='0.1',
     author=[
-        "Ruxue ZENG",
         "Quentin DESCHAMPS",
         "Florian GUILY",
-        "Tristan MICHEL"
+        "Tristan MICHEL",
+        "Ruxue ZENG"
     ],
     author_email=[
         "quentin.deschamps@etu.sorbonne-universite.fr",
@@ -19,16 +19,16 @@ setuptools.setup(
         "tristan.michel1@etu.sorbonne-universite.fr",
         "ruxue.zeng@etu.sorbonne-universite.fr"
     ],
-    description="A python library for multiprecision Affine Arithmetic",
+    description="A Python library for multiprecision Affine Arithmetic",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://gitlab.lip6.fr/hilaire/affapy",
     packages=["affapy"],
-    install_requires=['Sphinx', 'mpmath', 'sphinx-rtd-theme'],
+    install_requires=["mpmath"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",  # to complete
-        "Operating System :: OS Independent",  # to complete
+        "Operating System :: OS Independent",
     ],
     python_requires='>=3.5',
 )
