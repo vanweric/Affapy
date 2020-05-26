@@ -27,7 +27,7 @@ setuptools.setup(
     install_requires=["mpmath"],
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",  # to complete
+        "License :: OSI Approved :: GNU GPLv3",
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.5',
