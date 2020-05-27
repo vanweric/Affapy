@@ -34,6 +34,16 @@ class TestAffine(unittest.TestCase):
         self.assertTrue(Affine(x0=-2 * mp.pi, xi={1: 2 * mp.e}) in x + x)
         self.assertTrue(Affine(x0=-mp.pi + 4, xi={1: mp.e}) in x + 4)
 
+    @precision(dps=2)
+    def test_add_affine_limite(self):
+        x = Affine(x0=0, xi={1: 1})
+        y = Affine(x0=0, xi={1: 1.05})
+        print(mp.pi)
+        print(x + y)
+        print(mp.mpf(1.051))
+
+        self.assertTrue(Affine(x0=0, xi={1: 2.05}) in x + y)  # bizzare
+
     @precision(dps=50)
     def test_sub_affine(self):
         """Test 'sub' function from class Affine"""
