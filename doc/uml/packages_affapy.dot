@@ -1,0 +1,13 @@
+digraph "packages_affapy" {
+charset="utf-8"
+rankdir=BT
+"1" [label="affapy.aa", shape="box"];
+"2" [label="affapy.error", shape="box"];
+"3" [label="affapy.ia", shape="box"];
+"4" [label="affapy.precision", shape="box"];
+"1" -> "2" [arrowhead="open", arrowtail="none"];
+"1" -> "3" [arrowhead="open", arrowtail="none"];
+"3" -> "1" [arrowhead="open", arrowtail="none"];
+"3" -> "2" [arrowhead="open", arrowtail="none"];
+"4" -> "2" [arrowhead="open", arrowtail="none"];
+}

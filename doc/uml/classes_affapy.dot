@@ -1,0 +1,8 @@
+digraph "classes_affapy" {
+charset="utf-8"
+rankdir=BT
+"0" [label="{Affine|interval: Interval\lx0: mpf\lxi: dict of mpf\l|__abs__()\l__add__(other)\l__contains__(other)\l__eq__(other)\l__init__(interval, x0, xi)\l__mul__(other)\l__ne__(other)\l__neg__()\l__pow__(n)\l__radd__(other)\l__repr__()\l__rmul__(other)\l__rsub__(other)\l__rtruediv__(other)\l__str__()\l__sub__(other)\l__truediv__(other)\lconvert()\lcopy()\lcos()\lcosh()\lcotan()\lexp()\linv()\llog()\lrad()\lsin(npts)\lsinh()\lsqr()\lsqrt()\lstraddles_zero()\lstrictly_neg()\ltan()\ltanh()\l}", shape="record"];
+"1" [label="{Interval|inf: mpf\lsup: mpf\l|__abs__()\l__add__(other)\l__ceil__()\l__contains__(other)\l__eq__(other)\l__floor__()\l__ge__(other)\l__gt__(other)\l__init__(inf, sup)\l__le__(other)\l__lt__(other)\l__mul__(other)\l__ne__(other)\l__neg__()\l__pow__(n)\l__radd__(other)\l__repr__()\l__rmul__(other)\l__rsub__(other)\l__str__()\l__sub__(other)\l__truediv__(other)\lconvert()\lcopy()\lcos()\lcosh()\lcotan()\lexp()\llog()\lmid()\lminTrigo()\lradius()\lsin()\lsinh()\lsqrt()\lstraddles_zero()\ltan()\ltanh()\lwidth()\l}", shape="record"];
+"2" [label="{precision|dps: int\lold_dps: int\lold_dps: int\lold_prec: int\lold_prec: int\lprec: int\l|__enter__()\l__exit__(exc_type, exc_val, exc_tb)\l__init__(dps, prec)\lset_dps(dps)\lset_prec(prec)\l}", shape="record"];
+"3" [fontcolor="red", label="{affapyError|\l|}", shape="record"];
+}
