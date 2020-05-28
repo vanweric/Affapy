@@ -3,25 +3,26 @@ This module can create affine forms and perform operations.
 
 Affine Arithmetic (AA) has been developed to overcome the error explosion
 problem of standard Interval Arithmetic (IA).
-This method represents a quantity x as an affine form x hat, which is a first
-degree polynomial:
+This method represents a quantity :math:`x` as an affine form :math:`\\hat{x}`,
+which is a first degree polynomial:
 
 .. math ::
     \\hat{x} = x_0 + \\sum_{i=1}^{n} x_i\\epsilon_i
 
-The coefficients **xi** are finite floating-point numbers: they are called
+The coefficients :math:`x_i` are finite floating-point numbers: they are called
 the *partial deviations*.
 
-The coefficient **x0** is the *central value* of the affine form x hat.
+The coefficient :math:`x_0` is the *central value* of the affine form
+:math:`\\hat{x}`.
 
-The **epsilon** coefficients are symbolic real values called *noise symbols*.
-Their values are unknown between -1 and 1.
+The :math:`\\epsilon_i` coefficients are symbolic real values called
+*noise symbols*. Their values are unknown between -1 and 1.
 
 This representation enables a better tracking of the different quantities
 inside the affine form.
 
-For example, the quantitie [0, 10] can be represented as the following affine
-form:
+For example, the quantity :math:`[0, 10]` can be represented as the following
+affine form:
 
 .. math ::
     A = [0, 10] = 5 + 5\\epsilon_1
@@ -31,7 +32,7 @@ where
 .. math ::
     x_0 = 1, x_1 = 5
 
-But we could also represent it like this :
+But we could also represent it like this:
 
 .. math ::
     B = [0, 10] = 5 + 3\\epsilon_1 + 2\\epsilon_2
@@ -52,8 +53,8 @@ whereas
 .. math::
     A - B = 0 + 2\\epsilon_1 - 2\\epsilon_2 = [0, 4]
 
-The second example illustrates this behaviour. Even though A and B represent
-the same quantity, they manage their quantity differently.
+The second example illustrates this behaviour. Even though :math:`A` and
+:math:`B` represent the same quantity, they manage their quantity differently.
 Therefore, they are not equal.
 
 """
@@ -88,7 +89,7 @@ class Affine:
         If no arguments, x0=0 and xi={}.
 
         The first method is easier to use. To convert an interval
-        [a, b] into an affine form, there is the formula:
+        :math:`[a, b]` into an affine form, there is the formula:
 
         .. math ::
             \\hat{x} = x_0 + x_k\\epsilon_k
@@ -99,7 +100,7 @@ class Affine:
             x_0 = \\frac{a + b}{2} ,
             x_k = \\frac{a - b}{2}
 
-        To convert an affine form into an interval X:
+        To convert an affine form into an interval :math:`X`:
 
         .. math ::
             X = [x_0 + rad(x), x_0 - rad(x)]
@@ -405,7 +406,7 @@ class Affine:
             x_0y_0 + \\sum_{i=1}^{n} (x_0y_i + y_0x_i)\\epsilon_i
             + rad(x)rad(y)\\epsilon_k
 
-        k is a new noise symbol.
+        :math:`k` is a new noise symbol.
         Or multiply an affine form and integer or float or mpf:
 
         .. math ::
@@ -487,7 +488,7 @@ class Affine:
             (\\alpha x_0 + \\zeta) + \\sum_{i=1}^{n} \\alpha x_i\\epsilon_i
             + \\delta \\epsilon_k
 
-        k is a new noise symbol.
+        :math:`k` is a new noise symbol.
 
         Args:
             alpha (mpmath.mpf)
@@ -530,7 +531,7 @@ class Affine:
         .. math ::
             b = max(|inf|, |sup|)
 
-        where [inf, sup] is the interval associated to the affine
+        where :math:`[inf, sup]` is the interval associated to the affine
         form in argument.
 
         Args:
@@ -685,17 +686,17 @@ class Affine:
         Return the absolute value of an affine form.
         Three possibilities:
 
-        1. If x < 0:
+        1. If :math:`x < 0`:
 
         .. math ::
             |\\hat{x}| = -\\hat{x}
 
-        2. If x > 0:
+        2. If :math:`x > 0`:
 
         .. math ::
             |\\hat{x}| = \\hat{x}
 
-        3 If x straddles 0:
+        3 If :math:`x` straddles :math:`0`:
 
         .. math ::
             |\\hat{x}| = \\frac{|x_0|}{2} +
@@ -727,7 +728,7 @@ class Affine:
         **Function sqrt**
 
         Return the square root of an affine form.
-        We consider the interval [a, b] associated to the affine form.
+        We consider the interval :math:`[a, b]` associated to the affine form.
         It uses the affine constructor with:
 
         .. math ::
@@ -772,7 +773,7 @@ class Affine:
         **Function exp**
 
         Return the exponential of an affine form.
-        We consider the interval [a, b] associated to the affine form.
+        We consider the interval :math:`[a, b]` associated to the affine form.
         It uses the affine constructor with:
 
         .. math ::
@@ -809,7 +810,7 @@ class Affine:
         **Function log**
 
         Return the logarithm of an affine form.
-        We consider the interval [a, b] associated to the affine form.
+        We consider the interval :math:`[a, b]` associated to the affine form.
         It uses the affine constructor with:
 
         .. math ::

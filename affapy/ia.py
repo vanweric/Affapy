@@ -2,12 +2,12 @@
 This module can create intervals and perform operations.
 
 In order to bound rounding errors when performing floating point arithmetic,
-we can use interval arithmetic (IA) to keep track of rounding errors.
+we can use Interval Arithmetic (IA) to keep track of rounding errors.
 
 After a series of operations using basic operators like +, -, * and / we end
 of with an interval instead of an approximation of the result.
 
-The interval width represent the uncertainty of the result but we would know
+The interval width represents the uncertainty of the result but we would know
 for sure that the correct result will be within this interval.
 
 An interval is presented by two number representing the lower and upper range
@@ -16,7 +16,7 @@ of the interval:
 .. math ::
     [a, b]
 
-where a <= b.
+where :math:`a \\leq b`.
 
 """
 import affapy.aa
@@ -39,8 +39,8 @@ class Interval:
     def __init__(self, inf, sup):
         """
         Create an interval. It is composed of two fields :
-        the infimum and the supremum. If inf > sup, then the init function
-        reorganize the two values.
+        the infimum and the supremum. If :math:`inf > sup`,
+        then the init function reorganize the two values.
 
         Args:
             inf (int or float or string): infimum
@@ -531,17 +531,17 @@ class Interval:
         Return the absolute value of an interval.
         Three possibilities:
 
-        1. If [a, b] < 0:
+        1. If :math:`[a, b] < 0`:
 
         .. math ::
             abs([a, b]) = [-b, -a]
 
-        2. If [a, b] > 0:
+        2. If :math:`[a, b] > 0`:
 
         .. math ::
             abs([a, b]) = [a, b]
 
-        3. If 0 in [a, b]:
+        3. If :math:`0 \\in [a, b]`:
 
         .. math ::
             abs([a, b]) = [0, max\\{abs(a), abs(b)\\}]
@@ -577,7 +577,7 @@ class Interval:
         .. math ::
             \\sqrt{[a, b]} = [\\sqrt{a}, \\sqrt{b}]
 
-        It is possible only if a >= 0.
+        It is possible only if :math:`a \\geq 0`.
 
         Args:
             self (Interval): operand
@@ -633,7 +633,7 @@ class Interval:
         .. math ::
             log([a, b]) = [log(a), log(b)]
 
-        It is possible only if a > 0.
+        It is possible only if :math:`a > 0`.
 
         Args:
             self (Interval): operand
@@ -660,13 +660,13 @@ class Interval:
     # Trigo
     def minTrigo(self):
         """
-        Return the minimal 2pi periodic interval of an interval.
+        Return the minimal :math:`2\\pi` periodic interval of an interval.
 
         Args:
             self (Interval): operand
 
         Returns:
-            Interval: minimal 2pi periodic interval
+            Interval: minimal :math:`2\\pi` periodic interval
         """
         inf, sup = self.inf, self.sup
         a = fmod(inf, 2*mp.pi)
@@ -685,17 +685,18 @@ class Interval:
         **Function cos**
 
         Return the cosinus of an interval.
-        It considers the 2pi periodic interval [a, b] of the interval x.
+        It considers the minimal :math:`2\\pi` periodic interval
+        :math:`[a, b]` of the interval :math:`x`.
         Then:
 
-        1. If a <= pi:
+        1. If :math:`a \\leq \\pi`:
 
-        * if b <= pi:
+        * if :math:`b \\leq \\pi`:
 
         .. math ::
             cos(x) = [cos(b), cos(a)]
 
-        * if pi < b <= 2pi:
+        * if :math:`\\pi < b \\leq 2\\pi`:
 
         .. math ::
             cos(x) = [-1, max(cos(a), cos(b))]
@@ -705,14 +706,14 @@ class Interval:
         .. math ::
             cos(x) = [-1, 1]
 
-        2. If pi < a <= 2pi:
+        2. If :math:`\\pi < a \\leq 2\\pi`:
 
-        * if b <= 2pi:
+        * if :math:`b \\leq 2\\pi`:
 
         .. math ::
             cos(x) = [cos(a), cos(b)]
 
-        * if 2pi < b <= 3pi:
+        * if :math:`2\\pi < b \\leq 3\\pi`:
 
         .. math ::
             cos(x) = [min(cos(a), cos(b)), 1]
@@ -1135,7 +1136,7 @@ class Interval:
 
     def convert(self):
         """
-        Convert an interval [a, b] to an affine form:
+        Convert an interval :math:`[a, b]` to an affine form:
 
         .. math ::
             \\hat{x} = x_0 + x_k\\epsilon_k
