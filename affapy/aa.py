@@ -139,11 +139,11 @@ class Affine:
                 raise affapyError("interval must be list, tuple or Interval")
             self._x0 = (inf + sup) / 2
             self._xi = {Affine._getNewXi(): fdiv(
-                fsub(inf, sup, rounding='c'), 2, rounding='c')}
+                fsub(inf, sup, rounding='u'), 2, rounding='u')}
             self._interval = affapy.ia.Interval(inf, sup)
         elif x0 is not None and xi is not None:
             self._x0 = mp.mpf(x0)
-            self._xi = {i: mp.mpf(xi[i], rounding='c') for i in xi}
+            self._xi = {i: mp.mpf(xi[i], rounding='u') for i in xi}
             self._interval = affapy.ia.Interval(
                 fadd(self._x0, self.rad()),
                 fsub(self._x0, self.rad()))
@@ -184,7 +184,7 @@ class Affine:
         Set the dictionnary of noice symbols xi.
         It updates the interval associated to the affine form.
         """
-        self._xi = {i: mp.mpf(val[i], rounding='c') for i in val}
+        self._xi = {i: mp.mpf(val[i], rounding='u') for i in val}
         self._interval = self.convert()
 
     @staticmethod
@@ -236,7 +236,7 @@ class Affine:
 
         """
         x0 = -self.x0
-        xi = {i: fneg(self.xi[i], rounding='c') for i in self.xi}
+        xi = {i: fneg(self.xi[i], rounding='u') for i in self.xi}
         return Affine(x0=x0, xi=xi)
 
     # Affine operations
@@ -278,7 +278,7 @@ class Affine:
             xi = {}
             for i in self.xi:
                 if i in other.xi:
-                    val = fadd(self.xi[i], other.xi[i], rounding='c')
+                    val = fadd(self.xi[i], other.xi[i], rounding='u')
                     if val != 0:
                         xi[i] = val
                 else:
@@ -355,14 +355,14 @@ class Affine:
             xi = {}
             for i in self.xi:
                 if i in other.xi:
-                    val = fsub(self.xi[i], other.xi[i], rounding='c')
+                    val = fsub(self.xi[i], other.xi[i], rounding='u')
                     if val != 0:
                         xi[i] = val
                 else:
                     xi[i] = self.xi[i]
             for i in other.xi:
                 if i not in self.xi:
-                    xi[i] = fneg(other.xi[i], rounding='c')
+                    xi[i] = fneg(other.xi[i], rounding='u')
             return Affine(x0=x0, xi=xi)
         if isinstance(other, (int, float, mpmath.mpf)):
             x0 = self.x0 - mp.mpf(other)
@@ -436,22 +436,22 @@ class Affine:
             for i in range(keyMax + 1):
                 v = 0
                 if i in self.xi and i not in other.xi:
-                    v = fmul(self.xi[i], other.x0, rounding='c')
+                    v = fmul(self.xi[i], other.x0, rounding='u')
                 elif i not in self.xi and i in other.xi:
-                    v = fmul(other.xi[i], self.x0, rounding='c')
+                    v = fmul(other.xi[i], self.x0, rounding='u')
                 elif i in self.xi and i in other.xi:
-                    v = fadd(fmul(self.xi[i], other.x0, rounding='c'),
-                             fmul(other.xi[i], self.x0, rounding='c'),
-                             rounding='c')
+                    v = fadd(fmul(self.xi[i], other.x0, rounding='u'),
+                             fmul(other.xi[i], self.x0, rounding='u'),
+                             rounding='u')
                 if v != 0:
                     xi[i] = v
             xi[Affine._getNewXi()] = fmul(self.rad(),
-                                          other.rad(), rounding='c')
+                                          other.rad(), rounding='u')
             return Affine(x0=x0, xi=xi)
         if isinstance(other, (int, float, mpmath.mpf)):
             x0 = mp.mpf(other) * self.x0
             xi = {i: fmul(mp.mpf(other),
-                          self.xi[i], rounding='c') for i in self.xi}
+                          self.xi[i], rounding='u') for i in self.xi}
             return Affine(x0=x0, xi=xi)
         raise affapyError("other must be Affine, int, float, mpf")
 
@@ -500,7 +500,7 @@ class Affine:
 
         """
         x0 = alpha * self.x0 + dzeta
-        xi = {i: fmul(alpha, self.xi[i], rounding='c') for i in self.xi}
+        xi = {i: fmul(alpha, self.xi[i], rounding='u') for i in self.xi}
         xi[Affine._getNewXi()] = delta
         return Affine(x0=x0, xi=xi)
 
@@ -719,7 +719,7 @@ class Affine:
             return -self
         if self.straddles_zero():
             x0 = fabs(self.x0 / 2)
-            xi = {i: fdiv(self.xi[i], 2, rounding='c') for i in self.xi}
+            xi = {i: fdiv(self.xi[i], 2, rounding='u') for i in self.xi}
             return Affine(x0=x0, xi=xi)
         return self.copy()
 
@@ -761,9 +761,9 @@ class Affine:
             t = fadd(sqrt(a), sqrt(b), rounding='f')
             alpha = 1 / t
             dzeta = fadd(fdiv(t, 8), fmul(0.5, fdiv(sqrt(fmul(a, b)), t)))
-            rdelta = fsub(sqrt(b), sqrt(a), rounding='c')
-            delta = fdiv(fmul(rdelta, rdelta, rounding='c'),
-                         fmul(8, t, rounding='f'), rounding='c')
+            rdelta = fsub(sqrt(b), sqrt(a), rounding='u')
+            delta = fdiv(fmul(rdelta, rdelta, rounding='u'),
+                         fmul(8, t, rounding='f'), rounding='u')
             return self._affineConstructor(alpha, dzeta, delta)
         raise affapyError(
             "the interval associated to the affine form must be >= 0")

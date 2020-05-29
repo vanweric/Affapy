@@ -57,11 +57,11 @@ class Interval:
 
         """
         if inf < sup:
-            self._inf = mp.mpf(inf, rounding='d')
-            self._sup = mp.mpf(sup, rounding='u')
+            self._inf = mp.mpf(inf, rounding='f')
+            self._sup = mp.mpf(sup, rounding='c')
         else:
-            self._inf = mp.mpf(sup, rounding='d')
-            self._sup = mp.mpf(inf, rounding='u')
+            self._inf = mp.mpf(sup, rounding='f')
+            self._sup = mp.mpf(inf, rounding='c')
 
     # Getter
     @property
@@ -106,7 +106,7 @@ class Interval:
             mpf('1.0')
 
         """
-        return fsub(self.sup, self.inf, rounding='u')
+        return fsub(self.sup, self.inf, rounding='c')
 
     def mid(self):
         """
@@ -173,8 +173,8 @@ class Interval:
             Interval(-2.0, -1.0)
 
         """
-        return Interval(fneg(self.sup, rounding='d'),
-                        fneg(self.inf, rounding='u'))
+        return Interval(fneg(self.sup, rounding='f'),
+                        fneg(self.inf, rounding='c'))
 
     # Binary operators
     def __add__(self, other):
@@ -210,12 +210,12 @@ class Interval:
 
         """
         if isinstance(other, self.__class__):
-            inf = fadd(self.inf, other.inf, rounding='d')
-            sup = fadd(self.sup, other.sup, rounding='u')
+            inf = fadd(self.inf, other.inf, rounding='f')
+            sup = fadd(self.sup, other.sup, rounding='c')
             return Interval(inf, sup)
         if isinstance(other, (int, float, mpmath.mpf)):
-            inf = fadd(self.inf, mp.mpf(other), rounding='d')
-            sup = fadd(self.sup, mp.mpf(other), rounding='u')
+            inf = fadd(self.inf, mp.mpf(other), rounding='f')
+            sup = fadd(self.sup, mp.mpf(other), rounding='c')
             return Interval(inf, sup)
         raise affapyError("other must be Interval, int, float, mpf")
 
@@ -275,12 +275,12 @@ class Interval:
 
         """
         if isinstance(other, self.__class__):
-            inf = fsub(self.inf, other.sup, rounding='d')
-            sup = fsub(self.sup, other.inf, rounding='u')
+            inf = fsub(self.inf, other.sup, rounding='f')
+            sup = fsub(self.sup, other.inf, rounding='c')
             return Interval(inf, sup)
         if isinstance(other, (int, float, mpmath.mpf)):
-            inf = fsub(self.inf, mp.mpf(other), rounding='d')
-            sup = fsub(self.sup, mp.mpf(other), rounding='u')
+            inf = fsub(self.inf, mp.mpf(other), rounding='f')
+            sup = fsub(self.sup, mp.mpf(other), rounding='c')
             return Interval(inf, sup)
         raise affapyError("other must be Interval, int, float, mpf")
 
@@ -344,14 +344,14 @@ class Interval:
         if isinstance(other, self.__class__):
             a, b = self.inf, self.sup
             c, d = other.inf, other.sup
-            inf = min([fmul(a, c, rounding='d'), fmul(a, d, rounding='d'),
-                       fmul(b, c, rounding='d'), fmul(b, d, rounding='d')])
-            sup = max([fmul(a, c, rounding='u'), fmul(a, d, rounding='u'),
-                       fmul(b, c, rounding='u'), fmul(b, d, rounding='u')])
+            inf = min([fmul(a, c, rounding='f'), fmul(a, d, rounding='f'),
+                       fmul(b, c, rounding='f'), fmul(b, d, rounding='f')])
+            sup = max([fmul(a, c, rounding='c'), fmul(a, d, rounding='c'),
+                       fmul(b, c, rounding='c'), fmul(b, d, rounding='c')])
             return Interval(inf, sup)
         if isinstance(other, (int, float, mpmath.mpf)):
-            return Interval(fmul(mp.mpf(other), self.inf, rounding='d'),
-                            fmul(mp.mpf(other), self.sup, rounding='u'))
+            return Interval(fmul(mp.mpf(other), self.inf, rounding='f'),
+                            fmul(mp.mpf(other), self.sup, rounding='c'))
         raise affapyError("other must be Interval, int, float, mpf")
 
     def __rmul__(self, other):
@@ -413,8 +413,8 @@ class Interval:
         if isinstance(other, self.__class__):
             c, d = other.inf, other.sup
             if 0 not in other:
-                return self * Interval(fdiv(1, d, rounding='u'),
-                                       fdiv(1, c, rounding='d'))
+                return self * Interval(fdiv(1, d, rounding='c'),
+                                       fdiv(1, c, rounding='f'))
             raise affapyError("division by 0")
         if isinstance(other, (int, float, mpmath.mpf)):
             if other != 0:
@@ -494,8 +494,8 @@ class Interval:
             Interval(1.0, 2.0)
 
         """
-        return Interval(floor(self.inf, rounding='d'),
-                        floor(self.sup, rounding='u'))
+        return Interval(floor(self.inf, rounding='f'),
+                        floor(self.sup, rounding='c'))
 
     def __ceil__(self):
         """
@@ -520,8 +520,8 @@ class Interval:
             Interval(2.0, 3.0)
 
         """
-        return Interval(ceil(self.inf, rounding='d'),
-                        ceil(self.sup, rounding='u'))
+        return Interval(ceil(self.inf, rounding='f'),
+                        ceil(self.sup, rounding='c'))
 
     # Functions
     def __abs__(self):
@@ -597,8 +597,8 @@ class Interval:
 
         """
         if self.inf >= 0:
-            return Interval(sqrt(self.inf, rounding='d'),
-                            sqrt(self.sup, rounding='u'))
+            return Interval(sqrt(self.inf, rounding='f'),
+                            sqrt(self.sup, rounding='c'))
         raise affapyError("inf must be >= 0")
 
     def exp(self):
@@ -621,8 +621,8 @@ class Interval:
             Interval(2.71828182845905, 7.38905609893065)
 
         """
-        return Interval(exp(self.inf, rounding='d'),
-                        exp(self.sup, rounding='u'))
+        return Interval(exp(self.inf, rounding='f'),
+                        exp(self.sup, rounding='c'))
 
     def log(self):
         """
@@ -654,7 +654,7 @@ class Interval:
         """
         if self.inf > 0:
             return Interval(ln(self.inf, roundin='d'),
-                            ln(self.sup, rounding='u'))
+                            ln(self.sup, rounding='c'))
         raise affapyError("inf must be > 0")
 
     # Trigo
@@ -671,13 +671,13 @@ class Interval:
         inf, sup = self.inf, self.sup
         a = fmod(inf, 2*mp.pi)
         if inf < 0:
-            a = fneg(a, rounding='d')
+            a = fneg(a, rounding='f')
         if fsub(sup, inf) >= 2*mp.pi:
-            b = fadd(a, 2*mp.pi, rounding='u')
+            b = fadd(a, 2*mp.pi, rounding='c')
         else:
             b = fmod(sup, 2*mp.pi)
             if b <= a:
-                b = fadd(b, 2*mp.pi, rounding='u')
+                b = fadd(b, 2*mp.pi, rounding='c')
         return Interval(a, b)
 
     def cos(self):
