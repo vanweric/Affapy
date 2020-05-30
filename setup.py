@@ -7,18 +7,8 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name='affapy',
     version='0.1',
-    author=[
-        "Quentin DESCHAMPS",
-        "Florian GUILY",
-        "Tristan MICHEL",
-        "Ruxue ZENG"
-    ],
-    author_email=[
-        "quentin.deschamps@etu.sorbonne-universite.fr",
-        "florian.guily@etu.sorbonne-universite.fr",
-        "tristan.michel1@etu.sorbonne-universite.fr",
-        "ruxue.zeng@etu.sorbonne-universite.fr"
-    ],
+    author="Quentin DESCHAMPS",
+    author_email="quentin.deschamps@etu.sorbonne-universite.fr",
     description="A Python library for multiprecision Affine Arithmetic",
     long_description=long_description,
     long_description_content_type="text/markdown",

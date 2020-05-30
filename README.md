@@ -15,5 +15,11 @@ pip3 install affapy
 ## Usage
 See the Affapy's documentation [here](https://affapy.readthedocs.io/en/latest/).
 
+## Contributors
+- Quentin DESCHAMPS: quentin.deschamps@etu.sorbonne-universite.fr
+- Florian GUILY: florian.guily@etu.sorbonne-universite.fr
+- Tristan MICHEL: tristan.michel1@etu.sorbonne-universite.fr
+- Ruxue ZENG: ruxue.zeng@etu.sorbonne-universite.fr
+
 ## License
 [GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/)

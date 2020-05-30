@@ -42,7 +42,7 @@ class TestAffine(unittest.TestCase):
         print(x + y)
         print(mp.mpf(1.051))
 
-        self.assertTrue(Affine(x0=0, xi={1: 2.05}) in x + y)  # bizzare
+        self.assertTrue(Affine(x0=0, xi={1: 2.05}) in x + y)
 
     @precision(dps=50)
     def test_sub_affine(self):
