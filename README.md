@@ -13,7 +13,7 @@ pip3 install affapy
 ```
 
 ## Usage
-See the Affapy documentation [here](https://affapy.readthedocs.io/en/latest/).
+See the Affapy's documentation [here](https://affapy.readthedocs.io/en/latest/).
 
 ## License
 [GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
