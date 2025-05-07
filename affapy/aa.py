@@ -539,9 +539,7 @@ class Affine:
 
         Returns:
             Affine: 1 / self
-
-        Raises:
-            affapyError: the interval associated to the affine form contains 0
+            Affine: NaN if the associated interval to the affine form contains 0
 
         """
         if 0 not in self.interval:
@@ -554,8 +552,7 @@ class Affine:
                 dzeta = -dzeta
             delta = i.radius()
             return self._affineConstructor(alpha, dzeta, delta)
-        raise affapyError(
-            "the interval associated to the affine form contains 0")
+        return Affine(x0=mp.nan, xi={})
 
     def __truediv__(self, other):
         """
@@ -747,9 +744,7 @@ class Affine:
 
         Returns:
             Affine: sqrt(self)
-
-        Raises:
-            affapyError: the interval associated to the affine form must be >=0
+            Affine: NaN if the associated interval to the affine form contains <=0
 
         Examples:
             >>> print(Affine([1, 2]).sqrt())
@@ -765,8 +760,8 @@ class Affine:
             delta = fdiv(fmul(rdelta, rdelta, rounding='u'),
                          fmul(8, t, rounding='f'), rounding='u')
             return self._affineConstructor(alpha, dzeta, delta)
-        raise affapyError(
-            "the interval associated to the affine form must be >= 0")
+        return Affine(x0=mp.nan, xi={})
+
 
     def exp(self):
         """
@@ -835,9 +830,7 @@ class Affine:
 
         Returns:
             Affine: log(self)
-
-        Raises:
-            affapyError: the interval associated to the affine form must be > 0
+            Affine: NaN if the associated interval to the affine form contains <=0
 
         Examples:
             >>> print(Affine([1, 2]).log())
@@ -854,8 +847,8 @@ class Affine:
             dzeta = fdiv(fmul(alpha, fneg(xs)), fdiv(fadd(log(xs), ys), 2))
             delta = fdiv(maxdelta, 2)
             return self._affineConstructor(alpha, dzeta, delta)
-        raise affapyError(
-            "the interval associated to the affine form must be > 0")
+        return Affine(x0=mp.nan, xi={})
+
 
     # Trigo
     def sin(self, npts=8):

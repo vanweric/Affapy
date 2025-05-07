@@ -395,9 +395,9 @@ class Interval:
 
         Returns:
             Interval: self / other
+            Interval: NaN if division by 0
 
         Raises:
-            affapyError: division by 0
             affapyError: other must be Interval, int, float, mpf
 
         Examples:
@@ -407,7 +407,6 @@ class Interval:
             Interval(0.5, 1.0)
             >>> Interval(1, 2) / Interval(-1, 1)
             ...
-            affapy.affapyError.affapyError: division by 0
 
         """
         if isinstance(other, self.__class__):
@@ -415,11 +414,11 @@ class Interval:
             if 0 not in other:
                 return self * Interval(fdiv(1, d, rounding='c'),
                                        fdiv(1, c, rounding='f'))
-            raise affapyError("division by 0")
+            return Interval(mp.nan, mp.nan)
         if isinstance(other, (int, float, mpmath.mpf)):
             if other != 0:
                 return (1 / other) * self
-            raise affapyError("division by 0")
+            return Interval(mp.nan, mp.nan)
         raise affapyError("other must be Interval, int, float, mpf")
 
     def __pow__(self, n):
@@ -584,22 +583,20 @@ class Interval:
 
         Returns:
             Interval: sqrt(self)
-
-        Raises:
-            affapyError: inf must be >= 0
+            Interval(nan, nan): inf must be >=0
+        
 
         Examples:
             >>> Interval(1, 2).sqrt()
             Interval(1.0, 1.4142135623731)
             >>> Interval(-1, 2).sqrt()
-            ...
-            affapy.affapyError.affapyError: inf must be >= 0
+            Interval(mp.nan, mp.nan)
 
         """
         if self.inf >= 0:
             return Interval(sqrt(self.inf, rounding='f'),
                             sqrt(self.sup, rounding='c'))
-        raise affapyError("inf must be >= 0")
+        return Interval(mp.nan, mp.nan)
 
     def exp(self):
         """
@@ -640,22 +637,19 @@ class Interval:
 
         Returns:
             Interval: log(self)
-
-        Raises:
-            affapyError: inf must be > 0
+            Interval(nan, nan): inf <= 0
 
         Examples:
             >>> Interval(1, 2).log()
             Interval(0.0, 0.693147180559945)
             >>> Interval(-1, 2).log()
-            ...
-            affapy.affapyError.affapyError: inf must be > 0
+            Interval(mp.nan, mp.nan)
 
         """
         if self.inf > 0:
             return Interval(ln(self.inf, roundin='d'),
                             ln(self.sup, rounding='c'))
-        raise affapyError("inf must be > 0")
+        return Interval(mp.nan, mp.nan)
 
     # Trigo
     def minTrigo(self):
