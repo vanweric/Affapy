@@ -1,3 +1,11 @@
+# This is just a branch!
+This is a branch of [Affapy](https://gitlab.lip6.fr/hilaire/affapy).  I'm attempting to improve NumPy compatibility.
+
+Please use the original, this is not yet intended for public consumption.
+
+
+
+
 # Affapy
 [![Pipeline Status](https://gitlab.lip6.fr/hilaire/affapy/badges/master/pipeline.svg)](https://gitlab.lip6.fr/hilaire/affapy/pipelines)
 [![Coverage Status](https://gitlab.lip6.fr/hilaire/affapy/badges/master/coverage.svg)](https://gitlab.lip6.fr/hilaire/affapy/pipelines)
