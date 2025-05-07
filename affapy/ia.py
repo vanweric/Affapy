@@ -213,7 +213,7 @@ class Interval:
             inf = fadd(self.inf, other.inf, rounding='f')
             sup = fadd(self.sup, other.sup, rounding='c')
             return Interval(inf, sup)
-        if isinstance(other, (int, float, mpmath.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf, str)):
             inf = fadd(self.inf, mp.mpf(other), rounding='f')
             sup = fadd(self.sup, mp.mpf(other), rounding='c')
             return Interval(inf, sup)
@@ -278,7 +278,7 @@ class Interval:
             inf = fsub(self.inf, other.sup, rounding='f')
             sup = fsub(self.sup, other.inf, rounding='c')
             return Interval(inf, sup)
-        if isinstance(other, (int, float, mpmath.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf, str)):
             inf = fsub(self.inf, mp.mpf(other), rounding='f')
             sup = fsub(self.sup, mp.mpf(other), rounding='c')
             return Interval(inf, sup)
@@ -349,7 +349,7 @@ class Interval:
             sup = max([fmul(a, c, rounding='c'), fmul(a, d, rounding='c'),
                        fmul(b, c, rounding='c'), fmul(b, d, rounding='c')])
             return Interval(inf, sup)
-        if isinstance(other, (int, float, mpmath.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf, str)):
             return Interval(fmul(mp.mpf(other), self.inf, rounding='f'),
                             fmul(mp.mpf(other), self.sup, rounding='c'))
         raise affapyError("other must be Interval, int, float, mpf")
@@ -415,9 +415,9 @@ class Interval:
                 return self * Interval(fdiv(1, d, rounding='c'),
                                        fdiv(1, c, rounding='f'))
             return Interval(mp.nan, mp.nan)
-        if isinstance(other, (int, float, mpmath.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf, str)):
             if other != 0:
-                return (1 / other) * self
+                return (1 / mp.mpf(other)) * self
             return Interval(mp.nan, mp.nan)
         raise affapyError("other must be Interval, int, float, mpf")
 
@@ -940,7 +940,7 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.inf >= other.sup
-        if isinstance(other, (int, float, mpmath.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf, str)):
             return self.inf >= other
         raise affapyError("other must be Interval, int, float, mpf")
 
@@ -968,7 +968,7 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.inf > other.sup
-        if isinstance(other, (int, float, mpmath.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf, str)):
             return self.inf > other
         raise affapyError("other must be Interval, int, float, mpf")
 
@@ -998,7 +998,7 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.sup <= other.inf
-        if isinstance(other, (int, float, mpmath.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf, str)):
             return self.sup <= other
         raise affapyError("other must be Interval, int, float, mpf")
 
@@ -1026,7 +1026,7 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.sup < other.inf
-        if isinstance(other, (int, float, mpmath.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf, str)):
             return self.sup < other
         raise affapyError("other must be Interval, int, float, mpf")
 
@@ -1060,7 +1060,7 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.inf <= other.inf and self.sup >= other.sup
-        if isinstance(other, (int, float, mpmath.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf, str)):
             return self.inf <= other <= self.sup
         if isinstance(other, affapy.aa.Affine):
             return (self.inf <= other.interval.inf

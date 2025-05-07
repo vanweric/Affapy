@@ -287,7 +287,7 @@ class Affine:
                 if i not in self.xi:
                     xi[i] = other.xi[i]
             return Affine(x0=x0, xi=xi)
-        if isinstance(other, (int, float, mpmath.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf, str)):
             x0 = self.x0 + mp.mpf(other)
             xi = self.xi.copy()
             return Affine(x0=x0, xi=xi)
@@ -364,7 +364,7 @@ class Affine:
                 if i not in self.xi:
                     xi[i] = fneg(other.xi[i], rounding='u')
             return Affine(x0=x0, xi=xi)
-        if isinstance(other, (int, float, mpmath.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf, str)):
             x0 = self.x0 - mp.mpf(other)
             xi = self.xi.copy()
             return Affine(x0=x0, xi=xi)
@@ -448,7 +448,7 @@ class Affine:
             xi[Affine._getNewXi()] = fmul(self.rad(),
                                           other.rad(), rounding='u')
             return Affine(x0=x0, xi=xi)
-        if isinstance(other, (int, float, mpmath.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf, str)):
             x0 = mp.mpf(other) * self.x0
             xi = {i: fmul(mp.mpf(other),
                           self.xi[i], rounding='u') for i in self.xi}
@@ -582,7 +582,7 @@ class Affine:
         """
         if isinstance(other, self.__class__):
             return self * other.inv()
-        if isinstance(other, (int, float, mpmath.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf, str)):
             return self * (1 / other)
         raise affapyError("other must be Affine, int, float, mpf")
 
@@ -609,7 +609,7 @@ class Affine:
 
         """
         if (isinstance(other, self.__class__) or
-                isinstance(other, (int, float, mpmath.mpf))):
+                isinstance(other, (int, float, mpmath.mpf, str))):
             return other * self.inv()
         raise affapyError("other must be Affine, int, float, mpf")
 
@@ -1081,7 +1081,7 @@ class Affine:
             return other.interval in self.interval
         if isinstance(other, affapy.ia.Interval):
             return other in self.interval
-        if isinstance(other, (int, float, mpmath.mpf)):
+        if isinstance(other, (int, float, mpmath.mpf, str)):
             return other in self.interval
         raise affapyError("other must be Affine, Interval, int, float, mpf")
 
