@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='affapy',
-    version='0.1',
+    version='0.2',
     author="Quentin DESCHAMPS",
     author_email="quentin.deschamps@etu.sorbonne-universite.fr",
     description="A Python library for multiprecision Affine Arithmetic",
