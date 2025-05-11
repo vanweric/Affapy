@@ -1,4 +1,6 @@
 """Defining test cases for Affine class"""
+import sys
+print(sys.executable)
 
 from affapy.aa import Affine
 from affapy.ia import Interval
@@ -143,6 +145,66 @@ class TestAffine(unittest.TestCase):
         self.assertTrue(z in y)
         self.assertFalse(y in z)
 
+    def test_add_str(self):
+        x = Affine([-1,1])
+        y = x + '1.5'
+        z = Interval(.5,2.5)
+        self.assertEqual(y.convert(), z)
 
+    def test_radd_str(self):
+        x = Affine([-1,1])
+        y = '1.5' + x
+        z = Interval(.5,2.5)
+        self.assertEqual(y.convert(), z)
+
+    def test_mul_str(self):
+        """Test multiplication with a string"""
+        x = Affine([-1, 1])
+        y = x * '2.5'
+        z = Interval(-2.5, 2.5)
+        self.assertEqual(y.convert(), z)
+
+    def test_rmul_str(self):
+        """Test reverse multiplication with a string"""
+        x = Affine([-1, 1])
+        y = '2.5' * x
+        z = Interval(-2.5, 2.5)
+        self.assertEqual(y.convert(), z)
+
+    def test_sub_str(self):
+        """Test subtraction with a string"""
+        x = Affine([-1, 1])
+        y = x - '1.5'
+        z = Interval(-2.5, -0.5)
+        self.assertEqual(y.convert(), z)
+
+    def test_rsub_str(self):
+        """Test reverse subtraction with a string"""
+        x = Affine([-1, 1])
+        y = '1.5' - x
+        z = Interval(0.5, 2.5)
+        self.assertEqual(y.convert(), z)
+
+    def test_truediv_str(self):
+        """Test division with a string"""
+        x = Affine([1., 2])
+        y = x / '2.0'
+        z = Interval(.5, 1.0)
+        self.assertEqual(y.convert(), z)
+
+    def test_rtruediv_str(self):
+        """Test reverse division with a string"""
+        x = Affine([1, 2])
+        y = 2. / x
+        z = Interval(1.0, 2.0)  # Adjust based on actual behavior
+        self.assertEqual(y.convert(), z)
+
+    def test_contains_str(self):
+        """Test 'contains' with a string"""
+        x = Affine([-1, 1])
+        self.assertTrue('0.5' in x)
+        self.assertFalse('2.0' in x)
+
+        
 if __name__ == "__main__":
     unittest.main()

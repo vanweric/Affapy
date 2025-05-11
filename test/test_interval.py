@@ -1,6 +1,7 @@
 """Defining test cases for Interval class"""
 
 from affapy.ia import Interval
+from affapy.aa import Affine
 from affapy.precision import precision
 import unittest
 from mpmath import sqrt, log, exp, sin, cos, mp, pi
@@ -281,6 +282,70 @@ class TestInterval(unittest.TestCase):
         self.assertTrue(not (x < -4))
         self.assertTrue(not (x < y))
 
+    def test_ge_interval_string(self):
+        """Test 'ge' function from class Interval"""
+        x = Interval(-3, 3)
+        
+        self.assertFalse( "-5" >= x)
+        self.assertFalse( "-3" >= x)
+        self.assertFalse( "0" >= x)
+        self.assertTrue ( "3" >= x)
+        self.assertTrue ( "5" >= x)
+        
+        self.assertTrue ( x >= "-5" )
+        self.assertTrue ( x >= "-3" )
+        self.assertFalse( x >= "0" )
+        self.assertFalse( x >= "3" )
+        self.assertFalse( x >= "5" )
+    
+    def test_gt_interval_string(self):
+        """Test 'gt' function from class Interval"""
+        x = Interval(-3, 3)
+
+        self.assertFalse( "-5" > x)
+        self.assertFalse( "-3" > x)
+        self.assertFalse( "0" > x)
+        self.assertFalse( "3" > x)
+        self.assertTrue ( "5" > x)
+
+        self.assertTrue ( x > "-5" )
+        self.assertFalse ( x > "-3" )
+        self.assertFalse ( x > "0" )
+        self.assertFalse ( x > "3" )
+        self.assertFalse( x > "5" )
+
+    def test_le_interval_string(self):
+        """Test 'le' function from class Interval"""
+        x = Interval(-3, 3)
+
+        self.assertTrue ( "-5" <= x)
+        self.assertTrue ( "-3" <= x)
+        self.assertFalse( "0" <= x)
+        self.assertFalse( "3" <= x)
+        self.assertFalse( "5" <= x)
+
+        self.assertFalse( x <= "-5" )
+        self.assertFalse( x <= "-3" )
+        self.assertFalse( x <= "0" )
+        self.assertTrue ( x <= "3" )
+        self.assertTrue ( x <= "5" )
+
+    def test_lt_interval_string(self):
+        """Test 'lt' function from class Interval"""
+        x = Interval(-3, 3)
+
+        self.assertTrue ( "-5" < x)
+        self.assertFalse( "-3" < x)
+        self.assertFalse( "0" < x)
+        self.assertFalse( "3" < x)
+        self.assertFalse( "5" < x)
+
+        self.assertFalse( x < "-5" )
+        self.assertFalse( x < "-3" )
+        self.assertFalse( x < "0" )
+        self.assertFalse( x < "3" )
+        self.assertTrue ( x < "5" )
+    
     def test_contains_interval(self):
         """Test 'contains' function from class Interval"""
         x = Interval(1, 2)
@@ -294,6 +359,69 @@ class TestInterval(unittest.TestCase):
         self.assertTrue(0 in z)
         self.assertFalse(0 in y)
         self.assertTrue(x2 * (y2 + z2) in x2 * y2 + x2 * z2)
+
+    def test_add_str(self):
+        """Test addition with a string"""
+        x = Interval(-1, 1)
+        y = x + '1.5'
+        z = Interval(0.5, 2.5)
+        self.assertEqual(y, z)
+
+    def test_radd_str(self):
+        """Test reverse addition with a string"""
+        x = Interval(-1, 1)
+        y = '1.5' + x
+        z = Interval(0.5, 2.5)
+        self.assertEqual(y, z)
+
+    def test_mul_str(self):
+        """Test multiplication with a string"""
+        x = Interval(-1, 1)
+        y = x * '2.5'
+        z = Interval(-2.5, 2.5)
+        self.assertEqual(y, z)
+
+    def test_rmul_str(self):
+        """Test reverse multiplication with a string"""
+        x = Interval(-1, 1)
+        y = '2.5' * x
+        z = Interval(-2.5, 2.5)
+        self.assertEqual(y, z)
+
+    def test_sub_str(self):
+        """Test subtraction with a string"""
+        x = Interval(-1, 1)
+        y = x - '1.5'
+        z = Interval(-2.5, -0.5)
+        self.assertEqual(y, z)
+
+    def test_rsub_str(self):
+        """Test reverse subtraction with a string"""
+        x = Interval(-1, 1)
+        y = '1.5' - x
+        z = Interval(0.5, 2.5)
+        self.assertEqual(y, z)
+
+    def test_truediv_str(self):
+        """Test division with a string"""
+        x = Interval(1, 2)
+        y = x / '2.0'
+        z = Interval(0.5, 1.0)
+        self.assertEqual(y, z)
+
+    def test_rtruediv_str(self):
+        """Test reverse division with a string"""
+        x = Interval(1, 2)
+        y = '2.0' / x
+        z = Interval(1.0, 2.0)  # Adjust based on actual behavior
+        self.assertEqual(y, z)
+
+    def test_contains_str(self):
+        """Test 'contains' with a string"""
+        x = Interval(-1, 1)
+        self.assertTrue('0.5' in x)
+        self.assertFalse('2.0' in x)
+
 
 
 if __name__ == "__main__":
