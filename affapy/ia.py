@@ -24,6 +24,8 @@ from affapy.error import affapyError
 import mpmath
 from mpmath import (mp, fadd, fsub, fmul, fdiv, fneg, fabs, floor, ceil,
                     sqrt, exp, ln, cos, fmod)
+from mpmath.ctx_mp_python import _mpf as mpf
+
 
 
 class Interval:
@@ -65,12 +67,12 @@ class Interval:
 
     # Getter
     @property
-    def inf(self):
+    def inf(self) -> mpf:
         """Return the inf."""
         return self._inf
 
     @property
-    def sup(self):
+    def sup(self) -> mpf:
         """Return the sup."""
         return self._sup
 
@@ -86,7 +88,7 @@ class Interval:
         self._sup = value
 
     # Methods
-    def width(self):
+    def width(self) -> mpf:
         """
         **Width**
 
@@ -108,7 +110,7 @@ class Interval:
         """
         return fsub(self.sup, self.inf, rounding='c')
 
-    def mid(self):
+    def mid(self) -> mpf:
         """
         **Middle**
 
@@ -130,7 +132,7 @@ class Interval:
         """
         return (self.inf + self.sup) / 2
 
-    def radius(self):
+    def radius(self) -> mpf:
         """
         **Radius**
 
@@ -153,7 +155,7 @@ class Interval:
         return self.width() / 2
 
     # Unary operator
-    def __neg__(self):
+    def __neg__(self) -> "Interval":
         """
         **Operator - (unary)**
 
@@ -177,7 +179,7 @@ class Interval:
                         fneg(self.inf, rounding='c'))
 
     # Binary operators
-    def __add__(self, other):
+    def __add__(self, other: "Interval | int | float | mpf | str") -> "Interval":
         """
         **Operator +**
 
@@ -213,13 +215,13 @@ class Interval:
             inf = fadd(self.inf, other.inf, rounding='f')
             sup = fadd(self.sup, other.sup, rounding='c')
             return Interval(inf, sup)
-        if isinstance(other, (int, float, mpmath.mpf, str)):
+        if isinstance(other, (int, float, mpf, str)):
             inf = fadd(self.inf, mp.mpf(other), rounding='f')
             sup = fadd(self.sup, mp.mpf(other), rounding='c')
             return Interval(inf, sup)
         raise affapyError("other must be Interval, int, float, mpf")
 
-    def __radd__(self, other):
+    def __radd__(self, other: "Interval | int | float | mpf | str") -> "Interval":
         """
         **Reverse operator +**
 
@@ -243,7 +245,7 @@ class Interval:
         """
         return self + other
 
-    def __sub__(self, other):
+    def __sub__(self, other: "Interval | int | float | mpf | str") -> "Interval":
         """
         **Operator -**
 
@@ -278,13 +280,13 @@ class Interval:
             inf = fsub(self.inf, other.sup, rounding='f')
             sup = fsub(self.sup, other.inf, rounding='c')
             return Interval(inf, sup)
-        if isinstance(other, (int, float, mpmath.mpf, str)):
+        if isinstance(other, (int, float, mpf, str)):
             inf = fsub(self.inf, mp.mpf(other), rounding='f')
             sup = fsub(self.sup, mp.mpf(other), rounding='c')
             return Interval(inf, sup)
         raise affapyError("other must be Interval, int, float, mpf")
 
-    def __rsub__(self, other):
+    def __rsub__(self, other: "Interval | int | float | mpf | str") -> "Interval":
         """
         **Reverse operator -**
 
@@ -308,7 +310,7 @@ class Interval:
         """
         return -self + other
 
-    def __mul__(self, other):
+    def __mul__(self, other: "Interval | int | float | mpf | str") -> "Interval":
         """
         **Operator ***
 
@@ -349,12 +351,12 @@ class Interval:
             sup = max([fmul(a, c, rounding='c'), fmul(a, d, rounding='c'),
                        fmul(b, c, rounding='c'), fmul(b, d, rounding='c')])
             return Interval(inf, sup)
-        if isinstance(other, (int, float, mpmath.mpf, str)):
+        if isinstance(other, (int, float, mpf, str)):
             return Interval(fmul(mp.mpf(other), self.inf, rounding='f'),
                             fmul(mp.mpf(other), self.sup, rounding='c'))
         raise affapyError("other must be Interval, int, float, mpf")
 
-    def __rmul__(self, other):
+    def __rmul__(self, other: "Interval | int | float | mpf | str") -> "Interval":
         """Reverse operator *
 
         Multiply two intervals or an interval and an integer or float or mpf.
@@ -373,7 +375,7 @@ class Interval:
         """
         return self * other
 
-    def __truediv__(self, other):
+    def __truediv__(self, other: "Interval | int | float | mpf | str") -> "Interval":
         """
         **Operator /**
 
@@ -415,13 +417,38 @@ class Interval:
                 return self * Interval(fdiv(1, d, rounding='c'),
                                        fdiv(1, c, rounding='f'))
             return Interval(mp.nan, mp.nan)
-        if isinstance(other, (int, float, mpmath.mpf, str)):
+        if isinstance(other, (int, float, mpf, str)):
             if other != 0:
                 return (1 / mp.mpf(other)) * self
             return Interval(mp.nan, mp.nan)
         raise affapyError("other must be Interval, int, float, mpf")
+    
+    
+    def __rtruediv__(self, other: "Interval | int | float | mpf | str") -> "Interval":
+        """
+        **Reverse operator /**
 
-    def __pow__(self, n):
+        Divide two interval forms or an interval form and an integer
+        or float or mpf. See the truediv operator for more details.
+
+        Args:
+            self (Interval): second operand
+            other (Interval or int or float or mpf or str): first operand
+
+        Returns:
+            Interval: other / self
+
+        Raises:
+            affapyError: other must be Interval, int, float, mpf
+
+        """
+        if isinstance(other, self.__class__):
+            return other / self
+        if isinstance(other, (int, float, mpmath.mpf, str)):
+            return mp.mpf(other) * (Interval(1,1) / self)
+        raise affapyError("other must be Interval, int, float, mpf")
+
+    def __pow__(self, n: "Interval | int") -> "Interval":
         """
         **Operator ****
 
@@ -470,7 +497,7 @@ class Interval:
         raise affapyError("type error: n must be Interval or int")
 
     # Precision
-    def __floor__(self):
+    def __floor__(self) -> "Interval":
         """
         **Function floor**
 
@@ -496,7 +523,7 @@ class Interval:
         return Interval(floor(self.inf, rounding='f'),
                         floor(self.sup, rounding='c'))
 
-    def __ceil__(self):
+    def __ceil__(self) -> "Interval":
         """
         **Function ceil**
 
@@ -523,7 +550,7 @@ class Interval:
                         ceil(self.sup, rounding='c'))
 
     # Functions
-    def __abs__(self):
+    def __abs__(self) -> "Interval":
         """
         **Function abs**
 
@@ -567,7 +594,7 @@ class Interval:
                                    fabs(self.sup)))
         return self.copy()
 
-    def sqrt(self):
+    def sqrt(self) -> "Interval":
         """
         **Function sqrt**
 
@@ -598,7 +625,7 @@ class Interval:
                             sqrt(self.sup, rounding='c'))
         return Interval(mp.nan, mp.nan)
 
-    def exp(self):
+    def exp(self) -> "Interval":
         """
         **Function exp**
 
@@ -621,7 +648,7 @@ class Interval:
         return Interval(exp(self.inf, rounding='f'),
                         exp(self.sup, rounding='c'))
 
-    def log(self):
+    def log(self) -> "Interval":
         """
         **Function log**
 
@@ -652,7 +679,7 @@ class Interval:
         return Interval(mp.nan, mp.nan)
 
     # Trigo
-    def minTrigo(self):
+    def minTrigo(self) -> "Interval":
         """
         Return the minimal :math:`2\\pi` periodic interval of an interval.
 
@@ -674,7 +701,7 @@ class Interval:
                 b = fadd(b, 2*mp.pi, rounding='c')
         return Interval(a, b)
 
-    def cos(self):
+    def cos(self) -> "Interval":
         """
         **Function cos**
 
@@ -745,7 +772,7 @@ class Interval:
                                     cos(sup)), 1)
             return Interval(-1, 1)
 
-    def sin(self):
+    def sin(self) -> "Interval":
         """
         **Function sin**
 
@@ -764,7 +791,7 @@ class Interval:
         """
         return (-self + mp.pi / 2).cos()
 
-    def tan(self):
+    def tan(self) -> "Interval":
         """
         **Function tan**
 
@@ -783,7 +810,7 @@ class Interval:
         """
         return self.sin() / self.cos()
 
-    def cotan(self):
+    def cotan(self) -> "Interval":
         """
         **Function cotan**
 
@@ -802,7 +829,7 @@ class Interval:
         """
         return self.cos() / self.sin()
 
-    def cosh(self):
+    def cosh(self) -> "Interval":
         """
         **Function cosh**
 
@@ -821,7 +848,7 @@ class Interval:
         """
         return (self.exp() + (-self).exp()) * 0.5
 
-    def sinh(self):
+    def sinh(self) -> "Interval":
         """
         **Function sinh**
 
@@ -840,7 +867,7 @@ class Interval:
         """
         return (self.exp() - (-self).exp()) * 0.5
 
-    def tanh(self):
+    def tanh(self) -> "Interval":
         """
         **Function tanh**
 
@@ -860,7 +887,7 @@ class Interval:
         return self.sinh() / self.cosh()
 
     # Comparison operators
-    def __eq__(self, other):
+    def __eq__(self, other: "Interval") -> bool:
         """
         **Operator ==**
 
@@ -887,7 +914,7 @@ class Interval:
             return self.inf == other.inf and self.sup == other.sup
         raise affapyError("other must be Interval")
 
-    def __ne__(self, other):
+    def __ne__(self, other: "Interval") -> bool:
         """
         **Operator !=**
 
@@ -914,7 +941,7 @@ class Interval:
             return self.inf != other.inf or self.sup != other.sup
         raise affapyError("other must be Interval")
 
-    def __ge__(self, other):
+    def __ge__(self, other: "Interval | int | float | mpf | str") -> bool:
         """
         **Operator >=**
 
@@ -940,11 +967,11 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.inf >= other.sup
-        if isinstance(other, (int, float, mpmath.mpf, str)):
-            return self.inf >= other
+        if isinstance(other, (int, float, mpf, str)):
+            return self.inf >= mp.mpf(other)
         raise affapyError("other must be Interval, int, float, mpf")
 
-    def __gt__(self, other):
+    def __gt__(self, other: "Interval | int | float | mpf | str") -> bool:
         """
         **Operator >**
 
@@ -968,11 +995,11 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.inf > other.sup
-        if isinstance(other, (int, float, mpmath.mpf, str)):
-            return self.inf > other
+        if isinstance(other, (int, float, mpf, str)):
+            return self.inf > mp.mpf(other)
         raise affapyError("other must be Interval, int, float, mpf")
 
-    def __le__(self, other):
+    def __le__(self, other: "Interval | int | float | mpf | str") -> bool:
         """
         **Operator <=**
 
@@ -998,11 +1025,11 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.sup <= other.inf
-        if isinstance(other, (int, float, mpmath.mpf, str)):
-            return self.sup <= other
+        if isinstance(other, (int, float, mpf, str)):
+            return self.sup <= mp.mpf(other)
         raise affapyError("other must be Interval, int, float, mpf")
 
-    def __lt__(self, other):
+    def __lt__(self, other : "Interval | int | float | mpf | str") -> bool:
         """
         **Operator <**
 
@@ -1026,12 +1053,12 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.sup < other.inf
-        if isinstance(other, (int, float, mpmath.mpf, str)):
-            return self.sup < other
+        if isinstance(other, (int, float, mpf, str)):
+            return self.sup < mp.mpf(other)
         raise affapyError("other must be Interval, int, float, mpf")
 
     # Inclusion
-    def __contains__(self, other):
+    def __contains__(self, other: "Interval | affapy.aa.Affine | int | float | mpf | str") -> bool:
         """
         **Operator in**
 
@@ -1060,14 +1087,14 @@ class Interval:
         """
         if isinstance(other, self.__class__):
             return self.inf <= other.inf and self.sup >= other.sup
-        if isinstance(other, (int, float, mpmath.mpf, str)):
-            return self.inf <= other <= self.sup
+        if isinstance(other, (int, float, mpf, str)):
+            return self.inf <= mp.mpf(other) <= self.sup
         if isinstance(other, affapy.aa.Affine):
             return (self.inf <= other.interval.inf
                     and self.sup >= other.interval.sup)
         raise affapyError("other must be Interval, int, float, Affine, mpf")
 
-    def straddles_zero(self):
+    def straddles_zero(self) -> bool:
         """
         Return True if the interval straddles 0, False if not.
 
@@ -1081,7 +1108,7 @@ class Interval:
         return self.inf <= 0 and self.sup >= 0
 
     # Formats
-    def __str__(self):
+    def __str__(self) -> str:
         """
         **String format**
 
@@ -1100,7 +1127,7 @@ class Interval:
         """
         return "[{}, {}]".format(self.inf, self.sup)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         **Repr format**
 
@@ -1115,7 +1142,7 @@ class Interval:
         """
         return "Interval({}, {})".format(self.inf, self.sup)
 
-    def copy(self):
+    def copy(self) -> "Interval":
         """
         Copy an interval.
 
@@ -1128,7 +1155,7 @@ class Interval:
         """
         return Interval(self.inf, self.sup)
 
-    def convert(self):
+    def convert(self) -> "affapy.aa.Affine":
         """
         Convert an interval :math:`[a, b]` to an affine form:
 

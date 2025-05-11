@@ -63,6 +63,7 @@ from affapy.error import affapyError
 import mpmath
 from mpmath import (
     mp, fdiv, fadd, fsub, fsum, fneg, fmul, fabs, sqrt, exp, log, sin)
+from mpmath.ctx_mp_python import _mpf as mpf
 
 
 class Affine:
@@ -154,23 +155,23 @@ class Affine:
 
     # Getter
     @property
-    def x0(self):
+    def x0(self) -> mpf:
         """Return the center x0."""
         return self._x0
 
     @property
-    def xi(self):
+    def xi(self) -> dict:
         """Return the dictionnary of noice symbols xi."""
         return self._xi.copy()
 
     @property
-    def interval(self):
+    def interval(self) -> "affapy.ia.Interval":
         """Return interval associated to the affine form."""
         return self._interval.copy()
 
     # Setter
     @x0.setter
-    def x0(self, val):
+    def x0(self, val: "Affine | int | float | mpf | str"):
         """
         Set the center x0.
         It updates the interval associated to the affine form.
@@ -179,7 +180,7 @@ class Affine:
         self._interval = self.convert()
 
     @xi.setter
-    def xi(self, val):
+    def xi(self, val: dict):
         """
         Set the dictionnary of noice symbols xi.
         It updates the interval associated to the affine form.
@@ -188,12 +189,12 @@ class Affine:
         self._interval = self.convert()
 
     @staticmethod
-    def _getNewXi():
+    def _getNewXi() -> int:
         """Get a new noise symbol."""
         Affine._weightCount += 1
         return Affine._weightCount - 1
 
-    def rad(self):
+    def rad(self) -> mpf:
         """
         Return the radius of an affine form:
 
@@ -215,7 +216,7 @@ class Affine:
         return fsum(self.xi.values(), absolute=True)
 
     # Unary operator
-    def __neg__(self):
+    def __neg__(self) -> "Affine":
         """
         **Operator - (unary)**
 
@@ -240,7 +241,7 @@ class Affine:
         return Affine(x0=x0, xi=xi)
 
     # Affine operations
-    def __add__(self, other):
+    def __add__(self, other: "Affine | int | float | mpf | str") -> "Affine":
         """
         **Operator +**
 
@@ -293,7 +294,7 @@ class Affine:
             return Affine(x0=x0, xi=xi)
         raise affapyError("other must be Affine, int, float, mpf")
 
-    def __radd__(self, other):
+    def __radd__(self, other: "Affine | int | float | mpf | str") -> "Affine":
         """
         **Reverse operator +**
 
@@ -317,7 +318,7 @@ class Affine:
         """
         return self + other
 
-    def __sub__(self, other):
+    def __sub__(self, other: "Affine | int | float | mpf | str") -> "Affine":
         """
         **Operator -**
 
@@ -364,13 +365,13 @@ class Affine:
                 if i not in self.xi:
                     xi[i] = fneg(other.xi[i], rounding='u')
             return Affine(x0=x0, xi=xi)
-        if isinstance(other, (int, float, mpmath.mpf, str)):
+        if isinstance(other, (int, float, mpf, str)):
             x0 = self.x0 - mp.mpf(other)
             xi = self.xi.copy()
             return Affine(x0=x0, xi=xi)
         raise affapyError("other must be Affine, int, float, mpf")
 
-    def __rsub__(self, other):
+    def __rsub__(self, other: "Affine | int | float | mpf | str") -> "Affine":
         """
         **Reverse operator -**
 
@@ -395,7 +396,7 @@ class Affine:
         """
         return -self + other
 
-    def __mul__(self, other):
+    def __mul__(self, other: "Affine | int | float | mpf | str") -> "Affine":
         """
         **Operator ***
 
@@ -448,14 +449,14 @@ class Affine:
             xi[Affine._getNewXi()] = fmul(self.rad(),
                                           other.rad(), rounding='u')
             return Affine(x0=x0, xi=xi)
-        if isinstance(other, (int, float, mpmath.mpf, str)):
+        if isinstance(other, (int, float, mpf, str)):
             x0 = mp.mpf(other) * self.x0
             xi = {i: fmul(mp.mpf(other),
                           self.xi[i], rounding='u') for i in self.xi}
             return Affine(x0=x0, xi=xi)
         raise affapyError("other must be Affine, int, float, mpf")
 
-    def __rmul__(self, other):
+    def __rmul__(self, other: "Affine | int | float | mpf | str") -> "Affine":
         """
         **Reverse operator ***
 
@@ -477,7 +478,7 @@ class Affine:
         return self * other
 
     # Non-affine operations
-    def _affineConstructor(self, alpha, dzeta, delta):
+    def _affineConstructor(self, alpha, dzeta, delta) -> "Affine":
         """
         **Affine constructor**
 
@@ -504,7 +505,7 @@ class Affine:
         xi[Affine._getNewXi()] = delta
         return Affine(x0=x0, xi=xi)
 
-    def inv(self):
+    def inv(self) -> "Affine":
         """
         **Inverse**
 
@@ -554,7 +555,7 @@ class Affine:
             return self._affineConstructor(alpha, dzeta, delta)
         return Affine(x0=mp.nan, xi={})
 
-    def __truediv__(self, other):
+    def __truediv__(self, other: "Affine | int | float | mpf | str") -> "Affine":
         """
         **Operator /**
 
@@ -582,11 +583,11 @@ class Affine:
         """
         if isinstance(other, self.__class__):
             return self * other.inv()
-        if isinstance(other, (int, float, mpmath.mpf, str)):
-            return self * (1 / other)
+        if isinstance(other, (int, float, mpf, str)):
+            return self * (1 / mpmath.mpf(other))
         raise affapyError("other must be Affine, int, float, mpf")
 
-    def __rtruediv__(self, other):
+    def __rtruediv__(self, other: "Affine | int | float | mpf | str") -> "Affine":
         """
         **Reverse operator /**
 
@@ -613,7 +614,7 @@ class Affine:
             return other * self.inv()
         raise affapyError("other must be Affine, int, float, mpf")
 
-    def sqr(self):
+    def sqr(self) -> "Affine":
         """
         Return the square of an affine form.
         It uses the identity:
@@ -630,7 +631,7 @@ class Affine:
         """
         return self * self
 
-    def __pow__(self, n):
+    def __pow__(self, n : "Affine | int") -> "Affine":
         """
         **Operator ****
 
@@ -678,7 +679,7 @@ class Affine:
         raise affapyError("type error: n must be Affine or int")
 
     # Functions
-    def __abs__(self):
+    def __abs__(self) -> "Affine":
         """
         Return the absolute value of an affine form.
         Three possibilities:
@@ -720,7 +721,7 @@ class Affine:
             return Affine(x0=x0, xi=xi)
         return self.copy()
 
-    def sqrt(self):
+    def sqrt(self) -> "Affine":
         """
         **Function sqrt**
 
@@ -763,7 +764,7 @@ class Affine:
         return Affine(x0=mp.nan, xi={})
 
 
-    def exp(self):
+    def exp(self) -> "Affine":
         """
         **Function exp**
 
@@ -800,7 +801,7 @@ class Affine:
         delta = fdiv(maxdelta, 2)
         return self._affineConstructor(alpha, dzeta, delta)
 
-    def log(self):
+    def log(self) -> "Affine":
         """
         **Function log**
 
@@ -851,7 +852,7 @@ class Affine:
 
 
     # Trigo
-    def sin(self, npts=8):
+    def sin(self, npts: int = 8) -> "Affine":
         """
         **Function sin**
 
@@ -902,7 +903,7 @@ class Affine:
         delta = max(r)
         return self._affineConstructor(alpha, dzeta, delta)
 
-    def cos(self):
+    def cos(self) -> "Affine":
         """
         **Function cos**
 
@@ -921,7 +922,7 @@ class Affine:
         """
         return (self + mp.pi / 2).sin()
 
-    def tan(self):
+    def tan(self) -> "Affine":
         """
         **Function tan**
 
@@ -940,7 +941,7 @@ class Affine:
         """
         return self.sin() / self.cos()
 
-    def cotan(self):
+    def cotan(self) -> "Affine":
         """
         **Function cotan**
 
@@ -959,7 +960,7 @@ class Affine:
         """
         return self.cos() / self.sin()
 
-    def cosh(self):
+    def cosh(self) -> "Affine":
         """
         **Function cosh**
 
@@ -978,7 +979,7 @@ class Affine:
         """
         return (self.exp() + (-self).exp()) * 0.5
 
-    def sinh(self):
+    def sinh(self) -> "Affine":
         """
         **Function sinh**
 
@@ -997,7 +998,7 @@ class Affine:
         """
         return (self.exp() - (-self).exp()) * 0.5
 
-    def tanh(self):
+    def tanh(self) -> "Affine":
         """
         **Function tanh**
 
@@ -1017,7 +1018,7 @@ class Affine:
         return self.sinh() / self.cosh()
 
     # Comparison operators
-    def __eq__(self, other):
+    def __eq__(self, other: "Affine") -> bool:
         """
         **Operator ==**
 
@@ -1038,7 +1039,7 @@ class Affine:
             return self.x0 == other.x0 and self.xi == other.xi
         raise affapyError("other must be Affine")
 
-    def __ne__(self, other):
+    def __ne__(self, other: "Affine") -> bool:
         """
         **Operator !=**
 
@@ -1060,7 +1061,7 @@ class Affine:
         raise affapyError("other must be Affine")
 
     # Inclusion
-    def __contains__(self, other):
+    def __contains__(self, other: "Affine") -> bool:
         """
         **Operator in**
 
@@ -1085,7 +1086,7 @@ class Affine:
             return other in self.interval
         raise affapyError("other must be Affine, Interval, int, float, mpf")
 
-    def straddles_zero(self):
+    def straddles_zero(self) -> bool:
         """
         Return True if the affine form straddles 0, False if not.
 
@@ -1098,7 +1099,7 @@ class Affine:
         """
         return self.interval.straddles_zero()
 
-    def strictly_neg(self):
+    def strictly_neg(self) -> bool:
         """
         Return True if the affine is strictly negative, False if not.
 
@@ -1112,7 +1113,7 @@ class Affine:
         return self.interval < 0
 
     # Formats
-    def __str__(self):
+    def __str__(self) -> str:
         """
         **String format**
 
@@ -1133,7 +1134,7 @@ class Affine:
             [str(self.x0)] +
             ["".join([str(self.xi[i]), "e", str(i)]) for i in self.xi])
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         **Repr format**
 
@@ -1148,7 +1149,7 @@ class Affine:
         """
         return "Affine({}, {})".format(self.x0, self.xi)
 
-    def copy(self):
+    def copy(self) -> "Affine":
         """
         Copy an affine form.
 
@@ -1161,7 +1162,7 @@ class Affine:
         """
         return Affine(x0=self.x0, xi=self.xi.copy())
 
-    def convert(self):
+    def convert(self) -> "affapy.ia.Interval":
         """
         Convert an affine form to an interval representation:
 
@@ -1181,3 +1182,14 @@ class Affine:
 
         """
         return self.interval.copy()
+
+    # Getter
+    @property
+    def inf(self) -> mpf:
+        """Return the inf."""
+        return self.convert().inf
+
+    @property
+    def sup(self) -> mpf:
+        """Return the sup."""
+        return self.convert.sup
